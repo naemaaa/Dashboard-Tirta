@@ -1,4 +1,11 @@
- 
+/**
+ * ============================================================================
+ * MODUL KALKULASI TREN ANTARWAKTU & HISTORIS
+ * Referensi Lengkap DAX Measures Dashboard Komoditas DIY v1.0 - Bab 6
+ * Bank Indonesia KPw DIY · PSEKUIN UPN Veteran Yogyakarta · September 2026
+ * ============================================================================
+ */
+
 import { REF_KOMODITAS, REF_WILAYAH, REF_KALENDER } from '../data/seedData';
 import {
   calculateVolumeMasuk,
@@ -38,7 +45,7 @@ export function calculateHistoricalTrends(
 ) {
   const sortedKalender = [...REF_KALENDER].sort((a, b) => new Date(a.tgl_mulai) - new Date(b.tgl_mulai));
 
-  return sortedKalender.map(kal => {
+  return sortedKalender.map((kal, idx) => {
     const periodRows = rawRingkasan.filter(r =>
       !r.is_deleted &&
       r.id_periode === kal.id_periode &&
@@ -74,6 +81,7 @@ export function calculateHistoricalTrends(
 
 /**
  * 2. Perbandingan Delta Perkembangan per Wilayah Periode Ini vs Periode Lalu (Tab 4 Panel D & F)
+ * DAX: Selisih_Perkembangan = [Total_Vol_Masuk_Ton] - [Vol_Masuk_Periode_Lalu]
  */
 export function calculateTab4RegionalDeltas(
   rawRingkasan = [],
@@ -106,6 +114,7 @@ export function calculateTab4RegionalDeltas(
     const currNet = currIn - currOut;
     const prevNet = prevIn - prevOut;
     const diffNeraca = currNet - prevNet;
+    const selisihPerkembangan = currIn - prevIn;
 
     return {
       wilayah: wil.label || wil.nama_kab_kota.replace(/^(kab\.|kota)\s*/i, ''),
@@ -115,6 +124,7 @@ export function calculateTab4RegionalDeltas(
       selisihNeracaIni: Number(currNet.toFixed(2)),
       selisihNeracaLalu: Number(prevNet.toFixed(2)),
       deltaNet: Number(diffNeraca.toFixed(2)),
+      selisihPerkembangan: Number(selisihPerkembangan.toFixed(2)),
       masukDeltaPct: calculateDeltaPct(currIn, prevIn),
       keluarDeltaPct: calculateDeltaPct(currOut, prevOut),
     };
@@ -142,4 +152,14 @@ export function calculateTab4CommodityEvolution(rawRingkasan = []) {
     });
     return point;
   });
+}
+
+/**
+ * 4. Label Trend Panah DAX 6.3
+ * DAX: Label_Trend_Masuk / Label_Trend_Harga
+ */
+export function formatLabelTrend(deltaPct) {
+  if (deltaPct === null || deltaPct === undefined || deltaPct === 0) return '-';
+  if (deltaPct > 0) return `▲ +${deltaPct.toFixed(1)}%`;
+  return `▼ ${deltaPct.toFixed(1)}%`;
 }

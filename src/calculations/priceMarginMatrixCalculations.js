@@ -1,12 +1,13 @@
 /**
  * ============================================================================
  * MODUL KALKULASI HARGA & MARJIN TATANIAGA
- * PRD Dashboard Komoditas DIY v1.0 - Section 8
- * Bank Indonesia KPw DIY · PSEKUIN UPN Veteran Yogyakarta
+ * Referensi Lengkap DAX Measures Dashboard Komoditas DIY v1.0 - Bab 5
+ * Bank Indonesia KPw DIY · PSEKUIN UPN Veteran Yogyakarta · September 2026
  * ============================================================================
  */
 
 import { REF_KOMODITAS, REF_WILAYAH } from '../data/seedData';
+import { getMarginClassification } from './coreCalculations';
 
 /**
  * 1. Matriks Harga & Marjin per Komoditas x Wilayah (Tab 3 Panel B)
@@ -21,7 +22,8 @@ export function calculateTab3PriceMatrix(rawRingkasan = [], selectedPeriode) {
       avgBeliAll: 0,
       avgJualAll: 0,
       avgMarginRp: 0,
-      avgMarginPct: 0
+      avgMarginPct: 0,
+      statusMargin: 'Wajar'
     };
 
     let sumBeli = 0;
@@ -31,8 +33,8 @@ export function calculateTab3PriceMatrix(rawRingkasan = [], selectedPeriode) {
     REF_WILAYAH.forEach(wil => {
       const matches = rawRingkasan.filter(r =>
         !r.is_deleted &&
-        r.id_periode === selectedPeriode &&
-        r.komoditas === kom.nama_komoditas &&
+        (!selectedPeriode || selectedPeriode === 'Semua' || selectedPeriode === 'All' || r.id_periode === selectedPeriode) &&
+        (r.komoditas === kom.nama_komoditas || r.id_komoditas === kom.id_komoditas) &&
         r.kab_kota === wil.nama_kab_kota &&
         r.jenis_aliran === 'vol_masuk_ton' &&
         Number(r.harga_beli) > 0
@@ -65,6 +67,7 @@ export function calculateTab3PriceMatrix(rawRingkasan = [], selectedPeriode) {
     row.avgJualAll = count > 0 ? Math.round(sumJual / count) : 0;
     row.avgMarginRp = row.avgJualAll - row.avgBeliAll;
     row.avgMarginPct = row.avgBeliAll > 0 ? Number(((row.avgMarginRp / row.avgBeliAll) * 100).toFixed(1)) : 0;
+    row.statusMargin = getMarginClassification(row.avgMarginPct);
     return row;
   });
 }
@@ -81,7 +84,8 @@ export function calculateTab3MarginRanking(priceMatrix = []) {
       marginPct: r.avgMarginPct,
       marginRp: r.avgMarginRp,
       hargaBeli: r.avgBeliAll,
-      hargaJual: r.avgJualAll
+      hargaJual: r.avgJualAll,
+      status: r.statusMargin
     }))
     .sort((a, b) => b.marginPct - a.marginPct);
 }
@@ -94,7 +98,7 @@ export function calculateTab3ScatterData(priceMatrix = [], butterflyData = []) {
     const p = priceMatrix.find(item => item.id_komoditas === kom.id_komoditas);
     const b = butterflyData.find(item => item.id_komoditas === kom.id_komoditas);
     return {
-      name: kom.nama_komoditas.replace(' (Ton)', ''),
+      name: kom.nama_singkat || kom.nama_komoditas.replace(' (Ton)', ''),
       kelompok: kom.kelompok,
       hargaBeli: p?.avgBeliAll || 0,
       hargaJual: p?.avgJualAll || 0,
@@ -111,8 +115,8 @@ export function calculateTab3RegionPrices(rawRingkasan = [], selectedPeriode, se
   return REF_WILAYAH.map(wil => {
     const matches = rawRingkasan.filter(r =>
       !r.is_deleted &&
-      r.id_periode === selectedPeriode &&
-      r.komoditas === selectedKomoditas &&
+      (!selectedPeriode || selectedPeriode === 'Semua' || selectedPeriode === 'All' || r.id_periode === selectedPeriode) &&
+      (!selectedKomoditas || selectedKomoditas === 'Semua' || selectedKomoditas === 'All' || r.komoditas === selectedKomoditas) &&
       r.kab_kota === wil.nama_kab_kota &&
       r.jenis_aliran === 'vol_masuk_ton'
     );
@@ -125,4 +129,54 @@ export function calculateTab3RegionPrices(rawRingkasan = [], selectedPeriode, se
       margin: Math.round(hj - hb)
     };
   });
+}
+
+/**
+ * 5. Disparitas Harga Wilayah (DAX 5.1)
+ * DAX: MAXX(ALL(REF_Wilayah), [Harga_Rata_Jual]) - MINX(ALL(REF_Wilayah), [Harga_Rata_Jual])
+ */
+export function calculateDisparitasHargaWilayah(regionPrices = []) {
+  const validPrices = regionPrices.map(r => r.hargaJual).filter(p => p > 0);
+  if (validPrices.length === 0) return 0;
+  const maxPrice = Math.max(...validPrices);
+  const minPrice = Math.min(...validPrices);
+  return maxPrice - minPrice;
+}
+
+/**
+ * 6. Wilayah Harga Tertinggi (DAX 5.1)
+ * DAX: MAXX(TOPN(1, SUMMARIZE(laporan_ringkasan, [kab_kota], "harga", [Harga_Rata_Jual]), [harga], DESC), [kab_kota])
+ */
+export function calculateWilayahHargaTertinggi(regionPrices = []) {
+  if (!regionPrices || regionPrices.length === 0) return 'Kota Yogyakarta';
+  const sorted = [...regionPrices].sort((a, b) => b.hargaJual - a.hargaJual);
+  return sorted[0]?.wilayah || 'Kota Yogyakarta';
+}
+
+/**
+ * 7. Komoditas & Nilai Margin Tertinggi (DAX 5.2)
+ * DAX: MAXX(TOPN(1, SUMMARIZE(..., "margin", [Margin_Harga]), [margin], DESC), [nama_komoditas])
+ */
+export function calculateKomoditasMarginTertinggi(priceMatrix = []) {
+  if (!priceMatrix || priceMatrix.length === 0) return { komoditas: 'Bawang Merah', marginRp: 0, marginPct: 0 };
+  const sorted = [...priceMatrix].sort((a, b) => b.avgMarginPct - a.avgMarginPct);
+  return {
+    komoditas: sorted[0]?.komoditas || 'Bawang Merah',
+    marginRp: sorted[0]?.avgMarginRp || 0,
+    marginPct: sorted[0]?.avgMarginPct || 0
+  };
+}
+
+/**
+ * 8. Volatilitas Harga Jual (DAX 5.3)
+ * DAX: DIVIDE(MaxH - MinH, AvgHarga, 0) * 100
+ */
+export function calculateVolatilitasHargaJual(historicalTrends = []) {
+  const validPrices = historicalTrends.map(t => t.hargaJual).filter(p => p > 0);
+  if (validPrices.length === 0) return 0;
+  const maxH = Math.max(...validPrices);
+  const minH = Math.min(...validPrices);
+  const avgH = validPrices.reduce((a, b) => a + b, 0) / validPrices.length;
+  if (avgH === 0) return 0;
+  return Number((((maxH - minH) / avgH) * 100).toFixed(1));
 }
