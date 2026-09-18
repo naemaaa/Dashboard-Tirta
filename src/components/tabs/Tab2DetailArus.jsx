@@ -141,8 +141,8 @@ export function Tab2DetailArus() {
                 className="w-full bg-slate-50 border border-slate-200 text-slate-800 text-xs rounded-lg px-2 py-1.5 outline-none font-medium cursor-pointer"
               >
                 <option value="Semua">All</option>
-                <option value="Pedagang Besar">Pedagang & Grosir</option>
-                <option value="Produsen">Produsen & Gapoktan</option>
+                <option value="Pedagang Besar">Pedagang Besar</option>
+                <option value="Produsen">Produsen</option>
               </select>
             </div>
           </div>

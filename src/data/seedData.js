@@ -51,7 +51,7 @@ export const REF_SATUAN = [
 
 export const REF_KLASTER_RESPONDEN = [
   { id: 'semua', label: 'All' },
-  { id: 'pedagang_besar', label: 'Pedagang & Grosir' },
+  { id: 'pedagang_besar', label: 'Pedagang Besar' },
   { id: 'produsen', label: 'Produsen' },
 ];
 
@@ -298,7 +298,7 @@ export function generateMasterDataset() {
     raw_respondents.push({
       id_responden: r.id,
       nama_responden: r.nama,
-      tipe_responden: r.tipe === 'pedagang_besar' ? 'Pedagang & Grosir' : 'Produsen & Gapoktan',
+      tipe_responden: r.tipe === 'pedagang_besar' ? 'Pedagang Besar' : 'Produsen',
       kabupaten: r.kab,
       komoditas_utama: REF_KOMODITAS[idx % REF_KOMODITAS.length].nama_komoditas,
       status_laporan: idx % 8 === 0 ? 'Tertunda Review' : 'Terverifikasi Lengkap',
