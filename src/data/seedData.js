@@ -9,6 +9,27 @@ export const REF_WILAYAH = [
   { id_kab_kota: '3403', nama_kab_kota: 'Kab. Gunungkidul', label: 'Gunungkidul', latitude: -7.962222, longitude: 110.603333 },
 ];
 
+// Complete Geospatial Reference Coordinates (DIY + Sentra Luar DIY)
+export const GEO_NODES = {
+  // Wilayah Internal DIY
+  'Kota Yogyakarta': { id: '3471', name: 'Kota Yogyakarta', lat: -7.797068, lng: 110.370529, type: 'diy_hub', label: 'Kota Yogyakarta' },
+  'Kab. Sleman': { id: '3404', name: 'Kab. Sleman', lat: -7.716389, lng: 110.355556, type: 'diy_regency', label: 'Sleman' },
+  'Kab. Bantul': { id: '3402', name: 'Kab. Bantul', lat: -7.893889, lng: 110.334167, type: 'diy_regency', label: 'Bantul' },
+  'Kab. Kulon Progo': { id: '3401', name: 'Kab. Kulon Progo', lat: -7.828889, lng: 110.158056, type: 'diy_regency', label: 'Kulon Progo' },
+  'Kab. Gunungkidul': { id: '3403', name: 'Kab. Gunungkidul', lat: -7.962222, lng: 110.603333, type: 'diy_regency', label: 'Gunungkidul' },
+  'Lainnya (DIY)': { id: 'DIY_OTHER', name: 'Lainnya (DIY)', lat: -7.840000, lng: 110.420000, type: 'diy_internal', label: 'Lainnya DIY' },
+  'Lokal DIY (Internal)': { id: 'DIY_LOCAL', name: 'Lokal DIY (Internal)', lat: -7.760000, lng: 110.260000, type: 'diy_internal', label: 'Lokal DIY' },
+
+  // Sentra Produksi & Pemasok Luar DIY
+  'Kab. Brebes (Jateng)': { id: 'EXT_BREBES', name: 'Kab. Brebes (Jateng)', lat: -6.9700, lng: 109.0400, type: 'external_sentra', sentra: 'Bawang Merah', label: 'Brebes' },
+  'Kab. Blitar (Jatim)': { id: 'EXT_BLITAR', name: 'Kab. Blitar (Jatim)', lat: -8.0983, lng: 112.1681, type: 'external_sentra', sentra: 'Telur & Unggas', label: 'Blitar' },
+  'Klaten (Jateng)': { id: 'EXT_KLATEN', name: 'Klaten (Jateng)', lat: -7.7058, lng: 110.6067, type: 'external_sentra', sentra: 'Beras & Pangan', label: 'Klaten' },
+  'Solo/Sukoharjo (Jateng)': { id: 'EXT_SOLO', name: 'Solo/Sukoharjo (Jateng)', lat: -7.5755, lng: 110.8243, type: 'external_sentra', sentra: 'Grosir & Pedagang Besar', label: 'Solo' },
+  'Magelang (Jateng)': { id: 'EXT_MAGELANG', name: 'Magelang (Jateng)', lat: -7.4705, lng: 110.2178, type: 'external_sentra', sentra: 'Hortikultura & Cabai', label: 'Magelang' },
+  'Purworejo (Jateng)': { id: 'EXT_PURWOREJO', name: 'Purworejo (Jateng)', lat: -7.7126, lng: 110.0089, type: 'external_sentra', sentra: 'Beras Sentra Kulon', label: 'Purworejo' },
+  'Luar DIY Lainnya': { id: 'EXT_OTHER', name: 'Luar DIY Lainnya', lat: -7.1500, lng: 110.4000, type: 'external_hub', sentra: 'Distributor Nasional', label: 'Hub Nasional' }
+};
+
 export const REF_KOMODITAS = [
   { id_komoditas: 'KOM_01', nama_komoditas: 'Beras Medium I (Ton)', nama_singkat: 'Beras Medium I', kelompok: 'Beras & Padi-padian', satuan_dasar: 'Ton', target_harga: 13500 },
   { id_komoditas: 'KOM_02', nama_komoditas: 'Beras Medium II (Ton)', nama_singkat: 'Beras Medium II', kelompok: 'Beras & Padi-padian', satuan_dasar: 'Ton', target_harga: 13000 },
@@ -63,17 +84,17 @@ export const REF_KLASTER_RESPONDEN = [
 // Helper to generate comprehensive master dataset
 export function generateMasterDataset() {
   const respondents = [
-    { id: '5c95bc16-b38e-4012-9703-18ed0f7aca76', nama: 'Bolodewo Parming', kab: 'Kab. Bantul', tipe: 'pedagang_besar' },
-    { id: 'f19eeab3-daac-410f-991b-d66df10b44f0', nama: 'Grosir Beras Umi', kab: 'Kota Yogyakarta', tipe: 'pedagang_besar' },
-    { id: '14b7b964-fa32-4eee-a42c-c67bbcdcc9cb', nama: 'Larasati Pangan', kab: 'Kab. Sleman', tipe: 'pedagang_besar' },
-    { id: '6e1a51a3-3aae-493a-94cc-490fcad42317', nama: 'PB Beras Gajah Mungkur', kab: 'Kab. Sleman', tipe: 'pedagang_besar' },
-    { id: 'e4679dc7-f11d-4973-8255-399b6e9ecc90', nama: 'Sumber Waras 3', kab: 'Kab. Kulon Progo', tipe: 'pedagang_besar' },
-    { id: '78a509c9-c006-483e-b477-9c955810a196', nama: 'Toko Menik Beras', kab: 'Kab. Gunungkidul', tipe: 'pedagang_besar' },
-    { id: '1a087af6-3745-4462-a894-bc0f759de753', nama: 'Tukino Mandiri', kab: 'Kab. Bantul', tipe: 'produsen' },
-    { id: '5f1d4366-568f-4f80-bd6c-e367a9b0c164', nama: 'UD Sri Rahayu', kab: 'Kota Yogyakarta', tipe: 'pedagang_besar' },
-    { id: '543b5b22-23b8-4ad2-87e8-8997042826dd', nama: 'UD Suryanta Pangan', kab: 'Kab. Sleman', tipe: 'pedagang_besar' },
-    { id: 'ac973e76-f05e-47fd-9b28-0da53f4bfd69', nama: 'Wulan Wijayatri', kab: 'Kab. Kulon Progo', tipe: 'produsen' },
-    { id: 'b497a490-ac5f-4192-8e67-1a37961e19f1', nama: 'Gapoktan Sedyo Rukun', kab: 'Kab. Gunungkidul', tipe: 'produsen' },
+    { id: '5c95bc16-b38e-4012-9703-18ed0f7aca76', nama: 'Bolodewo Parming', kab: 'Kab. Bantul', tipe: 'pedagang_besar', lat: -7.8850, lng: 110.3400, alamat: 'Jl. Bantul Km 7, Sewon, Bantul', kapasitas_gudang: '120 Ton' },
+    { id: 'f19eeab3-daac-410f-991b-d66df10b44f0', nama: 'Grosir Beras Umi', kab: 'Kota Yogyakarta', tipe: 'pedagang_besar', lat: -7.7980, lng: 110.3650, alamat: 'Pasar Beringharjo Lt. 1, Yogyakarta', kapasitas_gudang: '80 Ton' },
+    { id: '14b7b964-fa32-4eee-a42c-c67bbcdcc9cb', nama: 'Larasati Pangan', kab: 'Kab. Sleman', tipe: 'pedagang_besar', lat: -7.7120, lng: 110.3600, alamat: 'Jl. Magelang Km 10, Mlati, Sleman', kapasitas_gudang: '150 Ton' },
+    { id: '6e1a51a3-3aae-493a-94cc-490fcad42317', nama: 'PB Beras Gajah Mungkur', kab: 'Kab. Sleman', tipe: 'pedagang_besar', lat: -7.6950, lng: 110.3800, alamat: 'Jl. Kaliurang Km 12, Ngaglik, Sleman', kapasitas_gudang: '200 Ton' },
+    { id: 'e4679dc7-f11d-4973-8255-399b6e9ecc90', nama: 'Sumber Waras 3', kab: 'Kab. Kulon Progo', tipe: 'pedagang_besar', lat: -7.8500, lng: 110.1600, alamat: 'Wates Kota, Kulon Progo', kapasitas_gudang: '90 Ton' },
+    { id: '78a509c9-c006-483e-b477-9c955810a196', nama: 'Toko Menik Beras', kab: 'Kab. Gunungkidul', tipe: 'pedagang_besar', lat: -7.9600, lng: 110.6100, alamat: 'Pasar Argosari, Wonosari, Gunungkidul', kapasitas_gudang: '70 Ton' },
+    { id: '1a087af6-3745-4462-a894-bc0f759de753', nama: 'Tukino Mandiri', kab: 'Kab. Bantul', tipe: 'produsen', lat: -7.9200, lng: 110.3100, alamat: 'Sentra Penggilingan Pandak, Bantul', kapasitas_gudang: '60 Ton' },
+    { id: '5f1d4366-568f-4f80-bd6c-e367a9b0c164', nama: 'UD Sri Rahayu', kab: 'Kota Yogyakarta', tipe: 'pedagang_besar', lat: -7.8050, lng: 110.3800, alamat: 'Jl. Kusumanegara, Umbulharjo, Yogyakarta', kapasitas_gudang: '110 Ton' },
+    { id: '543b5b22-23b8-4ad2-87e8-8997042826dd', nama: 'UD Suryanta Pangan', kab: 'Kab. Sleman', tipe: 'pedagang_besar', lat: -7.7350, lng: 110.3400, alamat: 'Pasar Gamping, Ambarketawang, Sleman', kapasitas_gudang: '180 Ton' },
+    { id: 'ac973e76-f05e-47fd-9b28-0da53f4bfd69', nama: 'Wulan Wijayatri', kab: 'Kab. Kulon Progo', tipe: 'produsen', lat: -7.8100, lng: 110.1800, alamat: 'Sentra Pertanian Nanggulan, Kulon Progo', kapasitas_gudang: '50 Ton' },
+    { id: 'b497a490-ac5f-4192-8e67-1a37961e19f1', nama: 'Gapoktan Sedyo Rukun', kab: 'Kab. Gunungkidul', tipe: 'produsen', lat: -7.9800, lng: 110.5800, alamat: 'Semanu, Gunungkidul', kapasitas_gudang: '75 Ton' },
   ];
 
   const daerahAsalList = [
@@ -308,6 +329,10 @@ export function generateMasterDataset() {
       komoditas_utama: REF_KOMODITAS[idx % REF_KOMODITAS.length].nama_komoditas,
       status_laporan: idx % 8 === 0 ? 'Tertunda Review' : 'Terverifikasi Lengkap',
       volume_mingguan: (Math.random() * 40 + 20).toFixed(1) + ' Ton',
+      latitude: r.lat,
+      longitude: r.lng,
+      alamat: r.alamat,
+      kapasitas_gudang: r.kapasitas_gudang,
       terakhir_update: '19 Sep 2026 20:00'
     });
   });

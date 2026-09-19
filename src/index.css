@@ -66,3 +66,13 @@ select {
   -moz-appearance: none;
   appearance: none;
 }
+
+@keyframes flowDash {
+  to {
+    stroke-dashoffset: -60;
+  }
+}
+
+.animate-flow-dash {
+  animation: flowDash 2.2s linear infinite;
+}

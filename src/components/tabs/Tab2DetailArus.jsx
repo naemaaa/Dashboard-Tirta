@@ -1,11 +1,9 @@
-// Tab 2: Detail Masuk vs Keluar
-// Bank Indonesia KPw DIY · PSEKUIN UPN Veteran Yogyakarta
-
 import React, { useState, useMemo } from 'react';
 import { useCalculations } from '../../hooks/useCalculations';
 import { useDashboardStore } from '../../store/useDashboardStore';
 import { REF_KOMODITAS, REF_WILAYAH, REF_KALENDER } from '../../data/seedData';
 import { ExecutiveIntelligenceBox } from '../executive/ExecutiveIntelligenceBox';
+import { FoodFlowMap } from '../maps/FoodFlowMap';
 import {
   ResponsiveContainer,
   BarChart,
@@ -25,12 +23,15 @@ import {
   Search,
   ChevronLeft,
   ChevronRight,
-  SlidersHorizontal
+  SlidersHorizontal,
+  Navigation,
+  TableProperties
 } from 'lucide-react';
 
 export function Tab2DetailArus() {
   const calculations = useCalculations();
   const {
+    data,
     selectedPeriode,
     setSelectedPeriode,
     tab2Komoditas,
@@ -38,6 +39,8 @@ export function Tab2DetailArus() {
     tab2Responden,
     setTab2Filters,
   } = useDashboardStore();
+
+  const [activeViewTab, setActiveViewTab] = useState('map'); // 'map' vs 'matrix'
 
   const {
     currentMetrics,
@@ -210,236 +213,271 @@ export function Tab2DetailArus() {
         {/* Executive Intelligence Insight Box */}
         <ExecutiveIntelligenceBox tabId="tab2" title="Executive Intelligence · Analisis Detail Pasokan & Simpul Wilayah" />
 
-        {/* Middle Row: Grouped Supply Chain Table & Butterfly Chart */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-3 items-stretch">
-          
-          {/* Left: Arus Masuk, Keluar, dan Selisih Table */}
-          <div className="clean-card p-4 lg:col-span-7 bg-white flex flex-col justify-between">
-            <div>
-              <div className="flex items-center justify-between mb-2">
-                <h3 className="text-xs font-bold text-slate-800 uppercase tracking-wider">
-                  Arus Masuk, Keluar, & Selisih per Komoditas × Kab/Kota
-                </h3>
-                <span className="text-[10px] text-slate-400">Ton</span>
-              </div>
-              <div className="overflow-x-auto border border-slate-200/80 rounded-lg max-h-60">
-                <table className="w-full text-xs text-left">
-                  <thead className="bg-slate-50 text-slate-700 text-[10px] font-semibold sticky top-0">
-                    <tr className="border-b border-slate-200">
-                      <th rowSpan="2" className="px-2.5 py-1.5 border-r border-slate-200 bg-slate-50">Komoditas</th>
-                      {REF_WILAYAH.map(w => (
-                        <th key={w.id_kab_kota} colSpan="3" className="px-1.5 py-1 text-center border-r border-slate-200">{w.nama_kab_kota.replace('Kab. ', '')}</th>
-                      ))}
-                    </tr>
-                    <tr className="border-b border-slate-200 bg-slate-50/70 text-[9px] text-slate-500">
-                      {REF_WILAYAH.map(w => (
-                        <React.Fragment key={`sub-${w.id_kab_kota}`}>
-                          <th className="px-1 py-0.5 text-right">Masuk</th>
-                          <th className="px-1 py-0.5 text-right">Keluar</th>
-                          <th className="px-1 py-0.5 text-right font-bold border-r border-slate-200">Selisih</th>
-                        </React.Fragment>
-                      ))}
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-slate-100 bg-white text-[10px]">
-                    {tab2GroupedMatrix.map(row => (
-                      <tr key={row.id_komoditas} className="hover:bg-slate-50 transition-colors">
-                        <td className="px-2.5 py-1 font-medium text-slate-800 whitespace-nowrap border-r border-slate-100">{row.komoditas.replace(' (Ton)', '')}</td>
-                        {REF_WILAYAH.map(w => {
-                          const c = row.wilayahData[w.nama_kab_kota] || { masuk: 0, keluar: 0, selisih: 0 };
-                          return (
-                            <React.Fragment key={`c-${w.id_kab_kota}`}>
-                              <td className="px-1 py-1 text-right font-mono text-slate-500">{c.masuk || '-'}</td>
-                              <td className="px-1 py-1 text-right font-mono text-slate-500">{c.keluar || '-'}</td>
-                              <td className={`px-1 py-1 text-right font-mono border-r border-slate-100 ${c.selisih > 0 ? 'text-emerald-700 font-bold' : c.selisih < 0 ? 'text-rose-600 font-bold' : 'text-slate-400'}`}>
-                                {c.selisih > 0 ? c.selisih : c.selisih < 0 ? `(${Math.abs(c.selisih)})` : '-'}
-                              </td>
-                            </React.Fragment>
-                          );
-                        })}
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            </div>
-            <div className="text-[10px] text-slate-400 text-right mt-1 pt-1 border-t border-slate-100">Nilai dalam satuan Ton</div>
-          </div>
-
-          {/* Right: Butterfly Chart */}
-          <div className="clean-card p-4 lg:col-span-5 bg-white flex flex-col justify-between">
-            <div>
-              <div className="flex items-center justify-between mb-2">
-                <h3 className="text-xs font-bold text-slate-800 uppercase tracking-wider">
-                  Arus Masuk vs Keluar (Komoditas)
-                </h3>
-                <span className="text-[10px] font-semibold text-slate-500 bg-slate-100 px-2 py-0.5 rounded">Butterfly</span>
-              </div>
-              <div className="space-y-1.5 mt-2 max-h-60 overflow-y-auto pr-1">
-                {butterflyData.map((item) => {
-                  const maxVol = Math.max(...butterflyData.map(b => Math.max(b.volMasuk, b.volKeluar))) || 1;
-                  const leftPct = (item.volKeluar / maxVol) * 100;
-                  const rightPct = (item.volMasuk / maxVol) * 100;
-
-                  return (
-                    <div key={item.id_komoditas} className="grid grid-cols-12 items-center gap-1.5 text-xs py-0.5">
-                      <div className="col-span-4 text-slate-700 text-[10px] truncate font-medium">{item.komoditas}</div>
-                      <div className="col-span-8 flex items-center h-4.5">
-                        <div className="flex-1 flex items-center justify-end">
-                          <div className="bg-orange-600 h-4 rounded-l flex items-center justify-end px-1.5 shadow-2xs" style={{ width: `${Math.max(12, leftPct)}%` }}>
-                            <span className="text-[9px] font-bold text-white">{item.volKeluar}</span>
-                          </div>
-                        </div>
-                        <div className="w-0.5 h-4.5 bg-slate-300"></div>
-                        <div className="flex-1 flex items-center justify-start">
-                          <div className="bg-blue-600 h-4 rounded-r flex items-center justify-start px-1.5 shadow-2xs" style={{ width: `${Math.max(12, rightPct)}%` }}>
-                            <span className="text-[9px] font-bold text-white">{item.volMasuk}</span>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
-            <div className="flex justify-between text-[10px] font-medium text-slate-600 pt-2 border-t border-slate-100 mt-2">
-              <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-orange-600"></span> Volume Keluar</span>
-              <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-blue-600"></span> Volume Masuk</span>
+        {/* View Switcher: Geospatial Map vs Matrix & Tables */}
+        <div className="flex items-center justify-between bg-white p-2.5 rounded-xl border border-slate-200/80 shadow-2xs">
+          <div className="flex items-center gap-2">
+            <span className="text-xs font-bold text-slate-700 uppercase tracking-wider ml-1 hidden sm:inline">Mode Analisis:</span>
+            <div className="inline-flex bg-slate-100 p-0.5 rounded-lg border border-slate-200">
+              <button
+                onClick={() => setActiveViewTab('map')}
+                className={`px-3 py-1.5 text-xs font-bold rounded-md transition-all flex items-center gap-1.5 cursor-pointer ${
+                  activeViewTab === 'map'
+                    ? 'bg-slate-900 text-white shadow-xs'
+                    : 'text-slate-600 hover:text-slate-900'
+                }`}
+              >
+                <Navigation className="w-3.5 h-3.5 text-amber-300" />
+                <span>Peta Spasial Aliran Pangan (From-To & Responden)</span>
+              </button>
+              <button
+                onClick={() => setActiveViewTab('matrix')}
+                className={`px-3 py-1.5 text-xs font-bold rounded-md transition-all flex items-center gap-1.5 cursor-pointer ${
+                  activeViewTab === 'matrix'
+                    ? 'bg-slate-900 text-white shadow-xs'
+                    : 'text-slate-600 hover:text-slate-900'
+                }`}
+              >
+                <TableProperties className="w-3.5 h-3.5 text-blue-400" />
+                <span>Matriks Neraca & Rantai Pasok Tabel</span>
+              </button>
             </div>
           </div>
 
+          <div className="text-[11px] text-slate-500 font-medium hidden md:block">
+            {activeViewTab === 'map' ? 'Mode: Peta Vektor Geografis Berarah' : 'Mode: Tabel Rantai Pasok Teragregasi'}
+          </div>
         </div>
 
-        {/* Bottom Row: Kontribusi Selisih | Analisis Selisih Decomposition | Detail Responden Table */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-3 items-stretch">
-          
-          {/* Panel 1: Kontribusi Selisih Arus (Ton) */}
-          <div className="clean-card p-4 lg:col-span-4 bg-white flex flex-col justify-between">
-            <div>
-              <div className="flex items-center justify-between mb-1">
-                <h3 className="text-xs font-bold text-slate-800 uppercase tracking-wider">
-                  Kontribusi Selisih Arus (Ton)
-                </h3>
-                <span className="text-[10px] text-slate-400">Netto</span>
-              </div>
-              <div className="h-44 mt-2">
-                <ResponsiveContainer width="100%" height="100%">
-                  <BarChart data={selisihData} margin={{ top: 5, right: 10, left: -20, bottom: 35 }}>
-                    <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" vertical={false} />
-                    <XAxis dataKey="name" angle={-35} textAnchor="end" tick={{ fontSize: 8, fill: '#64748b' }} interval={0} axisLine={false} tickLine={false} />
-                    <YAxis tick={{ fontSize: 9, fill: '#64748b' }} axisLine={false} tickLine={false} />
-                    <Tooltip
-                      contentStyle={{ backgroundColor: '#0f172a', borderRadius: '6px', border: 'none', color: '#fff', fontSize: '10px' }}
-                      formatter={(val) => [`${val > 0 ? '+' : ''}${val} Ton`, 'Selisih']}
-                    />
-                    <Bar dataKey="selisih" radius={[3, 3, 0, 0]}>
-                      {selisihData.map((entry, index) => (
-                        <Cell key={`cell-${index}`} fill={entry.isPositive ? '#059669' : '#e11d48'} />
-                      ))}
-                    </Bar>
-                  </BarChart>
-                </ResponsiveContainer>
-              </div>
-            </div>
-            <div className="text-[10px] text-slate-400 text-center pt-2 border-t border-slate-100">
-              Surplus (Hijau) / Defisit (Merah)
-            </div>
-          </div>
+        {/* ================= VIEW 1: GEOSPATIAL FOOD FLOW MAP ================= */}
+        {activeViewTab === 'map' && (
+          <FoodFlowMap
+            dataset={data}
+            selectedPeriode={selectedPeriode}
+            selectedKomoditas={tab2Komoditas}
+            selectedWilayah={tab2Kabupaten}
+            onSelectWilayah={(wil) => setTab2Filters({ tab2Kabupaten: wil })}
+          />
+        )}
 
-          {/* Panel 2: Analisis Selisih Arus (Decomposition Tree) */}
-          <div className="clean-card p-4 lg:col-span-4 bg-white flex flex-col justify-between">
-            <div>
-              <div className="flex items-center justify-between mb-1">
-                <h3 className="text-xs font-bold text-slate-800 uppercase tracking-wider">
-                  Analisis Selisih Arus (Ton)
-                </h3>
-                <span className="text-[10px] font-semibold text-indigo-700 bg-indigo-50 px-1.5 py-0.5 rounded">Dekomposisi</span>
-              </div>
-              <div className="text-[10px] text-slate-500 mb-2">Aliran Per Wilayah &bull; Komoditas</div>
+        {/* ================= VIEW 2: MATRIKS, BUTTERFLY & DETAIL TABLES ================= */}
+        {activeViewTab === 'matrix' && (
+          <>
+            {/* Middle Row: Grouped Supply Chain Table & Butterfly Chart */}
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-3 items-stretch">
               
-              {/* Decomposition Node Tree Graphic */}
-              <div className="space-y-2 mt-1 text-xs">
-                <div className="p-2 bg-slate-900 text-white rounded-lg font-bold text-center text-[11px] shadow-2xs flex items-center justify-between">
-                  <span>Total Selisih DIY</span>
-                  <span className={currentMetrics.neracaBersih >= 0 ? 'text-emerald-400 font-extrabold' : 'text-rose-400 font-extrabold'}>
-                    {currentMetrics.neracaBersih >= 0 ? '+' : ''}{currentMetrics.neracaBersih.toFixed(0)} Ton
-                  </span>
+              {/* Left: Arus Masuk, Keluar, dan Selisih Table */}
+              <div className="clean-card p-4 lg:col-span-7 bg-white flex flex-col justify-between">
+                <div>
+                  <div className="flex items-center justify-between mb-2">
+                    <h3 className="text-xs font-bold text-slate-800 uppercase tracking-wider">
+                      Arus Masuk, Keluar, & Selisih per Komoditas × Kab/Kota
+                    </h3>
+                    <span className="text-[10px] text-slate-400">Ton</span>
+                  </div>
+                  <div className="overflow-x-auto border border-slate-200/80 rounded-lg max-h-60">
+                    <table className="w-full text-xs text-left">
+                      <thead className="bg-slate-50 text-slate-700 text-[10px] font-semibold sticky top-0">
+                        <tr className="border-b border-slate-200">
+                          <th rowSpan="2" className="px-2.5 py-1.5 border-r border-slate-200 bg-slate-50">Komoditas</th>
+                          {REF_WILAYAH.map(w => (
+                            <th key={w.id_kab_kota} colSpan="3" className="px-1.5 py-1 text-center border-r border-slate-200">{w.nama_kab_kota.replace('Kab. ', '')}</th>
+                          ))}
+                        </tr>
+                        <tr className="border-b border-slate-200 bg-slate-50/70 text-[9px] text-slate-500">
+                          {REF_WILAYAH.map(w => (
+                            <React.Fragment key={`sub-${w.id_kab_kota}`}>
+                              <th className="px-1 py-0.5 text-right">Masuk</th>
+                              <th className="px-1 py-0.5 text-right">Keluar</th>
+                              <th className="px-1 py-0.5 text-right font-bold border-r border-slate-200">Selisih</th>
+                            </React.Fragment>
+                          ))}
+                        </tr>
+                      </thead>
+                      <tbody className="divide-y divide-slate-100 bg-white text-[10px]">
+                        {tab2GroupedMatrix.map(row => (
+                          <tr key={row.id_komoditas} className="hover:bg-slate-50 transition-colors">
+                            <td className="px-2.5 py-1 font-medium text-slate-800 whitespace-nowrap border-r border-slate-100">{row.komoditas.replace(' (Ton)', '')}</td>
+                            {REF_WILAYAH.map(w => {
+                              const c = row.wilayahData[w.nama_kab_kota] || { masuk: 0, keluar: 0, selisih: 0 };
+                              return (
+                                <React.Fragment key={`c-${w.id_kab_kota}`}>
+                                  <td className="px-1 py-1 text-right font-mono text-slate-500">{c.masuk || '-'}</td>
+                                  <td className="px-1 py-1 text-right font-mono text-slate-500">{c.keluar || '-'}</td>
+                                  <td className={`px-1 py-1 text-right font-mono border-r border-slate-100 ${c.selisih > 0 ? 'text-emerald-700 font-bold' : c.selisih < 0 ? 'text-rose-600 font-bold' : 'text-slate-400'}`}>
+                                    {c.selisih > 0 ? c.selisih : c.selisih < 0 ? `(${Math.abs(c.selisih)})` : '-'}
+                                  </td>
+                                </React.Fragment>
+                              );
+                            })}
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
                 </div>
+                <div className="text-[10px] text-slate-400 text-center pt-2 border-t border-slate-100">
+                  Data volume masuk, keluar dan selisih bersih agregat
+                </div>
+              </div>
 
-                <div className="pl-3 border-l-2 border-indigo-200 space-y-1.5">
-                  {tab2Decomposition.slice(0, 4).map((d, i) => (
-                    <div key={i} className="flex items-center justify-between text-[10px]">
-                      <span className="text-slate-700 font-medium truncate max-w-[100px]">{d.wilayah.replace('Kab. ', '')}</span>
-                      <div className="flex items-center gap-1.5">
-                        <div className="w-16 bg-slate-100 rounded-full h-2 overflow-hidden">
-                          <div className={`h-2 rounded-full ${d.isPositive ? 'bg-emerald-600' : 'bg-rose-500'}`} style={{ width: `${Math.min(100, Math.abs(d.selisih) * 8)}%` }}></div>
-                        </div>
-                        <span className={`font-mono font-bold w-7 text-right ${d.isPositive ? 'text-emerald-700' : 'text-rose-600'}`}>{d.selisih}</span>
-                      </div>
+              {/* Right: Butterfly Chart */}
+              <div className="clean-card p-4 lg:col-span-5 bg-white flex flex-col justify-between">
+                <div>
+                  <div className="flex items-center justify-between mb-2">
+                    <h3 className="text-xs font-bold text-slate-800 uppercase tracking-wider">
+                      Arus Masuk vs Keluar ({selectedPeriode})
+                    </h3>
+                    <div className="flex items-center gap-2 text-[10px]">
+                      <span className="flex items-center gap-1 text-blue-700 font-semibold"><span className="w-2 h-2 rounded bg-blue-700"></span>Masuk</span>
+                      <span className="flex items-center gap-1 text-orange-600 font-semibold"><span className="w-2 h-2 rounded bg-orange-600"></span>Keluar</span>
                     </div>
-                  ))}
+                  </div>
+
+                  <div className="h-60">
+                    <ResponsiveContainer width="100%" height="100%">
+                      <BarChart
+                        layout="vertical"
+                        data={butterflyData.slice(0, 7)}
+                        stackOffset="sign"
+                        margin={{ top: 5, right: 10, left: 40, bottom: 5 }}
+                      >
+                        <CartesianGrid strokeDasharray="3 3" horizontal={false} stroke="#E2E8F0" />
+                        <XAxis type="number" tick={{ fontSize: 9 }} tickFormatter={(val) => `${Math.abs(val)}`} />
+                        <YAxis type="category" dataKey="komoditas" tick={{ fontSize: 9 }} width={65} />
+                        <Tooltip
+                          formatter={(value, name) => [`${Math.abs(value).toLocaleString('id-ID')} Ton`, name === 'volKeluar' ? 'Keluar' : 'Masuk']}
+                          labelStyle={{ fontSize: '11px', fontWeight: 'bold' }}
+                        />
+                        <Bar dataKey="volMasuk" fill="#1D4ED8" radius={[0, 4, 4, 0]} name="volMasuk" />
+                        <Bar dataKey={(entry) => -entry.volKeluar} fill="#EA580C" radius={[4, 0, 0, 4]} name="volKeluar" />
+                      </BarChart>
+                    </ResponsiveContainer>
+                  </div>
+                </div>
+                <div className="text-[10px] text-slate-400 text-center pt-2 border-t border-slate-100">
+                  Perbandingan simetris volume masuk (kanan) vs keluar (kiri)
                 </div>
               </div>
-            </div>
-            <div className="text-[10px] text-slate-400 text-center pt-2 border-t border-slate-100">
-              Pohon dekomposisi rantai pasok wilayah
-            </div>
-          </div>
 
-          {/* Panel 3: Detail Responden Table */}
-          <div className="clean-card p-4 lg:col-span-4 bg-white flex flex-col justify-between">
-            <div>
-              <div className="flex items-center justify-between mb-2">
-                <h3 className="text-xs font-bold text-slate-800 uppercase tracking-wider">Detail Responden</h3>
-                <div className="relative w-28">
-                  <Search className="w-3 h-3 text-slate-400 absolute left-1.5 top-1/2 -translate-y-1/2" />
-                  <input
-                    type="text"
-                    placeholder="Cari..."
-                    value={searchTerm}
-                    onChange={(e) => { setSearchTerm(e.target.value); setCurrentPage(1); }}
-                    className="w-full pl-5 pr-1.5 py-0.5 text-[10px] bg-slate-50 border border-slate-200 rounded-md outline-none focus:border-blue-500"
-                  />
+            </div>
+
+            {/* Bottom Row: 3 Panels */}
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-3 items-stretch">
+              
+              {/* Panel 1: Selisih Komoditas Chart */}
+              <div className="clean-card p-4 lg:col-span-4 bg-white flex flex-col justify-between">
+                <div>
+                  <h3 className="text-xs font-bold text-slate-800 uppercase tracking-wider mb-2">Selisih Komoditas (Net)</h3>
+                  <div className="h-44">
+                    <ResponsiveContainer width="100%" height="100%">
+                      <BarChart data={selisihData.slice(0, 6)} layout="vertical" margin={{ top: 0, right: 15, left: 35, bottom: 0 }}>
+                        <CartesianGrid strokeDasharray="3 3" stroke="#F1F5F9" />
+                        <XAxis type="number" tick={{ fontSize: 9 }} />
+                        <YAxis type="category" dataKey="name" tick={{ fontSize: 9 }} width={55} />
+                        <Tooltip formatter={(val) => [`${val.toLocaleString('id-ID')} Ton`, 'Selisih']} />
+                        <Bar dataKey="selisih" radius={[0, 4, 4, 0]}>
+                          {selisihData.map((entry, index) => (
+                            <Cell key={`cell-${index}`} fill={entry.isPositive ? '#059669' : '#E11D48'} />
+                          ))}
+                        </Bar>
+                      </BarChart>
+                    </ResponsiveContainer>
+                  </div>
+                </div>
+                <div className="text-[10px] text-slate-400 text-center pt-2 border-t border-slate-100">
+                  Hijau: Surplus (Masuk &gt; Keluar) &bull; Merah: Defisit
                 </div>
               </div>
 
-              <div className="overflow-x-auto border border-slate-200/80 rounded-lg max-h-40">
-                <table className="w-full text-[10px] text-left">
-                  <thead className="bg-slate-50 text-slate-700 font-semibold sticky top-0">
-                    <tr className="border-b border-slate-200">
-                      <th className="px-2 py-1">Nama Responden</th>
-                      <th className="px-1.5 py-1">id_responden</th>
-                      <th className="px-1.5 py-1">Tipe</th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-slate-100 bg-white">
-                    {paginatedRespondents.map((resp) => (
-                      <tr key={resp.id_responden} className="hover:bg-slate-50 transition-colors">
-                        <td className="px-2 py-1 font-medium text-slate-900 truncate max-w-[100px]">{resp.nama_responden}</td>
-                        <td className="px-1.5 py-1 font-mono text-slate-400 text-[9px] truncate max-w-[80px]">{resp.id_responden}</td>
-                        <td className="px-1.5 py-1 text-slate-600 truncate max-w-[70px]">{resp.tipe_responden}</td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            </div>
+              {/* Panel 2: Decomposition Tree Mock */}
+              <div className="clean-card p-4 lg:col-span-4 bg-white flex flex-col justify-between">
+                <div>
+                  <h3 className="text-xs font-bold text-slate-800 uppercase tracking-wider mb-2">
+                    Dekomposisi Wilayah: {tab2Komoditas.replace(' (Ton)', '')}
+                  </h3>
+                  
+                  <div className="border border-slate-200/80 rounded-lg p-2.5 bg-slate-50/50">
+                    <div className="flex items-center justify-between text-xs font-bold text-slate-900 border-b border-slate-200 pb-1.5 mb-2">
+                      <span>Total DIY ({tab2Komoditas.replace(' (Ton)', '')})</span>
+                      <span className="font-mono text-emerald-700">
+                        {tab2Decomposition.reduce((s, d) => s + d.selisih, 0).toFixed(1)} Ton
+                      </span>
+                    </div>
 
-            <div className="flex items-center justify-between mt-2 pt-2 border-t border-slate-100 text-[9px] text-slate-500">
-              <span>{filteredRespondents.length} responden</span>
-              <div className="flex items-center gap-1">
-                <button onClick={() => setCurrentPage(p => Math.max(1, p - 1))} disabled={currentPage === 1} className="p-0.5 border border-slate-200 rounded disabled:opacity-30 hover:bg-slate-100 cursor-pointer">
-                  <ChevronLeft className="w-3 h-3" />
-                </button>
-                <span className="font-mono">{currentPage}/{totalPages}</span>
-                <button onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))} disabled={currentPage === totalPages} className="p-0.5 border border-slate-200 rounded disabled:opacity-30 hover:bg-slate-100 cursor-pointer">
-                  <ChevronRight className="w-3 h-3" />
-                </button>
+                    <div className="space-y-1.5">
+                      {tab2Decomposition.map((d) => (
+                        <div key={d.wilayah} className="flex items-center justify-between text-[11px] bg-white p-1.5 rounded border border-slate-200/60">
+                          <span className="text-slate-700 font-medium">&bull; {d.wilayah}</span>
+                          <div className="flex items-center gap-2">
+                            <span className="text-slate-400 text-[9px]">M: {d.masuk} | K: {d.keluar}</span>
+                            <span className={`font-mono font-bold w-7 text-right ${d.isPositive ? 'text-emerald-700' : 'text-rose-600'}`}>{d.selisih}</span>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+                <div className="text-[10px] text-slate-400 text-center pt-2 border-t border-slate-100">
+                  Pohon dekomposisi rantai pasok wilayah
+                </div>
               </div>
-            </div>
-          </div>
 
-        </div>
+              {/* Panel 3: Detail Responden Table */}
+              <div className="clean-card p-4 lg:col-span-4 bg-white flex flex-col justify-between">
+                <div>
+                  <div className="flex items-center justify-between mb-2">
+                    <h3 className="text-xs font-bold text-slate-800 uppercase tracking-wider">Detail Responden</h3>
+                    <div className="relative w-28">
+                      <Search className="w-3 h-3 text-slate-400 absolute left-1.5 top-1/2 -translate-y-1/2" />
+                      <input
+                        type="text"
+                        placeholder="Cari..."
+                        value={searchTerm}
+                        onChange={(e) => { setSearchTerm(e.target.value); setCurrentPage(1); }}
+                        className="w-full pl-5 pr-1.5 py-0.5 text-[10px] bg-slate-50 border border-slate-200 rounded-md outline-none focus:border-blue-500"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="overflow-x-auto border border-slate-200/80 rounded-lg max-h-40">
+                    <table className="w-full text-[10px] text-left">
+                      <thead className="bg-slate-50 text-slate-700 font-semibold sticky top-0">
+                        <tr className="border-b border-slate-200">
+                          <th className="px-2 py-1">Nama Responden</th>
+                          <th className="px-1.5 py-1">id_responden</th>
+                          <th className="px-1.5 py-1">Tipe</th>
+                        </tr>
+                      </thead>
+                      <tbody className="divide-y divide-slate-100 bg-white">
+                        {paginatedRespondents.map((resp) => (
+                          <tr key={resp.id_responden} className="hover:bg-slate-50 transition-colors">
+                            <td className="px-2 py-1 font-medium text-slate-900 truncate max-w-[100px]">{resp.nama_responden}</td>
+                            <td className="px-1.5 py-1 font-mono text-slate-400 text-[9px] truncate max-w-[80px]">{resp.id_responden}</td>
+                            <td className="px-1.5 py-1 text-slate-600 truncate max-w-[70px]">{resp.tipe_responden}</td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+
+                <div className="flex items-center justify-between mt-2 pt-2 border-t border-slate-100 text-[9px] text-slate-500">
+                  <span>{filteredRespondents.length} responden</span>
+                  <div className="flex items-center gap-1">
+                    <button onClick={() => setCurrentPage(p => Math.max(1, p - 1))} disabled={currentPage === 1} className="p-0.5 border border-slate-200 rounded disabled:opacity-30 hover:bg-slate-100 cursor-pointer">
+                      <ChevronLeft className="w-3 h-3" />
+                    </button>
+                    <span className="font-mono">{currentPage}/{totalPages}</span>
+                    <button onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))} disabled={currentPage === totalPages} className="p-0.5 border border-slate-200 rounded disabled:opacity-30 hover:bg-slate-100 cursor-pointer">
+                      <ChevronRight className="w-3 h-3" />
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          </>
+        )}
 
       </div>
 

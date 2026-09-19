@@ -182,3 +182,154 @@ export function calculateTab2Decomposition(rawRingkasan = [], selectedPeriode, t
     };
   });
 }
+
+/**
+ * 5. Geospatial Origin-Destination Flow Aggregator (Tab 2 From-To Map)
+ */
+import { GEO_NODES } from '../data/seedData';
+
+export function calculateGeospatialFlows(
+  arusMasuk = [],
+  arusKeluar = [],
+  selectedPeriode,
+  selectedKomoditas,
+  selectedWilayah = 'Semua',
+  flowMode = 'all' // 'all', 'inflow', 'outflow'
+) {
+  const routesMap = new Map();
+
+  const matchPeriodeLocal = (p) => !selectedPeriode || selectedPeriode === 'Semua' || p === selectedPeriode;
+  const matchKomLocal = (k) => {
+    if (!selectedKomoditas || selectedKomoditas === 'Semua' || selectedKomoditas === 'All') return true;
+    const n1 = (k || '').toLowerCase().replace(/\s*\(ton\)|\s*\(kg\)/g, '').trim();
+    const n2 = selectedKomoditas.toLowerCase().replace(/\s*\(ton\)|\s*\(kg\)/g, '').trim();
+    return n1 === n2 || k === selectedKomoditas;
+  };
+  const matchWilLocal = (w) => {
+    if (!selectedWilayah || selectedWilayah === 'Semua' || selectedWilayah === 'Semua Wilayah DIY') return true;
+    return (w || '').toLowerCase().includes(selectedWilayah.toLowerCase().replace(/^(kab\.|kota)\s*/g, ''));
+  };
+
+  // 1. Process Arus Masuk (From: daerah_asal -> To: kab_kota DIY)
+  if (flowMode === 'all' || flowMode === 'inflow') {
+    arusMasuk.forEach(row => {
+      if (!matchPeriodeLocal(row.id_periode) || !matchKomLocal(row.komoditas || row.id_komoditas)) return;
+      if (selectedWilayah !== 'Semua' && selectedWilayah !== 'Semua Wilayah DIY' && !matchWilLocal(row.kab_kota)) return;
+
+      const fromName = row.daerah_asal || 'Luar DIY Lainnya';
+      const toName = row.kab_kota || 'Kab. Sleman';
+      const vol = Number(row.volume_ton) || 0;
+      if (vol <= 0) return;
+
+      const fromNode = GEO_NODES[fromName] || GEO_NODES['Luar DIY Lainnya'];
+      const toNode = GEO_NODES[toName] || GEO_NODES['Kab. Sleman'];
+
+      const key = `${fromName}|${toName}|inflow`;
+      if (!routesMap.has(key)) {
+        routesMap.set(key, {
+          id: key,
+          type: 'inflow',
+          from: fromName,
+          to: toName,
+          fromCoords: [fromNode.lng, fromNode.lat],
+          toCoords: [toNode.lng, toNode.lat],
+          fromLabel: fromNode.label || fromName,
+          toLabel: toNode.label || toName,
+          volume: 0,
+          commodity: row.komoditas,
+          isExternal: Boolean(row.luar_diy),
+          partnerType: row.jenis_pemasok || 'Pemasok Pangan'
+        });
+      }
+      routesMap.get(key).volume += vol;
+    });
+  }
+
+  // 2. Process Arus Keluar (From: kab_kota DIY -> To: daerah_tujuan)
+  if (flowMode === 'all' || flowMode === 'outflow') {
+    arusKeluar.forEach(row => {
+      if (!matchPeriodeLocal(row.id_periode) || !matchKomLocal(row.komoditas || row.id_komoditas)) return;
+      if (selectedWilayah !== 'Semua' && selectedWilayah !== 'Semua Wilayah DIY' && !matchWilLocal(row.kab_kota)) return;
+
+      const fromName = row.kab_kota || 'Kab. Sleman';
+      const toName = row.daerah_tujuan || 'Lainnya (DIY)';
+      const vol = Number(row.volume_ton) || 0;
+      if (vol <= 0) return;
+
+      const fromNode = GEO_NODES[fromName] || GEO_NODES['Kab. Sleman'];
+      const toNode = GEO_NODES[toName] || GEO_NODES['Lainnya (DIY)'];
+
+      const key = `${fromName}|${toName}|outflow`;
+      if (!routesMap.has(key)) {
+        routesMap.set(key, {
+          id: key,
+          type: 'outflow',
+          from: fromName,
+          to: toName,
+          fromCoords: [fromNode.lng, fromNode.lat],
+          toCoords: [toNode.lng, toNode.lat],
+          fromLabel: fromNode.label || fromName,
+          toLabel: toNode.label || toName,
+          volume: 0,
+          commodity: row.komoditas,
+          isExternal: Boolean(row.luar_diy || row.keluar_diy),
+          partnerType: row.jenis_pembeli || 'Distribusi Pangan'
+        });
+      }
+      routesMap.get(key).volume += vol;
+    });
+  }
+
+  const routes = Array.from(routesMap.values()).map(r => ({
+    ...r,
+    volume: Number(r.volume.toFixed(2))
+  })).sort((a, b) => b.volume - a.volume);
+
+  const totalFlowVolume = routes.reduce((s, r) => s + r.volume, 0);
+
+  // Aggregate Node Volumes
+  const nodeStats = {};
+  Object.keys(GEO_NODES).forEach(nodeName => {
+    nodeStats[nodeName] = {
+      ...GEO_NODES[nodeName],
+      totalIn: 0,
+      totalOut: 0,
+      activeRoutes: 0
+    };
+  });
+
+  routes.forEach(r => {
+    if (nodeStats[r.from]) {
+      nodeStats[r.from].totalOut += r.volume;
+      nodeStats[r.from].activeRoutes += 1;
+    }
+    if (nodeStats[r.to]) {
+      nodeStats[r.to].totalIn += r.volume;
+      nodeStats[r.to].activeRoutes += 1;
+    }
+  });
+
+  return {
+    routes,
+    totalFlowVolume: Number(totalFlowVolume.toFixed(2)),
+    nodeStats: Object.values(nodeStats).filter(n => n.totalIn > 0 || n.totalOut > 0 || n.type.startsWith('diy'))
+  };
+}
+
+/**
+ * 6. Respondent Pinpoint Location Aggregator (Tab 2 Pinpoint Map)
+ */
+export function calculateRespondentLocations(respondents = [], targetKomoditas, targetKabupaten, tipeResponden = 'Semua') {
+  return respondents.filter(r => {
+    if (targetKabupaten && targetKabupaten !== 'Semua' && targetKabupaten !== 'Semua Wilayah DIY' && r.kabupaten !== targetKabupaten) {
+      return false;
+    }
+    if (tipeResponden === 'Pedagang Besar' && !r.tipe_responden.includes('Pedagang')) return false;
+    if (tipeResponden === 'Produsen' && !r.tipe_responden.includes('Produsen')) return false;
+    return true;
+  }).map(r => ({
+    ...r,
+    lat: r.latitude || (r.kabupaten.includes('Sleman') ? -7.716 : r.kabupaten.includes('Bantul') ? -7.893 : r.kabupaten.includes('Kota') ? -7.797 : -7.828),
+    lng: r.longitude || (r.kabupaten.includes('Sleman') ? 110.355 : r.kabupaten.includes('Bantul') ? 110.334 : r.kabupaten.includes('Kota') ? 110.370 : 110.158)
+  }));
+}
