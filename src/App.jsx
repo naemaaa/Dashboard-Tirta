@@ -1,7 +1,3 @@
-// Main Application Component
-// Dashboard Komoditas DIY v1.0
-// Bank Indonesia KPw DIY · PSEKUIN UPN Veteran Yogyakarta
-
 import React, { useEffect } from 'react';
 import { useDashboardStore } from './store/useDashboardStore';
 import { Navbar } from './components/layout/Navbar';
@@ -9,7 +5,6 @@ import { Tab1RingkasanUtama } from './components/tabs/Tab1RingkasanUtama';
 import { Tab2DetailArus } from './components/tabs/Tab2DetailArus';
 import { Tab3HargaMarjin } from './components/tabs/Tab3HargaMarjin';
 import { Tab4TrenAntarwaktu } from './components/tabs/Tab4TrenAntarwaktu';
-import { Tab5KualitasData } from './components/tabs/Tab5KualitasData';
 import { DataModal } from './components/common/DataModal';
 import { AlertCircle, Landmark } from 'lucide-react';
 
@@ -44,7 +39,6 @@ export function App() {
         {activeTab === 'tab2' && <Tab2DetailArus />}
         {activeTab === 'tab3' && <Tab3HargaMarjin />}
         {activeTab === 'tab4' && <Tab4TrenAntarwaktu />}
-        {activeTab === 'tab5' && <Tab5KualitasData />}
 
       </main>
 
