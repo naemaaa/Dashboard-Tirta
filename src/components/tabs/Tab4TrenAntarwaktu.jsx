@@ -52,90 +52,115 @@ export function Tab4TrenAntarwaktu() {
     tab4CommodityEvolution
   } = calculations;
 
+  const [isResetting, setIsResetting] = React.useState(false);
+
+  const handleReset = () => {
+    setIsResetting(true);
+    resetFilters();
+    setTimeout(() => setIsResetting(false), 500);
+  };
+
   const commColors = ['#2563eb', '#0284c7', '#d97706', '#ea580c', '#8b5cf6', '#059669'];
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-12 gap-3 items-start">
+    <div className="space-y-4">
       
-      {/* 1. LEFT SIDEBAR: 4 Vertical Stacked Slicers */}
-      <div className="lg:col-span-2 space-y-2.5">
-        <div className="clean-card p-3 bg-white">
-          <div className="flex items-center gap-1.5 text-xs font-bold text-slate-800 mb-2.5 uppercase tracking-wider pb-1.5 border-b border-slate-100">
-            <SlidersHorizontal className="w-3.5 h-3.5 text-slate-500" />
-            <span>Filter Data</span>
+      {/* 1. Header & Slicers Bar */}
+      <div className="clean-card p-4 bg-white space-y-3.5 shadow-2xs">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-slate-100">
+          <div className="flex items-center gap-2.5">
+            <div className="w-9 h-9 rounded-lg bg-indigo-500/10 text-indigo-700 flex items-center justify-center shrink-0 border border-indigo-200/60">
+              <TrendingUp className="w-5 h-5" />
+            </div>
+            <div>
+              <div className="flex items-center gap-2 flex-wrap">
+                <h2 className="text-base font-bold text-slate-900 tracking-tight">
+                  Tren Antarwaktu & Perubahan Periode Komoditas DIY
+                </h2>
+                <span className="text-[10px] font-bold bg-indigo-100 text-indigo-900 px-2 py-0.5 rounded border border-indigo-200">
+                  Analisis Longitudinal
+                </span>
+              </div>
+              <p className="text-[11px] text-slate-500 mt-0.5">
+                Evaluasi tren historis pasokan masuk, keluar, neraca kumulatif & dinamika harga antar-minggu
+              </p>
+            </div>
+          </div>
+        </div>
+
+        {/* 5-Column Precision Slicer & Action Controls */}
+        <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-5 gap-2.5 items-end">
+          <div>
+            <label className="block text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-1">Periode</label>
+            <select
+              value={selectedPeriode}
+              onChange={(e) => setSelectedPeriode(e.target.value)}
+              className="w-full bg-slate-50 border border-slate-200 text-slate-800 text-xs rounded-lg px-2.5 py-2 outline-none font-medium cursor-pointer shadow-2xs hover:border-slate-300 transition-colors h-[38px]"
+            >
+              <option value="Semua">All Periode</option>
+              {REF_KALENDER.map((k) => (
+                <option key={k.id_periode} value={k.id_periode}>{k.label_periode}</option>
+              ))}
+            </select>
           </div>
 
-          <div className="space-y-2.5">
-            <div>
-              <label className="block text-[11px] font-semibold text-slate-700 mb-1">Periode</label>
-              <select
-                value={selectedPeriode}
-                onChange={(e) => setSelectedPeriode(e.target.value)}
-                className="w-full bg-slate-50 border border-slate-200 text-slate-800 text-xs rounded-lg px-2 py-1.5 outline-none font-medium cursor-pointer"
-              >
-                <option value="Semua">All</option>
-                {REF_KALENDER.map((k) => (
-                  <option key={k.id_periode} value={k.id_periode}>{k.label_periode}</option>
-                ))}
-              </select>
-            </div>
+          <div>
+            <label className="block text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-1">Komoditas</label>
+            <select
+              value={selectedKomoditas}
+              onChange={(e) => setSelectedKomoditas(e.target.value)}
+              className="w-full bg-slate-50 border border-slate-200 text-slate-800 text-xs rounded-lg px-2.5 py-2 outline-none font-medium cursor-pointer shadow-2xs hover:border-slate-300 transition-colors h-[38px]"
+            >
+              <option value="Semua">All Komoditas</option>
+              {REF_KOMODITAS.map(k => (
+                <option key={k.id_komoditas} value={k.nama_komoditas}>{k.nama_komoditas}</option>
+              ))}
+            </select>
+          </div>
 
-            <div>
-              <label className="block text-[11px] font-semibold text-slate-700 mb-1">Komoditas</label>
-              <select
-                value={selectedKomoditas}
-                onChange={(e) => setSelectedKomoditas(e.target.value)}
-                className="w-full bg-slate-50 border border-slate-200 text-slate-800 text-xs rounded-lg px-2 py-1.5 outline-none font-medium cursor-pointer"
-              >
-                <option value="Semua">All</option>
-                {REF_KOMODITAS.map(k => (
-                  <option key={k.id_komoditas} value={k.nama_komoditas}>{k.nama_komoditas}</option>
-                ))}
-              </select>
-            </div>
+          <div>
+            <label className="block text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-1">Wilayah</label>
+            <select
+              value={selectedWilayah}
+              onChange={(e) => setSelectedWilayah(e.target.value)}
+              className="w-full bg-slate-50 border border-slate-200 text-slate-800 text-xs rounded-lg px-2.5 py-2 outline-none font-medium cursor-pointer shadow-2xs hover:border-slate-300 transition-colors h-[38px]"
+            >
+              <option value="Semua Wilayah DIY">All Wilayah</option>
+              {REF_WILAYAH.map(w => (
+                <option key={w.id_kab_kota} value={w.nama_kab_kota}>{w.nama_kab_kota}</option>
+              ))}
+            </select>
+          </div>
 
-            <div>
-              <label className="block text-[11px] font-semibold text-slate-700 mb-1">Kabupaten</label>
-              <select
-                value={selectedWilayah}
-                onChange={(e) => setSelectedWilayah(e.target.value)}
-                className="w-full bg-slate-50 border border-slate-200 text-slate-800 text-xs rounded-lg px-2 py-1.5 outline-none font-medium cursor-pointer"
-              >
-                <option value="Semua Wilayah DIY">All</option>
-                {REF_WILAYAH.map(w => (
-                  <option key={w.id_kab_kota} value={w.nama_kab_kota}>{w.nama_kab_kota}</option>
-                ))}
-              </select>
-            </div>
+          <div>
+            <label className="block text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-1">Jenis Responden</label>
+            <select
+              value={selectedKlaster}
+              onChange={(e) => setSelectedKlaster(e.target.value)}
+              className="w-full bg-slate-50 border border-slate-200 text-slate-800 text-xs rounded-lg px-2.5 py-2 outline-none font-medium cursor-pointer shadow-2xs hover:border-slate-300 transition-colors h-[38px]"
+            >
+              <option value="semua">All Responden</option>
+              {REF_KLASTER_RESPONDEN.map(kl => (
+                <option key={kl.id} value={kl.id}>{kl.label}</option>
+              ))}
+            </select>
+          </div>
 
-            <div>
-              <label className="block text-[11px] font-semibold text-slate-700 mb-1">Jenis Responden</label>
-              <select
-                value={selectedKlaster}
-                onChange={(e) => setSelectedKlaster(e.target.value)}
-                className="w-full bg-slate-50 border border-slate-200 text-slate-800 text-xs rounded-lg px-2 py-1.5 outline-none font-medium cursor-pointer"
-              >
-                <option value="semua">All</option>
-                {REF_KLASTER_RESPONDEN.map(kl => (
-                  <option key={kl.id} value={kl.id}>{kl.label}</option>
-                ))}
-              </select>
-            </div>
-
+          <div className="col-span-2 sm:col-span-2 lg:col-span-1">
             <button
-              onClick={resetFilters}
-              className="w-full flex items-center justify-center gap-1.5 py-2 px-2.5 text-xs font-semibold text-slate-700 hover:text-slate-950 bg-slate-100 hover:bg-slate-200 active:bg-slate-300 border border-slate-300 rounded-lg transition-all cursor-pointer mt-2 shadow-2xs active:scale-[0.98]"
+              onClick={handleReset}
+              className="w-full h-[38px] flex items-center justify-center gap-2 px-3 text-xs font-semibold text-slate-700 hover:text-slate-950 bg-slate-100 hover:bg-slate-200 active:bg-slate-300 border border-slate-300 rounded-lg transition-all cursor-pointer shadow-2xs active:scale-[0.98]"
               title="Reset Semua Filter ke Nilai Default"
             >
-              <RotateCcw className="w-3.5 h-3.5 text-slate-600" />
+              <RotateCcw className={`w-3.5 h-3.5 text-slate-600 transition-transform ${isResetting ? 'animate-spin' : ''}`} />
               <span>Reset Filter</span>
             </button>
           </div>
         </div>
       </div>
 
-      {/* 2. MAIN CONTENT AREA (Right 10 Columns) */}
-      <div className="lg:col-span-10 space-y-3">
+      {/* 2. MAIN CONTENT AREA */}
+      <div className="space-y-3">
         
         {/* Top: 5 Delta KPI Cards Row */}
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2.5">
