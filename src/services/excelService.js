@@ -4,13 +4,30 @@
 import * as XLSX from 'xlsx';
 import { generateMasterDataset, REF_WILAYAH, REF_KOMODITAS, REF_KALENDER, REF_SATUAN } from '../data/seedData';
 
-const CACHE_KEY = 'dashboard_komoditas_diy_data_v1';
+const CACHE_KEY = 'dashboard_komoditas_diy_data_v4';
 
 export class ExcelService {
   /**
-   * Load data either from localStorage cache or seed generator
+   * Fetch master dataset from static JSON with cache-busting
    */
-  static async getInitialData() {
+  static async fetchMasterDatabase() {
+    try {
+      const timestamp = Date.now();
+      const res = await fetch(`/data/masterDatabase.json?t=${timestamp}`, {
+        headers: { 'Cache-Control': 'no-cache', 'Pragma': 'no-cache' }
+      });
+      if (res.ok) {
+        const parsed = await res.json();
+        if (parsed && parsed.laporan_ringkasan && parsed.laporan_ringkasan.length > 0) {
+          this.cacheData(parsed);
+          return { data: parsed, source: 'network_master', timestamp: new Date().toISOString() };
+        }
+      }
+    } catch (err) {
+      console.warn('Network fetch for masterDatabase.json failed, falling back to cache/seed', err);
+    }
+
+    // Fallback to cache if available
     try {
       const cached = localStorage.getItem(CACHE_KEY);
       if (cached) {
@@ -23,9 +40,17 @@ export class ExcelService {
       console.warn('Cache read error, falling back to seed dataset', e);
     }
 
+    // Ultimate fallback to runtime code generator
     const defaultData = generateMasterDataset();
     this.cacheData(defaultData);
     return { data: defaultData, source: 'local_master', timestamp: new Date().toISOString() };
+  }
+
+  /**
+   * Load data either from network masterDatabase, cache, or seed generator
+   */
+  static async getInitialData() {
+    return await this.fetchMasterDatabase();
   }
 
   /**
@@ -36,6 +61,20 @@ export class ExcelService {
       localStorage.setItem(CACHE_KEY, JSON.stringify(data));
     } catch (e) {
       console.warn('Failed to cache in localStorage', e);
+    }
+  }
+
+  /**
+   * Clear localStorage cache
+   */
+  static clearCache() {
+    try {
+      localStorage.removeItem(CACHE_KEY);
+      localStorage.removeItem('dashboard_komoditas_diy_data_v1');
+      localStorage.removeItem('dashboard_komoditas_diy_data_v2');
+      localStorage.removeItem('dashboard_komoditas_diy_data_v3');
+    } catch (e) {
+      console.warn('Failed to clear cache', e);
     }
   }
 

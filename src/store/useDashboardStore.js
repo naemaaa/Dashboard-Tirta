@@ -101,16 +101,17 @@ export const useDashboardStore = create((set, get) => ({
           syncSource: 'OneDrive Live Sync',
         });
       } else {
-        // Refresh simulation with fresh master database
-        const fresh = generateMasterDataset();
-        ExcelService.cacheData(fresh);
+        // Clear stale local storage caches
+        ExcelService.clearCache();
+        // Fetch fresh master dataset
+        const { data: fresh, source } = await ExcelService.fetchMasterDatabase();
         const now = new Date();
         const timeStr = `${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')} WIB`;
         set({
           data: fresh,
           isLoading: false,
           lastSyncTime: `${timeStr}`,
-          syncSource: 'Database Terkini (W33 - 2026)',
+          syncSource: source === 'network_master' ? 'Master JSON Live' : 'Database Terkini (W33 - 2026)',
         });
       }
     } catch (err) {
