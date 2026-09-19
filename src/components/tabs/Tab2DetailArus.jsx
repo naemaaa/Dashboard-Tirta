@@ -22,7 +22,8 @@ import {
   Search,
   ChevronLeft,
   ChevronRight,
-  SlidersHorizontal
+  SlidersHorizontal,
+  RotateCcw
 } from 'lucide-react';
 
 export function Tab2DetailArus() {
@@ -34,6 +35,7 @@ export function Tab2DetailArus() {
     tab2Kabupaten,
     tab2Responden,
     setTab2Filters,
+    resetFilters
   } = useDashboardStore();
 
   const {
@@ -142,6 +144,18 @@ export function Tab2DetailArus() {
                 <option value="Produsen">Produsen</option>
               </select>
             </div>
+
+            <button
+              onClick={() => {
+                resetFilters();
+                setTab2Filters({ tab2Komoditas: 'Semua', tab2Kabupaten: 'Semua', tab2Responden: 'Semua' });
+              }}
+              className="w-full flex items-center justify-center gap-1.5 py-2 px-2.5 text-xs font-semibold text-slate-700 hover:text-slate-950 bg-slate-100 hover:bg-slate-200 active:bg-slate-300 border border-slate-300 rounded-lg transition-all cursor-pointer mt-2 shadow-2xs active:scale-[0.98]"
+              title="Reset Semua Filter ke Nilai Default"
+            >
+              <RotateCcw className="w-3.5 h-3.5 text-slate-600" />
+              <span>Reset Filter</span>
+            </button>
           </div>
         </div>
       </div>

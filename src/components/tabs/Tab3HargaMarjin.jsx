@@ -60,73 +60,108 @@ export function Tab3HargaMarjin() {
     'Minyak & Olahan': '#8b5cf6'
   };
 
+  const [isResetting, setIsResetting] = React.useState(false);
+
+  const handleReset = () => {
+    setIsResetting(true);
+    resetFilters();
+    setTimeout(() => setIsResetting(false), 500);
+  };
+
   return (
     <div className="space-y-4">
       
       {/* 1. Header & Slicers Bar */}
-      <div className="clean-card p-4 bg-white flex flex-col md:flex-row md:items-center justify-between gap-4">
-        <div>
-          <h2 className="text-base font-bold text-slate-900 tracking-tight">
-            Transmisi Harga & Marjin Tataniaga Pangan DIY
-          </h2>
-          <p className="text-[11px] text-slate-500">
-            Monitoring kestabilan harga komoditas pangan, marjin tataniaga & disparitas wilayah DIY
-          </p>
+      <div className="clean-card p-4 bg-white space-y-3.5 shadow-2xs">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-slate-100">
+          <div className="flex items-center gap-2.5">
+            <div className="w-9 h-9 rounded-lg bg-amber-500/10 text-amber-700 flex items-center justify-center shrink-0 border border-amber-200/60">
+              <DollarSign className="w-5 h-5" />
+            </div>
+            <div>
+              <div className="flex items-center gap-2 flex-wrap">
+                <h2 className="text-base font-bold text-slate-900 tracking-tight">
+                  Transmisi Harga & Marjin Tataniaga Pangan DIY
+                </h2>
+                <span className="text-[10px] font-bold bg-amber-100 text-amber-900 px-2 py-0.5 rounded border border-amber-200">
+                  Analisis Harga
+                </span>
+              </div>
+              <p className="text-[11px] text-slate-500 mt-0.5">
+                Monitoring kestabilan harga komoditas pangan, marjin tataniaga & disparitas wilayah DIY
+              </p>
+            </div>
+          </div>
         </div>
 
-        {/* Page Slicers */}
-        <div className="flex items-center gap-2 flex-wrap">
-          <select
-            value={selectedPeriode}
-            onChange={(e) => setSelectedPeriode(e.target.value)}
-            className="bg-slate-50 border border-slate-200 text-slate-800 text-xs rounded-lg px-2.5 py-1.5 outline-none font-medium cursor-pointer"
-          >
-            <option value="Semua">All Periode</option>
-            {REF_KALENDER.map((k) => (
-              <option key={k.id_periode} value={k.id_periode}>{k.label_periode}</option>
-            ))}
-          </select>
+        {/* 5-Column Precision Slicer & Action Controls */}
+        <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-5 gap-2.5 items-end">
+          <div>
+            <label className="block text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-1">Periode</label>
+            <select
+              value={selectedPeriode}
+              onChange={(e) => setSelectedPeriode(e.target.value)}
+              className="w-full bg-slate-50 border border-slate-200 text-slate-800 text-xs rounded-lg px-2.5 py-2 outline-none font-medium cursor-pointer shadow-2xs hover:border-slate-300 transition-colors h-[38px]"
+            >
+              <option value="Semua">All Periode</option>
+              {REF_KALENDER.map((k) => (
+                <option key={k.id_periode} value={k.id_periode}>{k.label_periode}</option>
+              ))}
+            </select>
+          </div>
 
-          <select
-            value={selectedKomoditas}
-            onChange={(e) => setSelectedKomoditas(e.target.value)}
-            className="bg-slate-50 border border-slate-200 text-slate-800 text-xs rounded-lg px-2.5 py-1.5 outline-none font-medium cursor-pointer"
-          >
-            <option value="Semua">All Komoditas</option>
-            {REF_KOMODITAS.map(k => (
-              <option key={k.id_komoditas} value={k.nama_komoditas}>{k.nama_komoditas}</option>
-            ))}
-          </select>
+          <div>
+            <label className="block text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-1">Komoditas</label>
+            <select
+              value={selectedKomoditas}
+              onChange={(e) => setSelectedKomoditas(e.target.value)}
+              className="w-full bg-slate-50 border border-slate-200 text-slate-800 text-xs rounded-lg px-2.5 py-2 outline-none font-medium cursor-pointer shadow-2xs hover:border-slate-300 transition-colors h-[38px]"
+            >
+              <option value="Semua">All Komoditas</option>
+              {REF_KOMODITAS.map(k => (
+                <option key={k.id_komoditas} value={k.nama_komoditas}>{k.nama_komoditas}</option>
+              ))}
+            </select>
+          </div>
 
-          <select
-            value={selectedWilayah}
-            onChange={(e) => setSelectedWilayah(e.target.value)}
-            className="bg-slate-50 border border-slate-200 text-slate-800 text-xs rounded-lg px-2.5 py-1.5 outline-none font-medium cursor-pointer"
-          >
-            <option value="Semua Wilayah DIY">All Wilayah</option>
-            {REF_WILAYAH.map(w => (
-              <option key={w.id_kab_kota} value={w.nama_kab_kota}>{w.nama_kab_kota}</option>
-            ))}
-          </select>
+          <div>
+            <label className="block text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-1">Wilayah</label>
+            <select
+              value={selectedWilayah}
+              onChange={(e) => setSelectedWilayah(e.target.value)}
+              className="w-full bg-slate-50 border border-slate-200 text-slate-800 text-xs rounded-lg px-2.5 py-2 outline-none font-medium cursor-pointer shadow-2xs hover:border-slate-300 transition-colors h-[38px]"
+            >
+              <option value="Semua Wilayah DIY">All Wilayah</option>
+              {REF_WILAYAH.map(w => (
+                <option key={w.id_kab_kota} value={w.nama_kab_kota}>{w.nama_kab_kota}</option>
+              ))}
+            </select>
+          </div>
 
-          <select
-            value={selectedKlaster}
-            onChange={(e) => setSelectedKlaster(e.target.value)}
-            className="bg-slate-50 border border-slate-200 text-slate-800 text-xs rounded-lg px-2.5 py-1.5 outline-none font-medium cursor-pointer"
-          >
-            <option value="semua">All Responden</option>
-            {REF_KLASTER_RESPONDEN.map(kl => (
-              <option key={kl.id} value={kl.id}>{kl.label}</option>
-            ))}
-          </select>
+          <div>
+            <label className="block text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-1">Jenis Responden</label>
+            <select
+              value={selectedKlaster}
+              onChange={(e) => setSelectedKlaster(e.target.value)}
+              className="w-full bg-slate-50 border border-slate-200 text-slate-800 text-xs rounded-lg px-2.5 py-2 outline-none font-medium cursor-pointer shadow-2xs hover:border-slate-300 transition-colors h-[38px]"
+            >
+              <option value="semua">All Responden</option>
+              {REF_KLASTER_RESPONDEN.map(kl => (
+                <option key={kl.id} value={kl.id}>{kl.label}</option>
+              ))}
+            </select>
+          </div>
 
-          <button
-            onClick={resetFilters}
-            className="p-1.5 text-slate-500 hover:text-slate-800 hover:bg-slate-100 rounded-lg border border-slate-200 transition-colors cursor-pointer"
-            title="Reset Filter"
-          >
-            <RotateCcw className="w-4 h-4" />
-          </button>
+          <div className="col-span-2 sm:col-span-2 lg:col-span-1">
+            <button
+              onClick={handleReset}
+              className="w-full h-[38px] flex items-center justify-center gap-2 px-3 text-xs font-semibold text-slate-700 hover:text-slate-950 bg-slate-100 hover:bg-slate-200 active:bg-slate-300 border border-slate-300 rounded-lg transition-all cursor-pointer shadow-2xs active:scale-[0.98]"
+              title="Reset Semua Filter ke Nilai Default"
+            >
+              <RotateCcw className={`w-3.5 h-3.5 text-slate-600 transition-transform ${isResetting ? 'animate-spin' : ''}`} />
+              <span>Reset Filter</span>
+            </button>
+          </div>
         </div>
       </div>
 
