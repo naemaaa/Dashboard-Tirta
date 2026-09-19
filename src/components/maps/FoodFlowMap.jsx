@@ -26,22 +26,32 @@ import {
   Compass
 } from 'lucide-react';
 
-// Tile Layer options (CartoDB Positron, CartoDB Dark Matter, OpenStreetMap)
+// Free & Open Tile Layer options (No API Key, No Watermark)
 const TILE_LAYERS = {
-  light: {
-    name: 'Terang (Positron)',
-    url: 'https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png',
-    attribution: '&copy; <a href="https://carto.com/">CARTO</a>'
+  esri_street: {
+    name: 'Peta Wilayah Detail (ESRI)',
+    url: 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}',
+    attribution: '&copy; Esri &mdash; Esri, DeLorme, NAVTEQ, TomTom, Intermap'
   },
-  dark: {
-    name: 'Gelap (Dark Matter)',
-    url: 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',
-    attribution: '&copy; <a href="https://carto.com/">CARTO</a>'
+  esri_light: {
+    name: 'Peta Terang Minimalis (ESRI Gray)',
+    url: 'https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}',
+    attribution: '&copy; Esri, HERE, Garmin, NGA, USGS'
+  },
+  esri_dark: {
+    name: 'Peta Gelap (ESRI Dark)',
+    url: 'https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Base/MapServer/tile/{z}/{y}/{x}',
+    attribution: '&copy; Esri, HERE, Garmin'
   },
   osm: {
-    name: 'Peta Standar (OSM)',
-    url: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+    name: 'OpenStreetMap (OSM)',
+    url: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
     attribution: '&copy; OpenStreetMap contributors'
+  },
+  esri_topo: {
+    name: 'Topografi & Kontur (ESRI Topo)',
+    url: 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}',
+    attribution: '&copy; Esri, HERE, Garmin, Intermap'
   }
 };
 
@@ -59,7 +69,7 @@ export function FoodFlowMap({
 
   // States
   const [mapMode, setMapMode] = useState('flow'); // 'flow' | 'respondents'
-  const [tileStyle, setTileStyle] = useState('light'); // 'light' | 'dark' | 'osm'
+  const [tileStyle, setTileStyle] = useState('esri_street'); // 'esri_street' | 'esri_light' | 'esri_dark' | 'osm' | 'esri_topo'
   const [flowDirection, setFlowDirection] = useState('all'); // 'all', 'inflow', 'outflow'
   const [activeRouteId, setActiveRouteId] = useState(null);
   const [selectedNodeName, setSelectedNodeName] = useState(null);
@@ -436,9 +446,11 @@ export function FoodFlowMap({
             onChange={(e) => setTileStyle(e.target.value)}
             className="bg-white border border-slate-300 text-slate-700 text-xs rounded-lg px-2.5 py-1.5 outline-none font-medium cursor-pointer"
           >
-            <option value="light">Peta Terang</option>
-            <option value="dark">Peta Gelap</option>
-            <option value="osm">Peta OSM</option>
+            <option value="esri_street">Peta Wilayah Detail (ESRI)</option>
+            <option value="esri_light">Peta Terang Minimalis</option>
+            <option value="esri_dark">Peta Gelap</option>
+            <option value="osm">OpenStreetMap (OSM)</option>
+            <option value="esri_topo">Topografi & Kontur</option>
           </select>
 
           {/* Reset Map View Button */}
