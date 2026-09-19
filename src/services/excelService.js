@@ -85,8 +85,7 @@ export class ExcelService {
     const normalized = [];
 
     rawRows.forEach((row, idx) => {
-      const isDeleted = row.is_deleted === true || row.is_deleted === 1 || row.is_deleted === '1' || row.is_deleted === 'true';
-      const idPeriode = row.id_periode || (row.periode_mulai ? `PER_2026_W${Math.min(33, Math.max(23, 23 + (idx % 11)))}` : 'PER_2026_W33');
+      const idPeriode = row.id_periode || (row.periode_mulai ? `PER_2026_W${Math.min(38, Math.max(23, 23 + (idx % 16)))}` : 'PER_2026_W38');
       const kabKota = row.kab_kota_responden || row.kab_kota || 'Kab. Sleman';
       const komoditas = row.komoditas || 'Beras Medium I';
       const idResponden = row.id_responden || `R_${idx + 1}`;

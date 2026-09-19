@@ -27,8 +27,8 @@ export const useDashboardStore = create((set, get) => ({
   isLoading: false,
   error: null,
   isDataModalOpen: false,
-  lastSyncTime: '15 Agu 2026 14:00',
-  syncSource: 'OneDrive Sync (W33 - 2026)',
+  lastSyncTime: '19 Sep 2026 20:00 WIB',
+  syncSource: 'Master Database (September 2026)',
 
   // Master & Raw Dataset
   data: generateMasterDataset(),
@@ -59,11 +59,14 @@ export const useDashboardStore = create((set, get) => ({
     set({ isLoading: true, error: null });
     try {
       const { data, source, timestamp } = await ExcelService.getInitialData();
+      const lastKal = data.REF_KALENDER?.[data.REF_KALENDER.length - 1];
+      const latestPeriode = lastKal?.id_periode || DEFAULT_PERIODE;
       set({
         data,
+        selectedPeriode: latestPeriode,
         isLoading: false,
         lastSyncTime: new Date(timestamp).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' }) + ' WIB',
-        syncSource: source === 'cache' ? 'Cached Database' : 'OneDrive Sync (W33 - 2026)',
+        syncSource: source === 'cache' ? 'Cached Database' : 'Master Database (September 2026)',
       });
     } catch (err) {
       set({ isLoading: false, error: err.message || 'Gagal memuat dataset' });
@@ -74,8 +77,10 @@ export const useDashboardStore = create((set, get) => ({
     set({ isLoading: true, error: null });
     try {
       const parsed = await ExcelService.parseExcelBuffer(buffer);
+      const lastKal = parsed.REF_KALENDER?.[parsed.REF_KALENDER.length - 1];
       set({
         data: parsed,
+        selectedPeriode: lastKal?.id_periode || get().selectedPeriode,
         isLoading: false,
         isDataModalOpen: false,
         lastSyncTime: 'Baru saja diunggah',
@@ -93,8 +98,10 @@ export const useDashboardStore = create((set, get) => ({
         const parsed = await ExcelService.fetchFromUrl(url);
         const now = new Date();
         const timeStr = `${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')} WIB`;
+        const lastKal = parsed.REF_KALENDER?.[parsed.REF_KALENDER.length - 1];
         set({
           data: parsed,
+          selectedPeriode: lastKal?.id_periode || get().selectedPeriode,
           isLoading: false,
           isDataModalOpen: false,
           lastSyncTime: `${timeStr}`,
@@ -107,11 +114,13 @@ export const useDashboardStore = create((set, get) => ({
         const { data: fresh, source } = await ExcelService.fetchMasterDatabase();
         const now = new Date();
         const timeStr = `${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')} WIB`;
+        const lastKal = fresh.REF_KALENDER?.[fresh.REF_KALENDER.length - 1];
         set({
           data: fresh,
+          selectedPeriode: lastKal?.id_periode || get().selectedPeriode,
           isLoading: false,
           lastSyncTime: `${timeStr}`,
-          syncSource: source === 'network_master' ? 'Master JSON Live' : 'Database Terkini (W33 - 2026)',
+          syncSource: source === 'network_master' ? 'Master JSON Live' : 'Database Terkini (September 2026)',
         });
       }
     } catch (err) {

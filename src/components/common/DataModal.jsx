@@ -202,7 +202,7 @@ export function DataModal() {
               className="flex items-center gap-1 text-slate-600 hover:text-slate-800"
             >
               <RefreshCw className="w-3.5 h-3.5" />
-              <span>Gunakan Data Standar (W33 - 2026)</span>
+              <span>Gunakan Data Master Terkini (September 2026)</span>
             </button>
           </div>
 

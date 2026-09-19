@@ -6,8 +6,11 @@ import { useDashboardStore } from '../../store/useDashboardStore';
 import { RefreshCw, UploadCloud, ShieldCheck, Landmark } from 'lucide-react';
 
 export function HeaderBar() {
-  const { lastSyncTime, syncSource, refreshData, isLoading, setDataModalOpen } = useDashboardStore();
+  const { lastSyncTime, syncSource, refreshData, isLoading, setDataModalOpen, data, selectedPeriode } = useDashboardStore();
   const [isRefreshing, setIsRefreshing] = useState(false);
+
+  const currentPeriod = (data?.REF_KALENDER || []).find(k => k.id_periode === selectedPeriode) || (data?.REF_KALENDER || [])[(data?.REF_KALENDER || []).length - 1];
+  const periodLabel = currentPeriod ? currentPeriod.label_singkat : '2026-W38';
 
   const handleRefresh = async () => {
     setIsRefreshing(true);
@@ -34,7 +37,7 @@ export function HeaderBar() {
               </span>
               <span className="hidden sm:inline-flex items-center gap-1 text-[11px] font-medium text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200/60">
                 <ShieldCheck className="w-3 h-3 text-emerald-600" />
-                Data Terverifikasi (W33)
+                Data Terverifikasi ({periodLabel})
               </span>
             </div>
             <p className="text-[11px] text-slate-500 hidden sm:block">

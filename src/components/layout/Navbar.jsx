@@ -6,7 +6,7 @@ import { useDashboardStore } from '../../store/useDashboardStore';
 import { Landmark, RefreshCw, Menu, X } from 'lucide-react';
 
 export function Navbar() {
-  const { activeTab, setActiveTab, lastSyncTime, refreshData, isLoading } = useDashboardStore();
+  const { activeTab, setActiveTab, lastSyncTime, refreshData, isLoading, data, selectedPeriode } = useDashboardStore();
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
@@ -17,6 +17,9 @@ export function Navbar() {
     { id: 'tab4', label: 'Tren Antarwaktu' },
     { id: 'tab5', label: 'Kualitas Data & SLA' },
   ];
+
+  const currentPeriod = (data?.REF_KALENDER || []).find(k => k.id_periode === selectedPeriode) || (data?.REF_KALENDER || [])[(data?.REF_KALENDER || []).length - 1];
+  const periodBadge = currentPeriod ? currentPeriod.label_singkat : '2026-W38';
 
   const handleRefresh = async () => {
     setIsRefreshing(true);
@@ -74,7 +77,7 @@ export function Navbar() {
             {/* Live Data Badge */}
             <div className="hidden xl:flex items-center gap-2 px-3 py-1.5 rounded-lg bg-slate-50 border border-slate-200 text-[11px] text-slate-600 font-medium">
               <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-              <span>W33 &bull; {lastSyncTime}</span>
+              <span>{periodBadge} &bull; {lastSyncTime}</span>
             </div>
 
             {/* Clean Refresh Button */}

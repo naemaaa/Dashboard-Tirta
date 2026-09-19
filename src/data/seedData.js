@@ -40,6 +40,11 @@ export const REF_KALENDER = [
   { id_periode: 'PER_2026_W31', label_periode: '2026-W31 (28 Jul-03 Agu)', label_singkat: '2026-W31', tgl_mulai: '2026-07-28', nama_bulan: 'Agustus', minggu_ke: 31 },
   { id_periode: 'PER_2026_W32', label_periode: '2026-W32 (04-10 Agu)', label_singkat: '2026-W32', tgl_mulai: '2026-08-04', nama_bulan: 'Agustus', minggu_ke: 32 },
   { id_periode: 'PER_2026_W33', label_periode: '2026-W33 (11-17 Agu)', label_singkat: '2026-W33', tgl_mulai: '2026-08-11', nama_bulan: 'Agustus', minggu_ke: 33 },
+  { id_periode: 'PER_2026_W34', label_periode: '2026-W34 (18-24 Agu)', label_singkat: '2026-W34', tgl_mulai: '2026-08-18', nama_bulan: 'Agustus', minggu_ke: 34 },
+  { id_periode: 'PER_2026_W35', label_periode: '2026-W35 (25-31 Agu)', label_singkat: '2026-W35', tgl_mulai: '2026-08-25', nama_bulan: 'Agustus', minggu_ke: 35 },
+  { id_periode: 'PER_2026_W36', label_periode: '2026-W36 (01-07 Sep)', label_singkat: '2026-W36', tgl_mulai: '2026-09-01', nama_bulan: 'September', minggu_ke: 36 },
+  { id_periode: 'PER_2026_W37', label_periode: '2026-W37 (08-14 Sep)', label_singkat: '2026-W37', tgl_mulai: '2026-09-08', nama_bulan: 'September', minggu_ke: 37 },
+  { id_periode: 'PER_2026_W38', label_periode: '2026-W38 (15-21 Sep)', label_singkat: '2026-W38', tgl_mulai: '2026-09-15', nama_bulan: 'September', minggu_ke: 38 },
 ];
 
 export const REF_SATUAN = [
@@ -303,17 +308,17 @@ export function generateMasterDataset() {
       komoditas_utama: REF_KOMODITAS[idx % REF_KOMODITAS.length].nama_komoditas,
       status_laporan: idx % 8 === 0 ? 'Tertunda Review' : 'Terverifikasi Lengkap',
       volume_mingguan: (Math.random() * 40 + 20).toFixed(1) + ' Ton',
-      terakhir_update: '15 Agu 2026 14:20'
+      terakhir_update: '19 Sep 2026 20:00'
     });
   });
 
   // Seed Data Quality Issues for Tab 5
   data_quality_issues.push(
-    { periode: '2026-W33', nama_responden: 'Bolodewo Parming', komoditas: 'Bawang Putih', kab_kota: 'Kab. Bantul', jenis_isu: 'Anomali Satuan', detail: 'Input 50 Karung belum dikonversi', status: 'Pending Review' },
-    { periode: '2026-W33', nama_responden: 'PB Beras Gajah Mungkur', komoditas: 'Beras Medium I', kab_kota: 'Kab. Sleman', jenis_isu: 'Harga Kosong', detail: 'Harga beli tercatat Rp 0 (Konsinyasi)', status: 'Telah Diverifikasi' },
-    { periode: '2026-W32', nama_responden: 'Toko Menik Beras', komoditas: 'Cabai Rawit Merah', kab_kota: 'Kab. Gunungkidul', jenis_isu: 'Wilayah Non-Standar', detail: 'Nama desa tidak terpetakan di master', status: 'Telah Diperbaiki' },
-    { periode: '2026-W32', nama_responden: 'UD Sri Rahayu', komoditas: 'Minyak Goreng Curah', kab_kota: 'Kota Yogyakarta', jenis_isu: 'Anomali Volume', detail: 'Lonjakan volume > 200% dibanding W31', status: 'Telah Diverifikasi' },
-    { periode: '2026-W31', nama_responden: 'UD Suryanta Pangan', komoditas: 'Daging Ayam Ras', kab_kota: 'Kab. Sleman', jenis_isu: 'Periode Kosong', detail: 'ID periode kosong saat sinkronisasi web app', status: 'Telah Diperbaiki' }
+    { periode: '2026-W38', nama_responden: 'Bolodewo Parming', komoditas: 'Bawang Putih', kab_kota: 'Kab. Bantul', jenis_isu: 'Anomali Satuan', detail: 'Input 50 Karung belum dikonversi', status: 'Pending Review' },
+    { periode: '2026-W38', nama_responden: 'PB Beras Gajah Mungkur', komoditas: 'Beras Medium I', kab_kota: 'Kab. Sleman', jenis_isu: 'Harga Kosong', detail: 'Harga beli tercatat Rp 0 (Konsinyasi)', status: 'Telah Diverifikasi' },
+    { periode: '2026-W37', nama_responden: 'Toko Menik Beras', komoditas: 'Cabai Rawit Merah', kab_kota: 'Kab. Gunungkidul', jenis_isu: 'Wilayah Non-Standar', detail: 'Nama desa tidak terpetakan di master', status: 'Telah Diperbaiki' },
+    { periode: '2026-W36', nama_responden: 'UD Sri Rahayu', komoditas: 'Minyak Goreng Curah', kab_kota: 'Kota Yogyakarta', jenis_isu: 'Anomali Volume', detail: 'Lonjakan volume > 200% dibanding W35', status: 'Telah Diverifikasi' },
+    { periode: '2026-W35', nama_responden: 'UD Suryanta Pangan', komoditas: 'Daging Ayam Ras', kab_kota: 'Kab. Sleman', jenis_isu: 'Periode Kosong', detail: 'ID periode kosong saat sinkronisasi web app', status: 'Telah Diperbaiki' }
   );
 
   return {
