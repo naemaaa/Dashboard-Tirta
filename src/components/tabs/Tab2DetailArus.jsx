@@ -3,7 +3,6 @@ import { useCalculations } from '../../hooks/useCalculations';
 import { useDashboardStore } from '../../store/useDashboardStore';
 import { REF_KOMODITAS, REF_WILAYAH, REF_KALENDER } from '../../data/seedData';
 import { ExecutiveIntelligenceBox } from '../executive/ExecutiveIntelligenceBox';
-import { FoodFlowMap } from '../maps/FoodFlowMap';
 import {
   ResponsiveContainer,
   BarChart,
@@ -23,15 +22,12 @@ import {
   Search,
   ChevronLeft,
   ChevronRight,
-  SlidersHorizontal,
-  Navigation,
-  TableProperties
+  SlidersHorizontal
 } from 'lucide-react';
 
 export function Tab2DetailArus() {
   const calculations = useCalculations();
   const {
-    data,
     selectedPeriode,
     setSelectedPeriode,
     tab2Komoditas,
@@ -39,8 +35,6 @@ export function Tab2DetailArus() {
     tab2Responden,
     setTab2Filters,
   } = useDashboardStore();
-
-  const [activeViewTab, setActiveViewTab] = useState('map'); // 'map' vs 'matrix'
 
   const {
     currentMetrics,
@@ -213,57 +207,8 @@ export function Tab2DetailArus() {
         {/* Executive Intelligence Insight Box */}
         <ExecutiveIntelligenceBox tabId="tab2" title="Executive Intelligence · Analisis Detail Pasokan & Simpul Wilayah" />
 
-        {/* View Switcher: Geospatial Map vs Matrix & Tables */}
-        <div className="flex items-center justify-between bg-white p-2.5 rounded-xl border border-slate-200/80 shadow-2xs">
-          <div className="flex items-center gap-2">
-            <span className="text-xs font-bold text-slate-700 uppercase tracking-wider ml-1 hidden sm:inline">Mode Analisis:</span>
-            <div className="inline-flex bg-slate-100 p-0.5 rounded-lg border border-slate-200">
-              <button
-                onClick={() => setActiveViewTab('map')}
-                className={`px-3 py-1.5 text-xs font-bold rounded-md transition-all flex items-center gap-1.5 cursor-pointer ${
-                  activeViewTab === 'map'
-                    ? 'bg-slate-900 text-white shadow-xs'
-                    : 'text-slate-600 hover:text-slate-900'
-                }`}
-              >
-                <Navigation className="w-3.5 h-3.5 text-amber-300" />
-                <span>Peta Spasial Aliran Pangan (From-To & Responden)</span>
-              </button>
-              <button
-                onClick={() => setActiveViewTab('matrix')}
-                className={`px-3 py-1.5 text-xs font-bold rounded-md transition-all flex items-center gap-1.5 cursor-pointer ${
-                  activeViewTab === 'matrix'
-                    ? 'bg-slate-900 text-white shadow-xs'
-                    : 'text-slate-600 hover:text-slate-900'
-                }`}
-              >
-                <TableProperties className="w-3.5 h-3.5 text-blue-400" />
-                <span>Matriks Neraca & Rantai Pasok Tabel</span>
-              </button>
-            </div>
-          </div>
-
-          <div className="text-[11px] text-slate-500 font-medium hidden md:block">
-            {activeViewTab === 'map' ? 'Mode: Peta Vektor Geografis Berarah' : 'Mode: Tabel Rantai Pasok Teragregasi'}
-          </div>
-        </div>
-
-        {/* ================= VIEW 1: GEOSPATIAL FOOD FLOW MAP ================= */}
-        {activeViewTab === 'map' && (
-          <FoodFlowMap
-            dataset={data}
-            selectedPeriode={selectedPeriode}
-            selectedKomoditas={tab2Komoditas}
-            selectedWilayah={tab2Kabupaten}
-            onSelectWilayah={(wil) => setTab2Filters({ tab2Kabupaten: wil })}
-          />
-        )}
-
-        {/* ================= VIEW 2: MATRIKS, BUTTERFLY & DETAIL TABLES ================= */}
-        {activeViewTab === 'matrix' && (
-          <>
-            {/* Middle Row: Grouped Supply Chain Table & Butterfly Chart */}
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-3 items-stretch">
+        {/* Middle Row: Grouped Supply Chain Table & Butterfly Chart */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-3 items-stretch">
               
               {/* Left: Arus Masuk, Keluar, dan Selisih Table */}
               <div className="clean-card p-4 lg:col-span-7 bg-white flex flex-col justify-between">
@@ -476,8 +421,6 @@ export function Tab2DetailArus() {
               </div>
 
             </div>
-          </>
-        )}
 
       </div>
 

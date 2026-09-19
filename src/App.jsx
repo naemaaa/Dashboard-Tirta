@@ -5,6 +5,7 @@ import { Tab1RingkasanUtama } from './components/tabs/Tab1RingkasanUtama';
 import { Tab2DetailArus } from './components/tabs/Tab2DetailArus';
 import { Tab3HargaMarjin } from './components/tabs/Tab3HargaMarjin';
 import { Tab4TrenAntarwaktu } from './components/tabs/Tab4TrenAntarwaktu';
+import { Tab5PetaArus } from './components/tabs/Tab5PetaArus';
 import { DataModal } from './components/common/DataModal';
 import { AlertCircle, Landmark } from 'lucide-react';
 
@@ -39,6 +40,7 @@ export function App() {
         {activeTab === 'tab2' && <Tab2DetailArus />}
         {activeTab === 'tab3' && <Tab3HargaMarjin />}
         {activeTab === 'tab4' && <Tab4TrenAntarwaktu />}
+        {activeTab === 'tab5' && <Tab5PetaArus />}
 
       </main>
 

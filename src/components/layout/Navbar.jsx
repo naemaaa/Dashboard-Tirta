@@ -15,6 +15,7 @@ export function Navbar() {
     { id: 'tab2', label: 'Detail Masuk vs Keluar' },
     { id: 'tab3', label: 'Harga & Marjin' },
     { id: 'tab4', label: 'Tren Antarwaktu' },
+    { id: 'tab5', label: 'Peta Arus Pangan' },
   ];
 
   const currentPeriod = (data?.REF_KALENDER || []).find(k => k.id_periode === selectedPeriode) || (data?.REF_KALENDER || [])[(data?.REF_KALENDER || []).length - 1];
