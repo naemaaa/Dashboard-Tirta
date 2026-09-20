@@ -34,6 +34,20 @@ const matchWilayah = (rowWilayah, targetWilayah) => {
   return n1 === n2 || rowWilayah === targetWilayah;
 };
 
+const matchKlaster = (rowKlaster, targetKlaster) => {
+  if (!targetKlaster || targetKlaster === 'semua' || targetKlaster === 'All' || targetKlaster === 'Semua') return true;
+  if (!rowKlaster) return true;
+  const k1 = rowKlaster.toString().toLowerCase();
+  const k2 = targetKlaster.toString().toLowerCase();
+  if (k2.includes('pedagang') || k2.includes('pb') || k2 === 'pedagang_besar') {
+    return k1.includes('pedagang') || k1.includes('pb') || k1 === 'pedagang_besar';
+  }
+  if (k2.includes('produsen') || k2.includes('pr') || k2 === 'produsen') {
+    return k1.includes('produsen') || k1.includes('pr') || k1 === 'produsen';
+  }
+  return k1 === k2;
+};
+
 /**
  * 1. Deret Waktu Historis Multi-Periode (Tab 1 Panel A, Tab 4 Panel B & C, Tab 4 Panel G)
  */
@@ -51,7 +65,7 @@ export function calculateHistoricalTrends(
       r.id_periode === kal.id_periode &&
       matchKomoditas(r.komoditas, selectedKomoditas) &&
       matchWilayah(r.kab_kota, selectedWilayah) &&
-      (selectedKlaster === 'semua' || r.tipe_responden === selectedKlaster)
+      matchKlaster(r.tipe_responden, selectedKlaster)
     );
 
     const volMasuk = calculateVolumeMasuk(periodRows);

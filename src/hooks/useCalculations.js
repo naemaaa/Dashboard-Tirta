@@ -74,6 +74,20 @@ export function useCalculations() {
       return n1 === n2 || rowWil === targetWil;
     };
 
+    const matchKlaster = (rowKlaster, targetKlaster) => {
+      if (!targetKlaster || targetKlaster === 'semua' || targetKlaster === 'All' || targetKlaster === 'Semua') return true;
+      if (!rowKlaster) return true;
+      const k1 = rowKlaster.toString().toLowerCase();
+      const k2 = targetKlaster.toString().toLowerCase();
+      if (k2.includes('pedagang') || k2.includes('pb') || k2 === 'pedagang_besar') {
+        return k1.includes('pedagang') || k1.includes('pb') || k1 === 'pedagang_besar';
+      }
+      if (k2.includes('produsen') || k2.includes('pr') || k2 === 'produsen') {
+        return k1.includes('produsen') || k1.includes('pr') || k1 === 'produsen';
+      }
+      return k1 === k2;
+    };
+
     // Helper filter function untuk laporan_ringkasan
     const filterRingkasan = (rows, override = {}) => {
       const targetPeriode = override.periode !== undefined ? override.periode : selectedPeriode;
@@ -86,7 +100,7 @@ export function useCalculations() {
         if (targetPeriode && targetPeriode !== 'Semua' && targetPeriode !== 'All' && r.id_periode !== targetPeriode) return false;
         if (!matchKomoditas(r.komoditas || r.id_komoditas, targetKomoditas)) return false;
         if (!matchWilayah(r.kab_kota || r.id_kab_kota, targetWilayah)) return false;
-        if (targetKlaster && targetKlaster !== 'semua' && targetKlaster !== 'All' && r.tipe_responden !== targetKlaster) return false;
+        if (!matchKlaster(r.tipe_responden, targetKlaster)) return false;
         return true;
       });
     };

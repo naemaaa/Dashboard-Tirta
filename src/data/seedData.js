@@ -174,13 +174,14 @@ export function generateMasterDataset() {
         const hargaBeli = Math.round(prof.priceBeli * (1 + (pIdx - 10) * 0.008) + priceDisp);
         const hargaJual = Math.round(hargaBeli * (1 + prof.marginPct / 100));
 
-        // Associated respondent
+        // Associated respondents for this regency
         const respList = respondents.filter(r => r.kab === wil.nama_kab_kota);
-        const resp = respList[(pIdx + wIdx) % respList.length] || respondents[wIdx % respondents.length];
+        const primaryPB = respList.find(r => r.tipe === 'pedagang_besar') || respondents.find(r => r.tipe === 'pedagang_besar');
+        const primaryPR = respList.find(r => r.tipe === 'produsen');
 
         const idLaporan = `LAP-${reportCounter++}`;
 
-        // Masuk row
+        // Masuk row (Pedagang Besar)
         laporan_ringkasan.push({
           id_laporan: idLaporan,
           id_periode: kal.id_periode,
@@ -190,9 +191,9 @@ export function generateMasterDataset() {
           komoditas: kom.nama_komoditas,
           id_kab_kota: wil.id_kab_kota,
           kab_kota: wil.nama_kab_kota,
-          tipe_responden: resp.tipe,
-          id_responden: resp.id,
-          nama_responden: resp.nama,
+          tipe_responden: 'pedagang_besar',
+          id_responden: primaryPB.id,
+          nama_responden: primaryPB.nama,
           jenis_aliran: 'vol_masuk_ton',
           volume_ton: inVol,
           vol_masuk_ton: inVol,
@@ -204,7 +205,7 @@ export function generateMasterDataset() {
           satuan: 'Ton'
         });
 
-        // Keluar row
+        // Keluar row (Pedagang Besar)
         laporan_ringkasan.push({
           id_laporan: idLaporan,
           id_periode: kal.id_periode,
@@ -214,9 +215,9 @@ export function generateMasterDataset() {
           komoditas: kom.nama_komoditas,
           id_kab_kota: wil.id_kab_kota,
           kab_kota: wil.nama_kab_kota,
-          tipe_responden: resp.tipe,
-          id_responden: resp.id,
-          nama_responden: resp.nama,
+          tipe_responden: 'pedagang_besar',
+          id_responden: primaryPB.id,
+          nama_responden: primaryPB.nama,
           jenis_aliran: 'vol_keluar_ton',
           volume_ton: outVol,
           vol_masuk_ton: 0,
@@ -227,6 +228,59 @@ export function generateMasterDataset() {
           is_deleted: false,
           satuan: 'Ton'
         });
+
+        // If regency has a Producer (Produsen), also generate Producer stream
+        if (primaryPR) {
+          const idLaporanPR = `LAP-${reportCounter++}`;
+          const prInVol = Number((inVol * 0.45).toFixed(2));
+          const prOutVol = Number((outVol * 0.42).toFixed(2));
+
+          laporan_ringkasan.push({
+            id_laporan: idLaporanPR,
+            id_periode: kal.id_periode,
+            periode_mulai: kal.tgl_mulai,
+            label_periode: kal.label_periode,
+            id_komoditas: kom.id_komoditas,
+            komoditas: kom.nama_komoditas,
+            id_kab_kota: wil.id_kab_kota,
+            kab_kota: wil.nama_kab_kota,
+            tipe_responden: 'produsen',
+            id_responden: primaryPR.id,
+            nama_responden: primaryPR.nama,
+            jenis_aliran: 'vol_masuk_ton',
+            volume_ton: prInVol,
+            vol_masuk_ton: prInVol,
+            vol_keluar_ton: 0,
+            stok_akhir_ton: Number((stokAkhir * 0.4).toFixed(2)),
+            harga_beli: Math.round(hargaBeli * 0.96),
+            harga_jual: hargaBeli,
+            is_deleted: false,
+            satuan: 'Ton'
+          });
+
+          laporan_ringkasan.push({
+            id_laporan: idLaporanPR,
+            id_periode: kal.id_periode,
+            periode_mulai: kal.tgl_mulai,
+            label_periode: kal.label_periode,
+            id_komoditas: kom.id_komoditas,
+            komoditas: kom.nama_komoditas,
+            id_kab_kota: wil.id_kab_kota,
+            kab_kota: wil.nama_kab_kota,
+            tipe_responden: 'produsen',
+            id_responden: primaryPR.id,
+            nama_responden: primaryPR.nama,
+            jenis_aliran: 'vol_keluar_ton',
+            volume_ton: prOutVol,
+            vol_masuk_ton: 0,
+            vol_keluar_ton: prOutVol,
+            stok_akhir_ton: Number((stokAkhir * 0.4).toFixed(2)),
+            harga_beli: Math.round(hargaBeli * 0.96),
+            harga_jual: hargaBeli,
+            is_deleted: false,
+            satuan: 'Ton'
+          });
+        }
 
         // Arus Masuk origin breakdown
         const extShare = prof.extDep / 100;
