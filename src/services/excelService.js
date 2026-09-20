@@ -4,7 +4,7 @@
 import * as XLSX from 'xlsx';
 import { generateMasterDataset, REF_WILAYAH, REF_KOMODITAS, REF_KALENDER, REF_SATUAN } from '../data/seedData';
 
-const CACHE_KEY = 'dashboard_komoditas_diy_data_v4';
+const CACHE_KEY = 'dashboard_komoditas_diy_data_v5';
 
 export class ExcelService {
   /**

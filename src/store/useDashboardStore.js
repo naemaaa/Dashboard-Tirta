@@ -6,9 +6,9 @@ import { ExcelService } from '../services/excelService';
 import { generateMasterDataset, REF_KOMODITAS, REF_KALENDER } from '../data/seedData';
 
 const DEFAULT_KOMODITAS = REF_KOMODITAS[0].nama_komoditas; // 'Beras Medium I (Ton)'
-const DEFAULT_PERIODE = REF_KALENDER[REF_KALENDER.length - 1].id_periode; // 'PER_2026_W33'
+const DEFAULT_PERIODE = REF_KALENDER[0].id_periode; // 'PER_2026_W23'
 const DEFAULT_WILAYAH = 'Semua Wilayah DIY';
-const DEFAULT_KLASTER = 'pedagang_besar';
+const DEFAULT_KLASTER = 'semua';
 
 export const useDashboardStore = create((set, get) => ({
   // Global Filters (Section 6.1, Section 12.2)

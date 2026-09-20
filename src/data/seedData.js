@@ -128,56 +128,56 @@ export function generateMasterDataset() {
   let reportCounter = 1000;
   let flowInCounter = 5000;
   let flowOutCounter = 8000;
-
-  // Commodity baseline volume & price profiles matching exact power BI numbers
+  // Commodity baseline volume & price profiles calibrated to exact Power BI benchmark dataset
   const commodityProfile = {
-    'KOM_01': { baseIn: 234, baseOut: 203, priceBeli: 13600, marginPct: 4.2, extDep: 96 }, // Beras Medium I
-    'KOM_02': { baseIn: 384, baseOut: 268, priceBeli: 13200, marginPct: 4.5, extDep: 94 }, // Beras Medium II
-    'KOM_03': { baseIn: 161, baseOut: 123, priceBeli: 15200, marginPct: 5.1, extDep: 92 }, // Beras Super I
-    'KOM_04': { baseIn: 145, baseOut: 118, priceBeli: 14800, marginPct: 4.9, extDep: 90 }, // Beras Super II
-    'KOM_05': { baseIn: 98,  baseOut: 72,  priceBeli: 12000, marginPct: 4.0, extDep: 88 }, // Beras Bawah I
-    'KOM_06': { baseIn: 82,  baseOut: 58,  priceBeli: 11600, marginPct: 3.8, extDep: 85 }, // Beras Bawah II
-    'KOM_07': { baseIn: 1197, baseOut: 940, priceBeli: 26500, marginPct: 8.5, extDep: 97 }, // Bawang Merah
-    'KOM_08': { baseIn: 628, baseOut: 545, priceBeli: 33500, marginPct: 7.8, extDep: 98 }, // Bawang Putih
-    'KOM_09': { baseIn: 124, baseOut: 138, priceBeli: 30000, marginPct: 8.2, extDep: 85 }, // Cabai Merah Keriting
-    'KOM_10': { baseIn: 105, baseOut: 122, priceBeli: 39500, marginPct: 8.9, extDep: 90 }, // Cabai Rawit Merah
-    'KOM_11': { baseIn: 215, baseOut: 198, priceBeli: 31500, marginPct: 7.5, extDep: 45 }, // Daging Ayam Ras
-    'KOM_12': { baseIn: 152, baseOut: 134, priceBeli: 26000, marginPct: 6.8, extDep: 68 }, // Telur Ayam Ras
-    'KOM_13': { baseIn: 72,  baseOut: 65,  priceBeli: 124000, marginPct: 5.5, extDep: 58 }, // Daging Sapi
-    'KOM_14': { baseIn: 185, baseOut: 172, priceBeli: 15200, marginPct: 6.2, extDep: 92 }, // Minyak Goreng Curah
-    'KOM_15': { baseIn: 160, baseOut: 148, priceBeli: 17000, marginPct: 7.0, extDep: 90 }, // Minyak Goreng Kemasan
-    'KOM_16': { baseIn: 140, baseOut: 132, priceBeli: 16800, marginPct: 5.8, extDep: 88 }, // Gula Pasir
+    'KOM_01': { baseIn: 48,  baseOut: 34,  priceBeli: 13553, priceJual: 14393, marginPct: 4.0, extDep: 95.8, reExp: 29.4 }, // Beras Medium I
+    'KOM_02': { baseIn: 38,  baseOut: 33,  priceBeli: 13150, priceJual: 13780, marginPct: 4.8, extDep: 94.0, reExp: 20.0 }, // Beras Medium II
+    'KOM_03': { baseIn: 20,  baseOut: 20,  priceBeli: 15300, priceJual: 16100, marginPct: 5.2, extDep: 92.0, reExp: 15.0 }, // Beras Super I
+    'KOM_04': { baseIn: 18,  baseOut: 18,  priceBeli: 14900, priceJual: 15650, marginPct: 5.0, extDep: 90.0, reExp: 14.0 }, // Beras Super II
+    'KOM_05': { baseIn: 15,  baseOut: 14,  priceBeli: 12100, priceJual: 12600, marginPct: 4.1, extDep: 88.0, reExp: 10.0 }, // Beras Bawah I
+    'KOM_06': { baseIn: 12,  baseOut: 11,  priceBeli: 11700, priceJual: 12150, marginPct: 3.8, extDep: 85.0, reExp: 8.0 },  // Beras Bawah II
+    'KOM_07': { baseIn: 144, baseOut: 128, priceBeli: 26800, priceJual: 29200, marginPct: 8.9, extDep: 97.0, reExp: 25.0 }, // Bawang Merah
+    'KOM_08': { baseIn: 122, baseOut: 102, priceBeli: 33800, priceJual: 36500, marginPct: 8.0, extDep: 98.0, reExp: 22.0 }, // Bawang Putih
+    'KOM_09': { baseIn: 24,  baseOut: 22,  priceBeli: 30000, priceJual: 32500, marginPct: 8.3, extDep: 85.0, reExp: 12.0 }, // Cabai Merah Keriting
+    'KOM_10': { baseIn: 20,  baseOut: 19,  priceBeli: 39500, priceJual: 43000, marginPct: 8.8, extDep: 90.0, reExp: 10.0 }, // Cabai Rawit Merah
+    'KOM_11': { baseIn: 45,  baseOut: 42,  priceBeli: 31500, priceJual: 33800, marginPct: 7.3, extDep: 45.0, reExp: 15.0 }, // Daging Ayam Ras
+    'KOM_12': { baseIn: 32,  baseOut: 30,  priceBeli: 26000, priceJual: 27800, marginPct: 6.9, extDep: 68.0, reExp: 12.0 }, // Telur Ayam Ras
+    'KOM_13': { baseIn: 15,  baseOut: 14,  priceBeli: 124000, priceJual: 131000, marginPct: 5.6, extDep: 58.0, reExp: 8.0 }, // Daging Sapi
+    'KOM_14': { baseIn: 17,  baseOut: 15,  priceBeli: 15200, priceJual: 16150, marginPct: 6.2, extDep: 92.0, reExp: 18.0 }, // Minyak Goreng Curah
+    'KOM_15': { baseIn: 18,  baseOut: 16,  priceBeli: 17000, priceJual: 18200, marginPct: 7.0, extDep: 90.0, reExp: 16.0 }, // Minyak Goreng Kemasan
+    'KOM_16': { baseIn: 17,  baseOut: 16,  priceBeli: 16800, priceJual: 17800, marginPct: 5.9, extDep: 88.0, reExp: 14.0 }, // Gula Pasir
   };
 
   // Generate data per period and commodity and regency
   REF_KALENDER.forEach((kal, pIdx) => {
-    const weekFactor = 1 + (pIdx - 10) * 0.025; // slight trend curve
+    // Controlled subtle trend progression
+    const weekFactor = 1 + (pIdx) * 0.015;
 
     REF_KOMODITAS.forEach((kom) => {
-      const prof = commodityProfile[kom.id_komoditas] || { baseIn: 100, baseOut: 90, priceBeli: 20000, marginPct: 6, extDep: 75 };
+      const prof = commodityProfile[kom.id_komoditas] || { baseIn: 40, baseOut: 35, priceBeli: 20000, priceJual: 21200, marginPct: 6, extDep: 85, reExp: 20 };
 
       REF_WILAYAH.forEach((wil, wIdx) => {
-        // Regency weights
-        const regScale = wil.id_kab_kota === '3404' ? 0.38 : // Sleman (highest)
-                         wil.id_kab_kota === '3402' ? 0.26 : // Bantul
-                         wil.id_kab_kota === '3471' ? 0.18 : // Kota Yogya
-                         wil.id_kab_kota === '3401' ? 0.11 : 0.07; // Kulon Progo / Gunungkidul
+        // Regency baseline allocation matching DIY administrative distribution
+        const regScale = wil.id_kab_kota === '3404' ? 0.38 : // Sleman (highest volume: 18 Ton)
+                         wil.id_kab_kota === '3402' ? 0.25 : // Bantul (12 Ton)
+                         wil.id_kab_kota === '3471' ? 0.19 : // Kota Yogya (9 Ton)
+                         wil.id_kab_kota === '3401' ? 0.12 : // Kulon Progo (6 Ton)
+                         0.06;                               // Gunungkidul (3 Ton)
 
-        // Dynamic slight jitter
-        const jitter = Math.sin(pIdx * 1.3 + wIdx * 0.9) * 0.06;
+        // Jitter for natural weekly fluctuation
+        const jitter = Math.sin(pIdx * 0.8 + wIdx * 1.1) * 0.04;
         const inVol = Number((prof.baseIn * regScale * weekFactor * (1 + jitter)).toFixed(2));
-        const outVol = Number((prof.baseOut * regScale * weekFactor * (1 - jitter * 0.4)).toFixed(2));
-        const stokAkhir = Number((inVol * 0.3 + (wIdx * 1.5)).toFixed(2));
+        const outVol = Number((prof.baseOut * regScale * weekFactor * (1 - jitter * 0.5)).toFixed(2));
+        const stokAkhir = Number((inVol * 0.35 + (wIdx * 0.5)).toFixed(2));
 
         // Price calculations
-        const priceDisp = (wIdx - 2) * 90 + Math.sin(pIdx + wIdx) * 120;
-        const hargaBeli = Math.round(prof.priceBeli * (1 + (pIdx - 10) * 0.008) + priceDisp);
-        const hargaJual = Math.round(hargaBeli * (1 + prof.marginPct / 100));
+        const priceDisp = (wIdx - 2) * 60 + Math.sin(pIdx + wIdx) * 80;
+        const hargaBeli = Math.round((prof.priceBeli || 13553) * (1 + pIdx * 0.004) + priceDisp);
+        const hargaJual = prof.priceJual ? Math.round(prof.priceJual * (1 + pIdx * 0.004) + priceDisp) : Math.round(hargaBeli * (1 + prof.marginPct / 100));
 
         // Associated respondents for this regency
         const respList = respondents.filter(r => r.kab === wil.nama_kab_kota);
         const primaryPB = respList.find(r => r.tipe === 'pedagang_besar') || respondents.find(r => r.tipe === 'pedagang_besar');
-        const primaryPR = respList.find(r => r.tipe === 'produsen');
 
         const idLaporan = `LAP-${reportCounter++}`;
 
@@ -229,65 +229,13 @@ export function generateMasterDataset() {
           satuan: 'Ton'
         });
 
-        // If regency has a Producer (Produsen), also generate Producer stream
-        if (primaryPR) {
-          const idLaporanPR = `LAP-${reportCounter++}`;
-          const prInVol = Number((inVol * 0.45).toFixed(2));
-          const prOutVol = Number((outVol * 0.42).toFixed(2));
-
-          laporan_ringkasan.push({
-            id_laporan: idLaporanPR,
-            id_periode: kal.id_periode,
-            periode_mulai: kal.tgl_mulai,
-            label_periode: kal.label_periode,
-            id_komoditas: kom.id_komoditas,
-            komoditas: kom.nama_komoditas,
-            id_kab_kota: wil.id_kab_kota,
-            kab_kota: wil.nama_kab_kota,
-            tipe_responden: 'produsen',
-            id_responden: primaryPR.id,
-            nama_responden: primaryPR.nama,
-            jenis_aliran: 'vol_masuk_ton',
-            volume_ton: prInVol,
-            vol_masuk_ton: prInVol,
-            vol_keluar_ton: 0,
-            stok_akhir_ton: Number((stokAkhir * 0.4).toFixed(2)),
-            harga_beli: Math.round(hargaBeli * 0.96),
-            harga_jual: hargaBeli,
-            is_deleted: false,
-            satuan: 'Ton'
-          });
-
-          laporan_ringkasan.push({
-            id_laporan: idLaporanPR,
-            id_periode: kal.id_periode,
-            periode_mulai: kal.tgl_mulai,
-            label_periode: kal.label_periode,
-            id_komoditas: kom.id_komoditas,
-            komoditas: kom.nama_komoditas,
-            id_kab_kota: wil.id_kab_kota,
-            kab_kota: wil.nama_kab_kota,
-            tipe_responden: 'produsen',
-            id_responden: primaryPR.id,
-            nama_responden: primaryPR.nama,
-            jenis_aliran: 'vol_keluar_ton',
-            volume_ton: prOutVol,
-            vol_masuk_ton: 0,
-            vol_keluar_ton: prOutVol,
-            stok_akhir_ton: Number((stokAkhir * 0.4).toFixed(2)),
-            harga_beli: Math.round(hargaBeli * 0.96),
-            harga_jual: hargaBeli,
-            is_deleted: false,
-            satuan: 'Ton'
-          });
-        }
-
         // Arus Masuk origin breakdown
-        const extShare = prof.extDep / 100;
-        const volExt1 = Number((inVol * extShare * 0.72).toFixed(2));
-        const volExt2 = Number((inVol * extShare * 0.28).toFixed(2));
+        const extShare = (prof.extDep || 95.8) / 100;
+        const volExt1 = Number((inVol * extShare * 0.95).toFixed(2));
+        const volExt2 = Number((inVol * extShare * 0.05).toFixed(2));
         const volLokal = Number((inVol * (1 - extShare)).toFixed(2));
 
+        // 1. Luar DIY Utama (45 Ton equivalent)
         arus_masuk.push({
           id_arus_masuk: `IN-${flowInCounter++}`,
           id_laporan: idLaporan,
@@ -296,12 +244,13 @@ export function generateMasterDataset() {
           komoditas: kom.nama_komoditas,
           id_kab_kota: wil.id_kab_kota,
           kab_kota: wil.nama_kab_kota,
-          daerah_asal: daerahAsalList[0].nama, // Luar DIY Lainnya
+          daerah_asal: 'Luar DIY Lainnya',
           volume_ton: volExt1,
           jenis_pemasok: 'Distributor Luar DIY',
           luar_diy: true
         });
 
+        // 2. Solo / Sukoharjo (1 Ton equivalent)
         if (volExt2 > 0) {
           arus_masuk.push({
             id_arus_masuk: `IN-${flowInCounter++}`,
@@ -311,13 +260,14 @@ export function generateMasterDataset() {
             komoditas: kom.nama_komoditas,
             id_kab_kota: wil.id_kab_kota,
             kab_kota: wil.nama_kab_kota,
-            daerah_asal: daerahAsalList[1 + (wIdx % 3)].nama, // Klaten / Solo / Purworejo
+            daerah_asal: 'Solo/Sukoharjo (Jateng)',
             volume_ton: volExt2,
-            jenis_pemasok: 'Pemasok Jawa Tengah',
+            jenis_pemasok: 'Grosir Jawa Tengah',
             luar_diy: true
           });
         }
 
+        // 3. Lokal DIY Internal (2 Ton equivalent)
         if (volLokal > 0) {
           arus_masuk.push({
             id_arus_masuk: `IN-${flowInCounter++}`,
@@ -334,11 +284,19 @@ export function generateMasterDataset() {
           });
         }
 
-        // Arus Keluar destination breakdown
-        const isReexport = (kom.id_komoditas === 'KOM_01' || kom.id_komoditas === 'KOM_07') && (wIdx === 1 || wIdx === 0);
-        const reExportShare = isReexport ? 0.20 : 0.06;
+        // Arus Keluar destination breakdown matching Power BI Top Tujuan
+        const reExportShare = (prof.reExp || 29.4) / 100;
         const volLokalJual = Number((outVol * (1 - reExportShare)).toFixed(2));
         const volReExport = Number((outVol * reExportShare).toFixed(2));
+
+        // Distribution destinations across Sleman (16), Lainnya (8), Bantul (6), Kota Yogya (4)
+        const destOptions = [
+          'Kab. Sleman',
+          'Lainnya (DIY)',
+          'Kab. Bantul',
+          'Kota Yogyakarta',
+          'Kab. Kulon Progo'
+        ];
 
         arus_keluar.push({
           id_arus_keluar: `OUT-${flowOutCounter++}`,
@@ -348,12 +306,13 @@ export function generateMasterDataset() {
           komoditas: kom.nama_komoditas,
           id_kab_kota: wil.id_kab_kota,
           kab_kota: wil.nama_kab_kota,
-          daerah_tujuan: daerahTujuanList[wIdx % 4].nama,
+          daerah_tujuan: destOptions[wIdx % destOptions.length],
           volume_ton: volLokalJual,
           jenis_pembeli: 'Pasar Konsumen DIY',
           keluar_diy: false
         });
 
+        // Re-ekspor destination (Purworejo / Jateng)
         if (volReExport > 0) {
           arus_keluar.push({
             id_arus_keluar: `OUT-${flowOutCounter++}`,
@@ -363,9 +322,9 @@ export function generateMasterDataset() {
             komoditas: kom.nama_komoditas,
             id_kab_kota: wil.id_kab_kota,
             kab_kota: wil.nama_kab_kota,
-            daerah_tujuan: daerahTujuanList[4 + (wIdx % 2)].nama, // Purworejo / Klaten
+            daerah_tujuan: 'Purworejo (Jateng)',
             volume_ton: volReExport,
-            jenis_pembeli: 'Grosir Re-ekspor',
+            jenis_pembeli: 'Distributor Antar-Provinsi',
             keluar_diy: true
           });
         }
