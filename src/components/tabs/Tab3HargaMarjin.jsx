@@ -312,10 +312,10 @@ export function Tab3HargaMarjin() {
           </div>
           <div className="h-56">
             <ResponsiveContainer width="100%" height="100%">
-              <LineChart data={historicalTrends} margin={{ top: 10, right: 15, left: 10, bottom: 0 }}>
+              <LineChart data={historicalTrends} margin={{ top: 10, right: 15, left: 20, bottom: 0 }}>
                 <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" vertical={false} />
                 <XAxis dataKey="label" tick={{ fontSize: 9, fill: '#64748b' }} axisLine={false} tickLine={false} />
-                <YAxis tick={{ fontSize: 9, fill: '#64748b' }} axisLine={false} tickLine={false} tickFormatter={v => `Rp${(v/1000).toFixed(0)}k`} />
+                <YAxis tick={{ fontSize: 9, fill: '#64748b' }} axisLine={false} tickLine={false} tickFormatter={v => `Rp ${(v/1000).toFixed(0)} ribu`} />
                 <Tooltip
                   contentStyle={{ backgroundColor: '#0f172a', borderRadius: '8px', border: 'none', color: '#fff', fontSize: '11px' }}
                   formatter={(val, name) => [`Rp ${Number(val).toLocaleString('id-ID')}`, name === 'hargaBeli' ? 'Harga Beli' : 'Harga Jual']}
@@ -371,10 +371,10 @@ export function Tab3HargaMarjin() {
           </div>
           <div className="h-56">
             <ResponsiveContainer width="100%" height="100%">
-              <ScatterChart margin={{ top: 15, right: 15, bottom: 15, left: 15 }}>
+              <ScatterChart margin={{ top: 15, right: 15, bottom: 15, left: 20 }}>
                 <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" />
-                <XAxis type="number" dataKey="hargaBeli" name="Harga Beli" tickFormatter={(v) => `Rp${(v/1000).toFixed(0)}k`} tick={{ fontSize: 9 }} axisLine={false} tickLine={false} />
-                <YAxis type="number" dataKey="hargaJual" name="Harga Jual" tickFormatter={(v) => `Rp${(v/1000).toFixed(0)}k`} tick={{ fontSize: 9 }} axisLine={false} tickLine={false} />
+                <XAxis type="number" dataKey="hargaBeli" name="Harga Beli" tickFormatter={(v) => `Rp ${(v/1000).toFixed(0)} ribu`} tick={{ fontSize: 9 }} axisLine={false} tickLine={false} />
+                <YAxis type="number" dataKey="hargaJual" name="Harga Jual" tickFormatter={(v) => `Rp ${(v/1000).toFixed(0)} ribu`} tick={{ fontSize: 9 }} axisLine={false} tickLine={false} />
                 <ZAxis type="number" dataKey="volume" range={[40, 250]} name="Volume" />
                 <Tooltip
                   contentStyle={{ backgroundColor: '#0f172a', borderRadius: '8px', border: 'none', color: '#fff', fontSize: '10px' }}

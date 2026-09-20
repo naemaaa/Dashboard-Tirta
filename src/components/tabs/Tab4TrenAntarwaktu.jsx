@@ -273,10 +273,10 @@ export function Tab4TrenAntarwaktu() {
               </div>
               <div className="h-48 mt-1">
                 <ResponsiveContainer width="100%" height="100%">
-                  <LineChart data={historicalTrends} margin={{ top: 10, right: 10, left: 10, bottom: 25 }}>
+                  <LineChart data={historicalTrends} margin={{ top: 10, right: 10, left: 18, bottom: 25 }}>
                     <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" vertical={false} />
                     <XAxis dataKey="label" angle={-35} textAnchor="end" tick={{ fontSize: 8, fill: '#64748b' }} interval={0} axisLine={false} tickLine={false} />
-                    <YAxis tick={{ fontSize: 8, fill: '#64748b' }} axisLine={false} tickLine={false} tickFormatter={v => `Rp${(v/1000).toFixed(0)}k`} />
+                    <YAxis tick={{ fontSize: 8, fill: '#64748b' }} axisLine={false} tickLine={false} tickFormatter={v => `Rp ${(v/1000).toFixed(0)} ribu`} />
                     <Tooltip
                       contentStyle={{ backgroundColor: '#0f172a', borderRadius: '6px', border: 'none', color: '#fff', fontSize: '10px' }}
                       formatter={(val, name) => [`Rp ${Number(val).toLocaleString('id-ID')}`, name]}
