@@ -346,92 +346,88 @@ export function FoodFlowMap({
   };
 
   return (
-    <div className="clean-card bg-white overflow-hidden border border-slate-200/80 shadow-xs">
+    <div className="clean-card bg-white overflow-hidden">
       
-      {/* 1. Header & Controls Bar */}
-      <div className="p-4 border-b border-slate-200 bg-slate-50/80 flex flex-wrap items-center justify-between gap-3">
-        <div className="flex items-center gap-3">
-          <div className="w-9 h-9 rounded-xl bg-slate-900 text-white flex items-center justify-center shadow-xs">
-            <Compass className="w-5 h-5 text-amber-300" />
+      {/* 1. Header Controls Bar */}
+      <div className="p-4 border-b border-[#E4E7EC] flex flex-col md:flex-row md:items-center justify-between gap-3 bg-white">
+        
+        {/* Left: Mode Title */}
+        <div className="flex items-center gap-2.5">
+          <div className="w-8 h-8 rounded-xl bg-[#DCEAFA] text-[#0D3E77] flex items-center justify-center shrink-0">
+            <Compass className="w-4 h-4 text-[#12539E]" />
           </div>
           <div>
-            <div className="flex items-center gap-2">
-              <h3 className="text-sm font-bold text-slate-900">
-                {mapMode === 'flow' ? 'Peta Spasial Aliran Pangan (From-To Flow Map)' : 'Peta Sebaran Titik Responden (Pinpoint Facility Map)'}
-              </h3>
-              <span className="text-[10px] font-semibold bg-blue-100 text-blue-800 px-2 py-0.5 rounded-full border border-blue-200">
-                Leaflet GIS
-              </span>
-            </div>
-            <p className="text-[11px] text-slate-500">
-              {mapMode === 'flow'
-                ? `Visualisasi geografis rute pasokan komoditas ${selectedKomoditas} di D.I. Yogyakarta & sentra Jawa`
-                : `Titik koordinat presisi fasilitas Pedagang Besar (PB) & Produsen di D.I. Yogyakarta`}
+            <h3 className="text-xs sm:text-sm font-bold text-[#101828] uppercase tracking-wider">
+              {mapMode === 'flow' ? 'Peta Spasial Aliran Distribusi Komoditas' : 'Peta Sebaran Titik Responden & Sentra'}
+            </h3>
+            <p className="text-xs text-[#667085]">
+              {mapMode === 'flow' ? 'Visualisasi rute logistik inter-regional & intra-DIY' : 'Pinpoint lokasi pedagang besar & kelompok produsen'}
             </p>
           </div>
         </div>
 
-        {/* Action Controls & Mode Switcher */}
-        <div className="flex items-center gap-2 flex-wrap">
-          {/* Main Map Mode Switcher */}
-          <div className="inline-flex bg-slate-200/80 p-0.5 rounded-lg border border-slate-300">
+        {/* Right: Controls & Toggles */}
+        <div className="flex flex-wrap items-center gap-2.5">
+          
+          {/* Main Mode Toggle (§5.11 Segmented Pills) */}
+          <div className="inline-flex bg-[#F2F4F7] p-1 rounded-full border border-[#E4E7EC] text-xs">
             <button
               onClick={() => { setMapMode('flow'); setSelectedRespondent(null); }}
-              className={`px-3 py-1.5 text-xs font-bold rounded-md transition-all flex items-center gap-1.5 cursor-pointer ${
+              className={`px-3.5 py-1.5 text-xs font-semibold rounded-full transition-all flex items-center gap-1.5 cursor-pointer ${
                 mapMode === 'flow'
-                  ? 'bg-white text-slate-900 shadow-xs'
-                  : 'text-slate-600 hover:text-slate-900'
+                  ? 'bg-white text-[#0D3E77] font-bold shadow-xs'
+                  : 'text-[#667085] hover:text-[#101828]'
               }`}
             >
-              <Activity className="w-3.5 h-3.5 text-blue-600" />
+              <Activity className="w-3.5 h-3.5 text-[#1E74C7]" />
               <span>1. Aliran Pangan (From-To)</span>
             </button>
             <button
               onClick={() => { setMapMode('respondents'); setActiveRouteId(null); }}
-              className={`px-3 py-1.5 text-xs font-bold rounded-md transition-all flex items-center gap-1.5 cursor-pointer ${
+              className={`px-3.5 py-1.5 text-xs font-semibold rounded-full transition-all flex items-center gap-1.5 cursor-pointer ${
                 mapMode === 'respondents'
-                  ? 'bg-white text-slate-900 shadow-xs'
-                  : 'text-slate-600 hover:text-slate-900'
+                  ? 'bg-white text-[#0D3E77] font-bold shadow-xs'
+                  : 'text-[#667085] hover:text-[#101828]'
               }`}
             >
-              <MapPin className="w-3.5 h-3.5 text-emerald-600" />
-              <span>2. Titik Responden (PB & Produsen)</span>
+              <MapPin className="w-3.5 h-3.5 text-[#12B76A]" />
+              <span>2. Titik Responden</span>
             </button>
           </div>
 
           {/* Sub Controls for Flow Map */}
           {mapMode === 'flow' && (
-            <div className="inline-flex bg-white p-0.5 rounded-lg border border-slate-300 text-xs">
+            <div className="inline-flex bg-[#F2F4F7] p-1 rounded-full border border-[#E4E7EC] text-xs">
               <button
                 onClick={() => setFlowDirection('all')}
-                className={`px-2.5 py-1 rounded font-medium cursor-pointer ${flowDirection === 'all' ? 'bg-slate-900 text-white' : 'text-slate-600 hover:bg-slate-100'}`}
+                className={`px-3 py-1 rounded-full font-medium cursor-pointer ${flowDirection === 'all' ? 'bg-[#0A2E5C] text-white font-bold' : 'text-[#667085] hover:bg-white/60'}`}
               >
                 Semua
               </button>
               <button
                 onClick={() => setFlowDirection('inflow')}
-                className={`px-2.5 py-1 rounded font-medium cursor-pointer ${flowDirection === 'inflow' ? 'bg-emerald-600 text-white' : 'text-slate-600 hover:bg-slate-100'}`}
+                className={`px-3 py-1 rounded-full font-medium cursor-pointer ${flowDirection === 'inflow' ? 'bg-[#1E74C7] text-white font-bold' : 'text-[#667085] hover:bg-white/60'}`}
               >
-                🟢 Masuk
+                Masuk
               </button>
               <button
                 onClick={() => setFlowDirection('outflow')}
-                className={`px-2.5 py-1 rounded font-medium cursor-pointer ${flowDirection === 'outflow' ? 'bg-blue-600 text-white' : 'text-slate-600 hover:bg-slate-100'}`}
+                className={`px-3 py-1 rounded-full font-medium cursor-pointer ${flowDirection === 'outflow' ? 'bg-[#17B6A7] text-white font-bold' : 'text-[#667085] hover:bg-white/60'}`}
               >
-                🔵 Keluar
+                Keluar
               </button>
             </div>
           )}
 
           {/* Sub Controls for Respondent Map */}
           {mapMode === 'respondents' && (
-            <div className="inline-flex bg-white p-0.5 rounded-lg border border-slate-300 text-xs">
+            <div className="inline-flex bg-[#F2F4F7] p-1 rounded-full border border-[#E4E7EC] text-xs">
               {['Semua', 'Pedagang Besar', 'Produsen'].map((type) => (
                 <button
                   key={type}
                   onClick={() => setRespondentFilter(type)}
-                  className={`px-2.5 py-1 rounded font-medium cursor-pointer ${
-                    respondentFilter === type ? 'bg-slate-900 text-white' : 'text-slate-600 hover:bg-slate-100'
+                  className={`px-3 py-1 rounded-full font-medium cursor-pointer ${
+                    respondentFilter === type ? 'bg-[#0A2E5C] text-white font-bold' : 'text-[#667085] hover:bg-white/60'
                   }`}
                 >
                   {type === 'Pedagang Besar' ? '🏢 PB' : type === 'Produsen' ? '🌾 Produsen' : 'Semua'}
@@ -444,7 +440,7 @@ export function FoodFlowMap({
           <select
             value={tileStyle}
             onChange={(e) => setTileStyle(e.target.value)}
-            className="bg-white border border-slate-300 text-slate-700 text-xs rounded-lg px-2.5 py-1.5 outline-none font-medium cursor-pointer"
+            className="bg-[#F9FAFB] border border-[#E4E7EC] text-[#344054] text-xs rounded-xl px-3 py-1.5 outline-none font-medium cursor-pointer h-[34px]"
           >
             <option value="esri_street">Peta Wilayah Detail (ESRI)</option>
             <option value="esri_light">Peta Terang Minimalis</option>
@@ -456,7 +452,7 @@ export function FoodFlowMap({
           {/* Reset Map View Button */}
           <button
             onClick={handleResetView}
-            className="p-1.5 text-slate-600 hover:text-slate-900 bg-white hover:bg-slate-100 border border-slate-300 rounded-lg transition-colors cursor-pointer"
+            className="p-2 text-[#667085] hover:text-[#0D3E77] bg-white hover:bg-[#F2F4F7] border border-[#D0D5DD] rounded-full transition-colors cursor-pointer"
             title="Reset Posisi Peta ke DIY"
           >
             <RotateCcw className="w-3.5 h-3.5" />
@@ -465,96 +461,97 @@ export function FoodFlowMap({
       </div>
 
       {/* 2. Interactive Map Viewport */}
-      <div className="relative w-full h-[580px] bg-slate-100">
+      <div className="relative w-full h-[580px] bg-[#F2F7FD]">
         <div ref={mapContainerRef} className="w-full h-full z-0"></div>
 
         {/* Overlay Legend */}
-        <div className="absolute top-3 left-3 z-1000 bg-white/95 backdrop-blur-md p-3 rounded-xl border border-slate-200 text-slate-800 text-xs shadow-lg max-w-[220px]">
-          <div className="flex items-center gap-1.5 font-bold text-slate-900 border-b border-slate-200 pb-1 mb-1.5">
-            <Layers className="w-3.5 h-3.5 text-amber-500" />
+        <div className="absolute top-3 left-3 z-1000 bg-white/95 backdrop-blur-md p-3.5 rounded-2xl border border-[#E4E7EC] text-[#101828] text-xs shadow-lg max-w-[230px]">
+          <div className="flex items-center gap-2 font-bold text-[#101828] border-b border-[#E4E7EC] pb-1.5 mb-2">
+            <Layers className="w-4 h-4 text-[#C89B3C]" />
             <span>Keterangan Aliran</span>
           </div>
           {mapMode === 'flow' ? (
-            <div className="space-y-1.5 text-[11px]">
+            <div className="space-y-2 text-xs">
               <div className="flex items-center gap-2">
-                <span className="w-3 h-1 bg-emerald-600 rounded"></span>
-                <span>Arus Masuk (Sentra &rarr; DIY)</span>
+                <span className="w-3.5 h-1.5 bg-[#1E74C7] rounded"></span>
+                <span className="text-[#344054]">Arus Masuk (Sentra &rarr; DIY)</span>
               </div>
               <div className="flex items-center gap-2">
-                <span className="w-3 h-1 bg-blue-600 rounded"></span>
-                <span>Arus Keluar / Distribusi</span>
+                <span className="w-3.5 h-1.5 bg-[#17B6A7] rounded"></span>
+                <span className="text-[#344054]">Arus Keluar / Distribusi</span>
               </div>
               <div className="flex items-center gap-2">
-                <span className="w-2.5 h-2.5 rounded-full bg-sky-600 border border-white"></span>
-                <span>Simpul Hub DIY (5 Kab/Kota)</span>
+                <span className="w-2.5 h-2.5 rounded-full bg-[#0A2E5C] border-2 border-white shadow-xs"></span>
+                <span className="text-[#344054]">Simpul Hub DIY (5 Kab/Kota)</span>
               </div>
             </div>
           ) : (
-            <div className="space-y-1.5 text-[11px]">
+            <div className="space-y-2 text-xs">
               <div className="flex items-center gap-2">
-                <span className="w-4 h-4 rounded-full bg-blue-600 text-white flex items-center justify-center text-[9px]">🏢</span>
-                <span>Pedagang Besar (PB)</span>
+                <span className="w-5 h-5 rounded-full bg-[#1E74C7] text-white flex items-center justify-center text-[10px]">🏢</span>
+                <span className="text-[#344054]">Pedagang Besar (PB)</span>
               </div>
               <div className="flex items-center gap-2">
-                <span className="w-4 h-4 rounded-full bg-emerald-600 text-white flex items-center justify-center text-[9px]">🌾</span>
-                <span>Produsen / Gapoktan</span>
+                <span className="w-5 h-5 rounded-full bg-[#12B76A] text-white flex items-center justify-center text-[10px]">🌾</span>
+                <span className="text-[#344054]">Produsen / Gapoktan</span>
               </div>
             </div>
           )}
           {selectedNodeName && (
-            <div className="text-[10px] text-amber-700 font-bold pt-1.5 mt-1 border-t border-slate-200">
-              Fokus: {selectedNodeName}
+            <div className="text-[10px] text-[#0D3E77] font-bold pt-2 mt-2 border-t border-[#E4E7EC]">
+              Fokus Wilayah: {selectedNodeName}
             </div>
           )}
         </div>
       </div>
 
       {/* 3. Bottom Summary Panel (Top Routes / Facilities) */}
-      <div className="p-4 bg-slate-50 border-t border-slate-200">
+      <div className="p-5 bg-white border-t border-[#E4E7EC]">
         <div className="flex items-center justify-between mb-3">
           <div className="flex items-center gap-2">
-            <Boxes className="w-4 h-4 text-slate-700" />
-            <h4 className="text-xs font-bold text-slate-800 uppercase tracking-wider">
+            <Boxes className="w-4 h-4 text-[#0D3E77]" />
+            <h4 className="text-xs font-bold text-[#101828] uppercase tracking-wider">
               {mapMode === 'flow' ? `Rute Aliran Terbesar — Total: ${totalFlowVolume.toLocaleString('id-ID')} Ton (${routes.length} Rute)` : `Daftar Fasilitas Responden Terdaftar (${respondentLocations.length} Fasilitas)`}
             </h4>
           </div>
-          <span className="text-[11px] text-slate-500 font-medium">
+          <span className="text-xs text-[#667085] font-medium">
             Periode: {selectedPeriode} &bull; {selectedKomoditas}
           </span>
         </div>
 
         {mapMode === 'flow' ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-2.5">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3">
             {routes.slice(0, 4).map((r, i) => {
               const pct = totalFlowVolume > 0 ? ((r.volume / totalFlowVolume) * 100).toFixed(1) : 0;
+              const rankColor = i === 0 ? 'bg-[#C89B3C]' : i === 1 ? 'bg-[#98A2B3]' : 'bg-[#B3D4F2]';
               return (
                 <div
                   key={r.id}
                   onClick={() => setActiveRouteId(activeRouteId === r.id ? null : r.id)}
-                  className={`p-2.5 rounded-lg border transition-all cursor-pointer ${
+                  className={`p-3 rounded-xl border transition-all cursor-pointer ${
                     activeRouteId === r.id
-                      ? 'bg-amber-50 border-amber-300 ring-1 ring-amber-300'
-                      : 'bg-white border-slate-200 hover:border-slate-300 hover:bg-slate-50/80'
+                      ? 'bg-[#F2F7FD] border-[#1E74C7] ring-1 ring-[#1E74C7]'
+                      : 'bg-[#F9FAFB] border-[#E4E7EC] hover:border-[#D0D5DD] hover:bg-white'
                   }`}
                 >
-                  <div className="flex items-center justify-between text-[11px] mb-1">
-                    <span className={`font-bold px-1.5 py-0.2 rounded text-[10px] ${r.type === 'inflow' ? 'bg-emerald-100 text-emerald-800' : 'bg-blue-100 text-blue-800'}`}>
+                  <div className="flex items-center justify-between text-xs mb-1.5">
+                    <span className={`font-bold px-2 py-0.5 rounded-full text-[10px] ${r.type === 'inflow' ? 'bg-[#DCEAFA] text-[#0D3E77]' : 'bg-[rgba(23,182,167,0.12)] text-[#17B6A7]'}`}>
                       #{i + 1} {r.type === 'inflow' ? 'Masuk' : 'Keluar'}
                     </span>
-                    <span className="font-bold text-slate-700">{r.volume.toLocaleString('id-ID')} Ton</span>
+                    <span className="font-bold font-mono text-[#101828]">{r.volume.toLocaleString('id-ID')} Ton</span>
                   </div>
-                  <div className="flex items-center gap-1.5 text-xs font-semibold text-slate-900 truncate">
+                  <div className="flex items-center gap-1.5 text-xs font-semibold text-[#101828] truncate">
                     <span className="truncate">{r.from}</span>
-                    <ArrowRight className="w-3 h-3 text-slate-400 shrink-0" />
+                    <ArrowRight className="w-3 h-3 text-[#667085] shrink-0" />
                     <span className="truncate">{r.to}</span>
                   </div>
-                  <div className="w-full bg-slate-100 h-1.5 rounded-full overflow-hidden mt-2">
+                  <div className="w-full bg-[#E4E7EC] h-1.5 rounded-full overflow-hidden mt-2.5">
                     <div
-                      className={`h-full rounded-full ${r.type === 'inflow' ? 'bg-emerald-500' : 'bg-blue-500'}`}
+                      className={`h-full rounded-full ${r.type === 'inflow' ? 'bg-[#1E74C7]' : 'bg-[#17B6A7]'}`}
                       style={{ width: `${pct}%` }}
                     ></div>
                   </div>
-                  <div className="flex justify-between text-[10px] text-slate-400 mt-1">
+                  <div className="flex justify-between text-[10px] text-[#667085] mt-1.5 font-medium">
                     <span>{r.partnerType}</span>
                     <span>{pct}% Pangsa</span>
                   </div>
@@ -563,25 +560,25 @@ export function FoodFlowMap({
             })}
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2.5">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
             {respondentLocations.slice(0, 6).map((resp) => (
               <div
                 key={resp.id_responden}
                 onClick={() => setSelectedRespondent(resp)}
-                className={`p-2.5 rounded-lg border transition-all cursor-pointer ${
+                className={`p-3 rounded-xl border transition-all cursor-pointer ${
                   selectedRespondent?.id_responden === resp.id_responden
-                    ? 'bg-blue-50 border-blue-300 ring-1 ring-blue-300'
-                    : 'bg-white border-slate-200 hover:border-slate-300'
+                    ? 'bg-[#F2F7FD] border-[#1E74C7] ring-1 ring-[#1E74C7]'
+                    : 'bg-[#F9FAFB] border-[#E4E7EC] hover:border-[#D0D5DD] hover:bg-white'
                 }`}
               >
-                <div className="flex items-center justify-between text-[11px] mb-1">
-                  <span className={`font-bold px-1.5 py-0.2 rounded text-[10px] ${resp.tipe_responden.includes('Pedagang') ? 'bg-blue-100 text-blue-800' : 'bg-emerald-100 text-emerald-800'}`}>
+                <div className="flex items-center justify-between text-xs mb-1.5">
+                  <span className={`font-bold px-2 py-0.5 rounded-full text-[10px] ${resp.tipe_responden.includes('Pedagang') ? 'bg-[#DCEAFA] text-[#0D3E77]' : 'bg-[rgba(18,183,106,0.12)] text-[#12B76A]'}`}>
                     {resp.tipe_responden}
                   </span>
-                  <span className="text-[10px] font-medium text-slate-500">{resp.kabupaten}</span>
+                  <span className="text-[10px] font-medium text-[#667085]">{resp.kabupaten}</span>
                 </div>
-                <h5 className="text-xs font-bold text-slate-900 truncate">{resp.nama_responden}</h5>
-                <p className="text-[10px] text-slate-500 truncate mt-0.5">{resp.alamat}</p>
+                <h5 className="text-xs font-bold text-[#101828] truncate">{resp.nama_responden}</h5>
+                <p className="text-[10px] text-[#667085] truncate mt-0.5">{resp.alamat}</p>
               </div>
             ))}
           </div>

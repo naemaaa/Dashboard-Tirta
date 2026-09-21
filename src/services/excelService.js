@@ -2,25 +2,54 @@
 // Bank Indonesia KPw DIY · PSEKUIN UPN Veteran Yogyakarta
 
 import * as XLSX from 'xlsx';
-import { generateMasterDataset, REF_WILAYAH, REF_KOMODITAS, REF_KALENDER, REF_SATUAN } from '../data/seedData';
+import { generateMasterDataset, REF_WILAYAH, REF_KOMODITAS, REF_KALENDER, REF_SATUAN } from '../data/seedData.js';
+import { cleanDataset } from './dataCleaningService.js';
 
-const CACHE_KEY = 'dashboard_komoditas_diy_data_v5';
+const CACHE_KEY = 'dashboard_komoditas_diy_data_v8';
 
 export class ExcelService {
   /**
    * Fetch master dataset from static JSON with cache-busting
    */
   static async fetchMasterDatabase() {
+    const timestamp = Date.now();
+
+    // 1. Try Live Serverless API Proxy for OneDrive
     try {
-      const timestamp = Date.now();
+      const apiRes = await fetch(`/api/sync-onedrive?t=${timestamp}`, {
+        headers: { 'Cache-Control': 'no-cache', 'Pragma': 'no-cache' }
+      });
+      if (apiRes.ok) {
+        const contentType = apiRes.headers.get('content-type') || '';
+        if (contentType.includes('spreadsheet') || contentType.includes('octet-stream')) {
+          const buffer = await apiRes.arrayBuffer();
+          const parsed = await this.parseExcelBuffer(buffer);
+          this.cacheData(parsed);
+          return { data: parsed, source: 'onedrive_api_live', timestamp: new Date().toISOString() };
+        } else {
+          const parsed = await apiRes.json();
+          if (parsed && parsed.laporan_ringkasan && parsed.laporan_ringkasan.length > 0) {
+            const { cleanedDataset } = cleanDataset(parsed);
+            this.cacheData(cleanedDataset);
+            return { data: cleanedDataset, source: 'onedrive_api_live', timestamp: new Date().toISOString() };
+          }
+        }
+      }
+    } catch (apiErr) {
+      console.info('[ExcelService] API Proxy not available, falling back to static master JSON', apiErr);
+    }
+
+    // 2. Try static master database JSON
+    try {
       const res = await fetch(`/data/masterDatabase.json?t=${timestamp}`, {
         headers: { 'Cache-Control': 'no-cache', 'Pragma': 'no-cache' }
       });
       if (res.ok) {
         const parsed = await res.json();
         if (parsed && parsed.laporan_ringkasan && parsed.laporan_ringkasan.length > 0) {
-          this.cacheData(parsed);
-          return { data: parsed, source: 'network_master', timestamp: new Date().toISOString() };
+          const { cleanedDataset } = cleanDataset(parsed);
+          this.cacheData(cleanedDataset);
+          return { data: cleanedDataset, source: 'network_master', timestamp: new Date().toISOString() };
         }
       }
     } catch (err) {
@@ -42,8 +71,9 @@ export class ExcelService {
 
     // Ultimate fallback to runtime code generator
     const defaultData = generateMasterDataset();
-    this.cacheData(defaultData);
-    return { data: defaultData, source: 'local_master', timestamp: new Date().toISOString() };
+    const { cleanedDataset } = cleanDataset(defaultData);
+    this.cacheData(cleanedDataset);
+    return { data: cleanedDataset, source: 'local_master', timestamp: new Date().toISOString() };
   }
 
   /**
@@ -65,84 +95,126 @@ export class ExcelService {
   }
 
   /**
-   * Clear localStorage cache
+   * Clear localStorage cache (all versions)
    */
   static clearCache() {
     try {
+      // AUDIT FIX: v8 (versi aktif) ditambahkan agar refresh benar-benar membersihkan cache terkini
+      ['v1', 'v2', 'v3', 'v4', 'v5', 'v6', 'v7', 'v8'].forEach(v => {
+        localStorage.removeItem(`dashboard_komoditas_diy_data_${v}`);
+      });
+      // Juga hapus dengan CACHE_KEY lengkap untuk keamanan
       localStorage.removeItem(CACHE_KEY);
-      localStorage.removeItem('dashboard_komoditas_diy_data_v1');
-      localStorage.removeItem('dashboard_komoditas_diy_data_v2');
-      localStorage.removeItem('dashboard_komoditas_diy_data_v3');
     } catch (e) {
       console.warn('Failed to clear cache', e);
     }
   }
 
   /**
-   * Normalize and unpivot laporan_ringkasan for standard calculation engine
+   * Normalize and unpivot laporan_ringkasan for standard calculation engine.
+   * Handles both pre-normalized (long format) and wide format rows.
    */
-  static normalizeLaporanRingkasan(rawRows = []) {
+  static normalizeLaporanRingkasan(rawRows = [], komoditasRef = []) {
     const normalized = [];
 
+    // Build a lookup map for satuan_dasar by komoditas name (from REF_KOMODITAS)
+    const satuanDasarMap = new Map();
+    komoditasRef.forEach(k => {
+      satuanDasarMap.set(k.nama_komoditas.toLowerCase().trim(), k.satuan_dasar || 'Ton');
+      if (k.nama_singkat) satuanDasarMap.set(k.nama_singkat.toLowerCase().trim(), k.satuan_dasar || 'Ton');
+    });
+
+    const resolveSatuanDasar = (komoditasName) => {
+      if (!komoditasName) return 'Ton';
+      const key = komoditasName.toLowerCase().replace(/\s*\(ton\)|\s*\(liter\)/g, '').trim();
+      return satuanDasarMap.get(key) || 'Ton';
+    };
+
     rawRows.forEach((row, idx) => {
-      const idPeriode = row.id_periode || (row.periode_mulai ? `PER_2026_W${Math.min(38, Math.max(23, 23 + (idx % 16)))}` : 'PER_2026_W38');
+      const idPeriode = row.id_periode || 'PER_2026_W38';
       const kabKota = row.kab_kota_responden || row.kab_kota || 'Kab. Sleman';
       const komoditas = row.komoditas || 'Beras Medium I';
       const idResponden = row.id_responden || `R_${idx + 1}`;
-      const tipeResponden = (row.tipe_responden || 'PB').toLowerCase().includes('pb') || (row.tipe_responden || '').toLowerCase().includes('pedagang') ? 'pedagang_besar' : 'produsen';
+      const tipeResponden = (row.tipe_responden || 'PB').toLowerCase().includes('pb') ||
+        (row.tipe_responden || '').toLowerCase().includes('pedagang')
+        ? 'pedagang_besar' : 'produsen';
+      const satuanField = row.satuan || 'Ton';
+      const isDeleted = row.is_deleted || false;
 
-      // Check if row already has 'jenis_aliran'
-      if (row.jenis_aliran && typeof row.volume_ton !== 'undefined') {
+      // Resolve satuan_dasar for this commodity
+      const satuanDasar = resolveSatuanDasar(komoditas);
+      const isLiquid = satuanDasar === 'Liter';
+
+      // Check if row already has 'jenis_aliran' (long/normalized format)
+      if (row.jenis_aliran && (typeof row.volume_ton !== 'undefined' || typeof row.volume_liter !== 'undefined')) {
         normalized.push({
           ...row,
           is_deleted: isDeleted,
           id_periode: idPeriode,
           kab_kota: kabKota,
-          komoditas: komoditas,
+          komoditas,
           id_responden: idResponden,
           tipe_responden: tipeResponden,
           volume_ton: Number(row.volume_ton) || 0,
+          volume_liter: Number(row.volume_liter) || 0,
           harga_beli: Number(row.harga_beli) || 0,
-          harga_jual: Number(row.harga_jual) || 0
+          harga_jual: Number(row.harga_jual) || 0,
+          satuan: satuanField,
+          satuan_dasar: satuanDasar,
         });
         return;
       }
 
-      // If wide format with vol_masuk & vol_keluar columns
+      // Wide format with vol_masuk & vol_keluar columns
       const volMasuk = Number(row.vol_masuk) || 0;
       const volKeluar = Number(row.vol_keluar) || 0;
       const hargaBeli = Number(row.harga_beli) || 0;
       const hargaJual = Number(row.harga_jual) || 0;
 
-      // Row for Inflow (vol_masuk_ton)
+      // Use jenis_aliran suffix based on unit awareness
+      // For liquid commodities (Minyak Goreng): still use 'vol_masuk_ton' key for compatibility
+      // but route the numeric value into volume_liter, not volume_ton
+      const inflowType  = 'vol_masuk_ton';
+      const outflowType = 'vol_keluar_ton';
+
+      // Row for Inflow (vol_masuk)
       normalized.push({
-        row_id: row.row_id || `norm_in_${idx}`,
+        row_id: row.row_id ? `${row.row_id}_in` : `norm_in_${idx}`,
+        id_laporan: row.id_laporan ? `${row.id_laporan}_in` : `LAP_in_${idx}`,
         id_responden: idResponden,
         nama_responden: row.nama_responden || row.nama_usaha || `Responden ${idResponden}`,
         kab_kota: kabKota,
-        komoditas: komoditas,
+        komoditas,
         id_periode: idPeriode,
-        jenis_aliran: 'vol_masuk_ton',
-        volume_ton: volMasuk,
+        jenis_aliran: inflowType,
+        // Unit-aware volume routing: liquid goes to volume_liter, solid to volume_ton
+        volume_ton:   isLiquid ? 0 : volMasuk,
+        volume_liter: isLiquid ? volMasuk : 0,
         harga_beli: hargaBeli,
         harga_jual: hargaJual,
         tipe_responden: tipeResponden,
+        satuan: isLiquid ? 'Liter' : satuanField,
+        satuan_dasar: satuanDasar,
         is_deleted: isDeleted
       });
 
-      // Row for Outflow (vol_keluar_ton)
+      // Row for Outflow (vol_keluar)
       normalized.push({
         row_id: row.row_id ? `${row.row_id}_out` : `norm_out_${idx}`,
+        id_laporan: row.id_laporan ? `${row.id_laporan}_out` : `LAP_out_${idx}`,
         id_responden: idResponden,
         nama_responden: row.nama_responden || row.nama_usaha || `Responden ${idResponden}`,
         kab_kota: kabKota,
-        komoditas: komoditas,
+        komoditas,
         id_periode: idPeriode,
-        jenis_aliran: 'vol_keluar_ton',
-        volume_ton: volKeluar,
+        jenis_aliran: outflowType,
+        volume_ton:   isLiquid ? 0 : volKeluar,
+        volume_liter: isLiquid ? volKeluar : 0,
         harga_beli: hargaBeli,
         harga_jual: hargaJual,
         tipe_responden: tipeResponden,
+        satuan: isLiquid ? 'Liter' : satuanField,
+        satuan_dasar: satuanDasar,
         is_deleted: isDeleted
       });
     });
@@ -150,16 +222,18 @@ export class ExcelService {
     return normalized;
   }
 
+
+
   /**
    * Parse an ArrayBuffer / File object using SheetJS
    */
   static async parseExcelBuffer(arrayBuffer) {
     const workbook = XLSX.read(arrayBuffer, { type: 'array' });
     const result = {
-      REF_WILAYAH: REF_WILAYAH,
-      REF_KOMODITAS: REF_KOMODITAS,
-      REF_KALENDER: REF_KALENDER,
-      REF_SATUAN: REF_SATUAN,
+      REF_WILAYAH,
+      REF_KOMODITAS,
+      REF_KALENDER,
+      REF_SATUAN,
       laporan_ringkasan: [],
       arus_masuk: [],
       arus_keluar: [],
@@ -196,14 +270,16 @@ export class ExcelService {
       }
     });
 
-    // Fallback if sheets are structured under alternate names
+    // Fallback: use first sheet if no specific sheet found
     if (rawRingkasan.length === 0 && workbook.SheetNames.length > 0) {
       const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
       rawRingkasan = XLSX.utils.sheet_to_json(firstSheet, { defval: null });
     }
 
-    // Normalize and unpivot laporan_ringkasan
-    result.laporan_ringkasan = this.normalizeLaporanRingkasan(rawRingkasan);
+    // Normalize and unpivot laporan_ringkasan (pass komoditasRef for unit-aware routing)
+    const komoditasRefForNorm = result.REF_KOMODITAS?.length > 0 ? result.REF_KOMODITAS : REF_KOMODITAS;
+    result.laporan_ringkasan = this.normalizeLaporanRingkasan(rawRingkasan, komoditasRefForNorm);
+
 
     // Build respondents list
     const respondents = [];
@@ -239,8 +315,11 @@ export class ExcelService {
     if (result.respondents.length === 0) result.respondents = master.respondents;
     if (result.quality_issues.length === 0) result.quality_issues = master.quality_issues;
 
-    this.cacheData(result);
-    return result;
+    // Apply data cleaning pipeline
+    const { cleanedDataset } = cleanDataset(result);
+
+    this.cacheData(cleanedDataset);
+    return cleanedDataset;
   }
 
   /**

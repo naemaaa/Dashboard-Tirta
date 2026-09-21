@@ -89,21 +89,23 @@ export function DataModal() {
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs">
-      <div className="bg-white rounded-2xl shadow-2xl border border-slate-200 max-w-xl w-full overflow-hidden animate-in fade-in zoom-in-95 duration-150">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#071D3D]/60 backdrop-blur-xs">
+      <div className="bg-white rounded-2xl shadow-2xl border border-[#E4E7EC] max-w-xl w-full overflow-hidden animate-in fade-in zoom-in-95 duration-150">
         
         {/* Header */}
-        <div className="bg-[#1F3864] text-white px-6 py-4 flex items-center justify-between">
-          <div className="flex items-center gap-2.5">
-            <FileSpreadsheet className="w-5 h-5 text-amber-300" />
+        <div className="bg-[#0A2E5C] text-white px-6 py-4 flex items-center justify-between border-b border-[#071D3D]">
+          <div className="flex items-center gap-3">
+            <div className="w-8 h-8 rounded-lg bg-white/10 flex items-center justify-center">
+              <FileSpreadsheet className="w-4.5 h-4.5 text-[#C89B3C]" />
+            </div>
             <div>
-              <h3 className="text-base font-bold">Sumber Data & Sinkronisasi Excel</h3>
-              <p className="text-xs text-blue-200">Kajian Aliran Komoditas DIY · Bank Indonesia</p>
+              <h3 className="text-base font-bold tracking-tight">Sumber Data & Sinkronisasi Excel</h3>
+              <p className="text-xs text-[#B3D4F2]">Kajian Aliran Komoditas DIY · Bank Indonesia</p>
             </div>
           </div>
           <button
             onClick={() => setDataModalOpen(false)}
-            className="p-1 rounded-lg text-blue-200 hover:text-white hover:bg-white/10 transition-colors"
+            className="p-1.5 rounded-full text-[#B3D4F2] hover:text-white hover:bg-white/10 transition-colors cursor-pointer"
           >
             <X className="w-5 h-5" />
           </button>
@@ -113,21 +115,21 @@ export function DataModal() {
           
           {/* Status Message */}
           {uploadStatus && (
-            <div className={`p-3 rounded-lg text-xs flex items-center gap-2 ${
-              uploadStatus.type === 'success' ? 'bg-emerald-50 text-emerald-800 border border-emerald-200' :
-              uploadStatus.type === 'error' ? 'bg-rose-50 text-rose-800 border border-rose-200' :
-              'bg-blue-50 text-blue-800 border border-blue-200'
+            <div className={`p-3.5 rounded-xl text-xs flex items-center gap-2.5 ${
+              uploadStatus.type === 'success' ? 'bg-[#ECFDF3] text-[#027A48] border border-[#A6F4C5]' :
+              uploadStatus.type === 'error' ? 'bg-[#FEF3F2] text-[#B42318] border border-[#FECDCA]' :
+              'bg-[#F2F7FD] text-[#0D3E77] border border-[#B3D4F2]'
             }`}>
-              {uploadStatus.type === 'success' ? <CheckCircle2 className="w-4 h-4 text-emerald-600" /> :
-               uploadStatus.type === 'error' ? <AlertCircle className="w-4 h-4 text-rose-600" /> :
-               <RefreshCw className="w-4 h-4 text-blue-600 animate-spin" />}
+              {uploadStatus.type === 'success' ? <CheckCircle2 className="w-4 h-4 text-[#12B76A]" /> :
+               uploadStatus.type === 'error' ? <AlertCircle className="w-4 h-4 text-[#F04438]" /> :
+               <RefreshCw className="w-4 h-4 text-[#1E74C7] animate-spin" />}
               <span className="font-medium">{uploadStatus.msg}</span>
             </div>
           )}
 
           {/* Drag & Drop File Upload */}
           <div>
-            <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">
+            <label className="block text-xs font-bold text-[#101828] uppercase tracking-wider mb-2">
               Unggah File Excel (.xlsx / .xls)
             </label>
             <div
@@ -135,8 +137,8 @@ export function DataModal() {
               onDragLeave={handleDrag}
               onDragOver={handleDrag}
               onDrop={handleDrop}
-              className={`border-2 border-dashed rounded-xl p-6 text-center transition-all cursor-pointer ${
-                dragActive ? 'border-[#2E75B6] bg-blue-50/50' : 'border-slate-300 hover:border-slate-400 bg-slate-50/50'
+              className={`border-2 border-dashed rounded-2xl p-6 text-center transition-all cursor-pointer ${
+                dragActive ? 'border-[#1E74C7] bg-[#F2F7FD]' : 'border-[#D0D5DD] hover:border-[#1E74C7] bg-[#F9FAFB]'
               }`}
             >
               <input
@@ -147,11 +149,13 @@ export function DataModal() {
                 className="hidden"
               />
               <label htmlFor="excel-file-input" className="cursor-pointer flex flex-col items-center">
-                <Upload className="w-8 h-8 text-[#2E75B6] mb-2" />
-                <span className="text-xs font-bold text-slate-800">
+                <div className="w-12 h-12 rounded-full bg-[#DCEAFA] flex items-center justify-center mb-2">
+                  <Upload className="w-6 h-6 text-[#12539E]" />
+                </div>
+                <span className="text-xs font-bold text-[#101828]">
                   Tarik & lepas file Excel di sini atau klik untuk memilih
                 </span>
-                <span className="text-[11px] text-slate-500 mt-1">
+                <span className="text-xs text-[#667085] mt-1">
                   Mendukung sheet: <code>laporan_ringkasan</code>, <code>arus_masuk</code>, <code>arus_keluar</code>
                 </span>
               </label>
@@ -160,24 +164,24 @@ export function DataModal() {
 
           {/* OneDrive Sync Link Form */}
           <div>
-            <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">
+            <label className="block text-xs font-bold text-[#101828] uppercase tracking-wider mb-2">
               Atau Sinkronkan URL OneDrive / Excel Online
             </label>
             <form onSubmit={handleSyncUrl} className="flex gap-2">
               <div className="relative flex-1">
-                <Link className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
+                <Link className="w-4 h-4 text-[#667085] absolute left-3 top-1/2 -translate-y-1/2" />
                 <input
                   type="url"
                   placeholder="https://onedrive.live.com/download?cid=... (Tautan Publik)"
                   value={oneDriveUrl}
                   onChange={(e) => setOneDriveUrl(e.target.value)}
-                  className="w-full pl-9 pr-3 py-2 text-xs bg-slate-50 border border-slate-300 rounded-lg focus:ring-2 focus:ring-[#2E75B6] outline-none"
+                  className="w-full pl-9 pr-3 py-2 text-xs bg-[#F9FAFB] border border-[#D0D5DD] rounded-xl focus:border-[#1E74C7] outline-none"
                 />
               </div>
               <button
                 type="submit"
                 disabled={isLoading || !oneDriveUrl}
-                className="px-4 py-2 bg-[#2E75B6] hover:bg-blue-700 text-white text-xs font-bold rounded-lg disabled:opacity-50 transition-colors"
+                className="px-4 py-2 bg-[#0D3E77] hover:bg-[#0A2E5C] text-white text-xs font-bold rounded-xl disabled:opacity-50 transition-colors cursor-pointer"
               >
                 Sinkron
               </button>
@@ -185,12 +189,12 @@ export function DataModal() {
           </div>
 
           {/* Template Download & Reset */}
-          <div className="pt-4 border-t border-slate-100 flex items-center justify-between flex-wrap gap-2 text-xs">
+          <div className="pt-4 border-t border-[#E4E7EC] flex items-center justify-between flex-wrap gap-2 text-xs">
             <button
               onClick={handleDownloadTemplate}
-              className="flex items-center gap-1.5 text-blue-700 hover:text-blue-900 font-semibold"
+              className="flex items-center gap-1.5 text-[#0D3E77] hover:text-[#0A2E5C] font-semibold cursor-pointer"
             >
-              <Download className="w-4 h-4 text-blue-600" />
+              <Download className="w-4 h-4 text-[#1E74C7]" />
               <span>Unduh Template Excel Resmi (.xlsx)</span>
             </button>
 
@@ -199,10 +203,10 @@ export function DataModal() {
                 refreshData();
                 setDataModalOpen(false);
               }}
-              className="flex items-center gap-1 text-slate-600 hover:text-slate-800"
+              className="flex items-center gap-1 text-[#667085] hover:text-[#101828] cursor-pointer"
             >
               <RefreshCw className="w-3.5 h-3.5" />
-              <span>Gunakan Data Master Terkini (September 2026)</span>
+              <span>Gunakan Data Master Terkini</span>
             </button>
           </div>
 

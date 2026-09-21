@@ -9,32 +9,70 @@ import { Sparkles, Copy, Check, ChevronDown, ChevronUp, BrainCircuit } from 'luc
 
 export function ExecutiveIntelligenceBox({ tabId = 'tab1', title = 'Executive Intelligence & Insight Kebijakan' }) {
   const calculations = useCalculations();
-  const { selectedKomoditas, selectedWilayah, selectedPeriode } = useDashboardStore();
+  const { selectedKomoditas, selectedWilayah, selectedPeriode, selectedKlaster } = useDashboardStore();
   const [isGenerating, setIsGenerating] = useState(false);
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [copiedId, setCopiedId] = useState(null);
+  const [groqInsights, setGroqInsights] = useState(null);
+  const [engineType, setEngineType] = useState('Smart Synthesis');
 
-  // Generate insights based on tabId
-  let insights = [];
+  // Generate fallback insights based on tabId
+  let fallbackInsights = [];
   if (tabId === 'tab2') {
-    insights = AiNarrativeService.generateTab2Insights(calculations);
+    fallbackInsights = AiNarrativeService.generateTab2Insights(calculations);
   } else if (tabId === 'tab3') {
-    insights = AiNarrativeService.generateTab3Insights(calculations);
+    fallbackInsights = AiNarrativeService.generateTab3Insights(calculations);
   } else if (tabId === 'tab4') {
-    insights = AiNarrativeService.generateTab4Insights(calculations);
+    fallbackInsights = AiNarrativeService.generateTab4Insights(calculations);
   } else if (tabId === 'tab5') {
-    insights = AiNarrativeService.generateTab5Insights(calculations);
+    fallbackInsights = AiNarrativeService.generateTab5Insights(calculations);
   } else {
-    insights = AiNarrativeService.generateExecutiveInsights(calculations, {
+    fallbackInsights = AiNarrativeService.generateExecutiveInsights(calculations, {
       selectedKomoditas,
       selectedWilayah,
       selectedPeriode
     });
   }
 
-  const handleRegenerate = () => {
+  const insights = groqInsights || fallbackInsights;
+
+  const handleRegenerate = async () => {
     setIsGenerating(true);
-    setTimeout(() => setIsGenerating(false), 350);
+    try {
+      const payload = {
+        tabTitle: title,
+        selectedKomoditas: selectedKomoditas || 'Semua Komoditas',
+        selectedWilayah: selectedWilayah || 'Semua Wilayah DIY',
+        selectedPeriode: selectedPeriode || '2026-W38',
+        selectedKlaster: selectedKlaster || 'Semua Responden',
+        currentMetrics: calculations.currentMetrics || {},
+        deltas: calculations.deltas || {},
+        pctLuarDiy: calculations.pctLuarDiy || 0,
+        dominantUnit: calculations.dominantUnit || 'Ton'
+      };
+
+      const res = await fetch('/api/ai-advisor', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+
+      if (res.ok) {
+        const data = await res.json();
+        if (data.insights && Array.isArray(data.insights)) {
+          setGroqInsights(data.insights);
+          setEngineType('Groq LPU (GPT-120B)');
+          setIsGenerating(false);
+          return;
+        }
+      }
+    } catch (e) {
+      console.info('[AI Box] Groq request failed, using local model:', e);
+    }
+
+    setGroqInsights(null);
+    setEngineType('Smart Synthesis');
+    setTimeout(() => setIsGenerating(false), 300);
   };
 
   const handleCopy = (id, text) => {
@@ -44,25 +82,25 @@ export function ExecutiveIntelligenceBox({ tabId = 'tab1', title = 'Executive In
   };
 
   return (
-    <div className="bg-white rounded-xl border border-slate-200/90 shadow-2xs mb-5 overflow-hidden transition-all duration-200">
+    <div className="bg-white rounded-2xl border border-[#E4E7EC] shadow-2xs mb-5 overflow-hidden transition-all duration-200">
       
       {/* Header */}
-      <div className="px-4 py-3 sm:px-5 sm:py-3.5 flex items-center justify-between border-b border-slate-100 bg-gradient-to-r from-slate-50/80 via-white to-slate-50/50">
-        <div className="flex items-center gap-3">
-          <div className="w-8 h-8 rounded-lg bg-indigo-50 border border-indigo-100/80 flex items-center justify-center text-indigo-600 shadow-2xs shrink-0">
-            <BrainCircuit className="w-4 h-4 text-indigo-600" />
+      <div className="px-4 py-3.5 sm:px-5 sm:py-4 flex items-center justify-between border-b border-[#E4E7EC] bg-gradient-to-r from-[#F2F7FD] via-white to-[#F2F7FD]/50">
+        <div className="flex items-center gap-3.5">
+          <div className="w-9 h-9 rounded-xl bg-[#DCEAFA] border border-[#B3D4F2] flex items-center justify-center text-[#0D3E77] shadow-2xs shrink-0">
+            <BrainCircuit className="w-5 h-5 text-[#12539E]" />
           </div>
           <div>
             <div className="flex items-center gap-2">
-              <h2 className="text-xs sm:text-sm font-bold text-slate-900 m-0 tracking-tight">
+              <h2 className="text-xs sm:text-sm font-bold text-[#101828] m-0 tracking-tight">
                 {title}
               </h2>
-              <span className="text-[10px] font-semibold text-indigo-700 bg-indigo-50/80 border border-indigo-200/50 px-2 py-0.5 rounded-full flex items-center gap-1">
-                <Sparkles className="w-2.5 h-2.5 text-indigo-500" />
-                AI Synthesis
+              <span className="text-[10px] font-semibold text-[#0D3E77] bg-[#DCEAFA] border border-[#B3D4F2] px-2.5 py-0.5 rounded-full flex items-center gap-1">
+                <Sparkles className="w-2.5 h-2.5 text-[#1E74C7]" />
+                {engineType}
               </span>
             </div>
-            <p className="text-[11px] text-slate-500 hidden sm:block mt-0.5">
+            <p className="text-xs text-[#667085] hidden sm:block mt-0.5">
               Sintesis otomatis indikator neraca perdagangan & rekomendasi pengendalian inflasi TPID DIY
             </p>
           </div>
@@ -72,16 +110,16 @@ export function ExecutiveIntelligenceBox({ tabId = 'tab1', title = 'Executive In
           <button
             onClick={handleRegenerate}
             disabled={isGenerating}
-            className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-slate-700 bg-white hover:bg-slate-50 border border-slate-200 rounded-lg transition-all shadow-2xs active:scale-95 cursor-pointer"
+            className="flex items-center gap-1.5 px-3.5 py-1.5 text-xs font-semibold text-[#0D3E77] bg-white hover:bg-[#F2F7FD] border border-[#D0D5DD] rounded-full transition-all shadow-2xs active:scale-95 cursor-pointer"
             title="Perbarui analisis AI"
           >
-            <Sparkles className={`w-3.5 h-3.5 text-indigo-500 ${isGenerating ? 'animate-spin' : ''}`} />
+            <Sparkles className={`w-3.5 h-3.5 text-[#1E74C7] ${isGenerating ? 'animate-spin' : ''}`} />
             <span className="hidden sm:inline">{isGenerating ? 'Menganalisis...' : 'Perbarui Insight'}</span>
           </button>
 
           <button
             onClick={() => setIsCollapsed(!isCollapsed)}
-            className="p-1.5 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-lg transition-colors cursor-pointer"
+            className="p-1.5 text-[#667085] hover:text-[#101828] hover:bg-[#F2F4F7] rounded-full transition-colors cursor-pointer"
             title={isCollapsed ? "Tampilkan insight" : "Ciutkan insight"}
           >
             {isCollapsed ? <ChevronDown className="w-4 h-4" /> : <ChevronUp className="w-4 h-4" />}
@@ -91,50 +129,56 @@ export function ExecutiveIntelligenceBox({ tabId = 'tab1', title = 'Executive In
 
       {/* 3 Insight Columns */}
       {!isCollapsed && (
-        <div className="p-4 sm:p-5 grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-5 divide-y md:divide-y-0 md:divide-x divide-slate-100">
-          {insights.map((card, idx) => {
-            let badgeStyle = 'text-emerald-700 bg-emerald-50 border-emerald-200/70';
+        <div className="p-4 sm:p-5 grid grid-cols-1 md:grid-cols-3 gap-4">
+          {insights.map((card) => {
+            let badgeStyle = 'text-[#12B76A] bg-[rgba(18,183,106,0.1)] border-[#12B76A]/20';
             if (card.badgeColor === 'red') {
-              badgeStyle = 'text-rose-700 bg-rose-50 border-rose-200/70';
+              badgeStyle = 'text-[#F04438] bg-[rgba(240,68,56,0.1)] border-[#F04438]/20';
             } else if (card.badgeColor === 'amber' || card.badgeColor === 'yellow') {
-              badgeStyle = 'text-amber-800 bg-amber-50 border-amber-200/70';
+              badgeStyle = 'text-[#F79009] bg-[rgba(247,144,9,0.1)] border-[#F79009]/20';
             } else if (card.badgeColor === 'blue') {
-              badgeStyle = 'text-blue-700 bg-blue-50 border-blue-200/70';
+              badgeStyle = 'text-[#0D3E77] bg-[#DCEAFA] border-[#B3D4F2]';
             } else if (card.badgeColor === 'purple') {
-              badgeStyle = 'text-purple-700 bg-purple-50 border-purple-200/70';
+              badgeStyle = 'text-[#17B6A7] bg-[rgba(23,182,167,0.1)] border-[#17B6A7]/20';
             }
 
             return (
-              <div key={card.id} className={`${idx > 0 ? 'pt-3 md:pt-0 md:pl-5' : ''} flex flex-col justify-between`}>
+              <div 
+                key={card.id} 
+                className="bg-[#F9FAFB] hover:bg-[#F2F7FD]/70 border border-[#E4E7EC] rounded-2xl p-4 flex flex-col justify-between transition-all duration-200"
+              >
                 <div>
-                  <div className="flex items-center justify-between gap-2 mb-2">
-                    <span className="text-[11px] font-bold text-slate-800 uppercase tracking-wider">
+                  <div className="flex items-start justify-between gap-2 mb-2.5">
+                    <span className="text-[11px] font-bold text-[#101828] uppercase tracking-wider leading-tight">
                       {card.category}
                     </span>
-                    <span className={`text-[10px] font-bold px-2 py-0.5 rounded-md border shadow-2xs ${badgeStyle}`}>
+                    <span className={`text-[10px] font-bold px-2.5 py-0.5 rounded-full border shadow-2xs shrink-0 ${badgeStyle}`}>
                       {card.status}
                     </span>
                   </div>
 
-                  <p className="text-xs text-slate-600 leading-relaxed font-normal">
+                  <p className="text-xs text-[#344054] leading-relaxed font-normal">
                     {card.content}
                   </p>
                 </div>
 
-                <div className="flex items-center justify-between pt-3 mt-3 border-t border-slate-50 text-[10px] text-slate-400">
-                  <span className="font-medium text-slate-400">{card.timestamp}</span>
+                <div className="flex items-center justify-between gap-2 pt-3 mt-3 border-t border-[#E4E7EC]/80 text-[10px]">
+                  <span className="font-medium text-[#667085] truncate min-w-0 pr-1">
+                    {card.timestamp}
+                  </span>
                   <button
+                    type="button"
                     onClick={() => handleCopy(card.id, `${card.category}: ${card.content}`)}
-                    className="flex items-center gap-1 text-slate-500 hover:text-slate-800 transition-colors font-medium cursor-pointer"
+                    className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-[#667085] hover:text-[#0D3E77] hover:bg-white border border-transparent hover:border-[#D0D5DD] transition-all font-semibold shrink-0 cursor-pointer shadow-2xs"
                   >
                     {copiedId === card.id ? (
                       <>
-                        <Check className="w-3 h-3 text-emerald-600" />
-                        <span className="text-emerald-600 font-semibold">Tersalin</span>
+                        <Check className="w-3.5 h-3.5 text-[#12B76A]" />
+                        <span className="text-[#12B76A]">Tersalin</span>
                       </>
                     ) : (
                       <>
-                        <Copy className="w-3 h-3" />
+                        <Copy className="w-3.5 h-3.5" />
                         <span>Salin</span>
                       </>
                     )}

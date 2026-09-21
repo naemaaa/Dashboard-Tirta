@@ -8,20 +8,28 @@ export class AiNarrativeService {
   static generateExecutiveInsights(metrics = {}, globalFilters = {}) {
     const {
       currentMetrics = { volMasuk: 0, volKeluar: 0, neracaBersih: 0, statusNeraca: 'SEIMBANG', marginPct: 0, marginRp: 0, avgHargaBeli: 0, avgHargaJual: 0 },
-      deltas = { volMasukDelta: 0, volKeluarDelta: 0, hargaJualDelta: 0, neracaDelta: 0, marginDelta: 0 },
+      deltas = { volMasukDelta: 0, volKeluarDelta: 0, hargaJualDelta: 0, neracaDelta: 0, marginDelta: 0, isMultiPeriodeDelta: false },
       pctLuarDiy = 0,
       top5Origins = [],
       butterflyData = [],
       tab3MarginRanking = [],
       tab3RegionPrices = [],
       selectedKomoditas = 'Semua',
-      selectedWilayah = 'Semua Wilayah DIY'
+      selectedWilayah = 'Semua Wilayah DIY',
+      dominantUnit = 'Ton',  // unit label: 'Ton' | 'Liter' | 'Mixed'
     } = metrics;
 
     // 1. Card 1: Keseimbangan Pasokan
     const isSurplus = currentMetrics.statusNeraca === 'SURPLUS';
     const isDefisit = currentMetrics.statusNeraca === 'DEFISIT';
     
+    // Unit label yang tepat (Ton untuk solid, Liter untuk Minyak Goreng)
+    const unitLabel = dominantUnit === 'Liter' ? 'Liter' : 'Ton';
+    // Tambahkan disclaimer jika delta multi-periode
+    const multiPeriodeDisclaimer = deltas?.isMultiPeriodeDelta
+      ? ' (rata-rata per minggu dari multi-periode terpilih)'
+      : '';
+
     const sortedButterfly = Array.isArray(butterflyData) ? [...butterflyData].sort((a, b) => (b.neraca || 0) - (a.neraca || 0)) : [];
     const topSurplus = sortedButterfly[0];
     const topDeficit = sortedButterfly[sortedButterfly.length - 1];
@@ -33,9 +41,9 @@ export class AiNarrativeService {
     if (selectedKomoditas && selectedKomoditas !== 'Semua') {
       const netVal = Math.abs(currentMetrics.neracaBersih || 0).toLocaleString('id-ID', { maximumFractionDigits: 1 });
       const deltaSign = (deltas?.volMasukDelta || 0) >= 0 ? '+' : '';
-      card1Narrative = `Kondisi neraca komoditas ${selectedKomoditas} di ${selectedWilayah} berada dalam posisi ${currentMetrics.statusNeraca} sebesar ${currentMetrics.neracaBersih >= 0 ? '+' : '-'}${netVal} Ton. Arus pasokan masuk tercatat ${(currentMetrics.volMasuk || 0).toLocaleString('id-ID')} Ton (${deltaSign}${(deltas?.volMasukDelta || 0).toFixed(1)}% vs minggu lalu) dan volume penjualan/keluar mencapai ${(currentMetrics.volKeluar || 0).toLocaleString('id-ID')} Ton.`;
+      card1Narrative = `Kondisi neraca komoditas ${selectedKomoditas} di ${selectedWilayah} berada dalam posisi ${currentMetrics.statusNeraca} sebesar ${currentMetrics.neracaBersih >= 0 ? '+' : '-'}${netVal} ${unitLabel}. Arus pasokan masuk tercatat ${(currentMetrics.volMasuk || 0).toLocaleString('id-ID')} ${unitLabel}${multiPeriodeDisclaimer} (${deltaSign}${(deltas?.volMasukDelta || 0).toFixed(1)}% vs minggu lalu) dan volume penjualan/keluar mencapai ${(currentMetrics.volKeluar || 0).toLocaleString('id-ID')} ${unitLabel}.`;
     } else {
-      card1Narrative = `Total pasokan pangan DIY tercatat ${currentMetrics.statusNeraca} dengan agregat netto ${(currentMetrics.neracaBersih || 0) > 0 ? '+' : ''}${(currentMetrics.neracaBersih || 0).toFixed(1)} Ton. Surplus tertinggi dialami komoditas ${topSurplus?.komoditas || 'Beras Medium'} (+${topSurplus?.neraca || 31} Ton), sementara defisit terjadi pada ${topDeficit?.komoditas || 'Cabai Merah'} (${topDeficit?.neraca || -12} Ton).`;
+      card1Narrative = `Total pasokan pangan DIY tercatat ${currentMetrics.statusNeraca} dengan agregat netto ${(currentMetrics.neracaBersih || 0) > 0 ? '+' : ''}${(currentMetrics.neracaBersih || 0).toFixed(1)} ${unitLabel}. Surplus tertinggi dialami komoditas ${topSurplus?.komoditas || 'Beras Medium'} (+${topSurplus?.neraca || 31} ${unitLabel}), sementara defisit terjadi pada ${topDeficit?.komoditas || 'Cabai Merah'} (${topDeficit?.neraca || -12} ${unitLabel}).`;
     }
 
     // 2. Card 2: Ketergantungan Eksternal
@@ -61,7 +69,15 @@ export class AiNarrativeService {
       const prices = tab3RegionPrices.map(r => r.hargaJual).filter(p => p > 0);
       if (prices.length > 1) {
         const spread = Math.max(...prices) - Math.min(...prices);
-        card3Narrative += `Disparitas harga antar kabupaten/kota terpantau sebesar Rp ${spread.toLocaleString('id-ID')}/kg. Transmisi harga berlangsung stabil.`;
+        const avgPrice = prices.reduce((a, b) => a + b, 0) / prices.length;
+        // AUDIT FIX (W-6): Threshold disparitas sekarang RELATIF terhadap harga rata-rata komoditas,
+        // bukan nilai absolut Rp 1.500. Rp 1.500 tidak proporsional:
+        //   - Beras (Rp ~14rb/kg): 1500 = 10.7% → memang signifikan
+        //   - Daging Sapi (Rp ~130rb/kg): 1500 = 1.2% → tidak signifikan
+        // Threshold baru: spread > 5% dari harga rata-rata = disparitas bermakna
+        const spreadPct = avgPrice > 0 ? (spread / avgPrice) * 100 : 0;
+        const statusDisparitas = spreadPct > 5 ? 'tinggi' : 'terkendali';
+        card3Narrative += `Disparitas harga antar kabupaten/kota terpantau sebesar Rp ${spread.toLocaleString('id-ID')}/kg (${spreadPct.toFixed(1)}% dari harga rata-rata). Disparitas ${statusDisparitas} — transmisi harga berlangsung ${spreadPct > 5 ? 'perlu dipantau' : 'stabil'}.`;
       }
     }
 
@@ -172,8 +188,23 @@ export class AiNarrativeService {
       {
         id: 'tab3-insight-2',
         category: 'Disparitas Harga Antar Wilayah',
-        status: spread > 1500 ? 'Disparitas Tinggi' : 'Disparitas Terkendali',
-        badgeColor: spread > 1500 ? 'red' : 'green',
+        // AUDIT FIX (W-6): Threshold relatif (5% dari harga rata-rata) menggantikan Rp 1.500 absolut.
+        // Rp 1.500 tidak bermakna sama untuk beras (Rp 13rb) vs daging sapi (Rp 130rb).
+        status: (() => {
+          const prices = (tab3RegionPrices || []).map(r => r.hargaJual).filter(p => p > 0);
+          if (prices.length < 2) return 'Data Tidak Cukup';
+          const spread = Math.max(...prices) - Math.min(...prices);
+          const avg = prices.reduce((a, b) => a + b, 0) / prices.length;
+          const pct = avg > 0 ? (spread / avg) * 100 : 0;
+          return pct > 5 ? 'Disparitas Tinggi' : 'Disparitas Terkendali';
+        })(),
+        badgeColor: (() => {
+          const prices = (tab3RegionPrices || []).map(r => r.hargaJual).filter(p => p > 0);
+          if (prices.length < 2) return 'gray';
+          const spread = Math.max(...prices) - Math.min(...prices);
+          const avg = prices.reduce((a, b) => a + b, 0) / prices.length;
+          return avg > 0 && (spread / avg) * 100 > 5 ? 'red' : 'green';
+        })(),
         content: `Rentang disparitas harga jual antar kabupaten/kota di DIY berada pada selisih Rp ${spread.toLocaleString('id-ID')}/kg. Kota Yogyakarta dan Sleman menunjukkan harga jual relatif lebih tinggi karena biaya distribusi perkotaan.`,
         timestamp: 'Monitoring Disparitas'
       },

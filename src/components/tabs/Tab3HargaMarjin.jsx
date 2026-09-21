@@ -1,10 +1,8 @@
-// Tab 3: Harga Jual, Beli & Marjin Dagang
-// Bank Indonesia KPw DIY · PSEKUIN UPN Veteran Yogyakarta
-
 import React from 'react';
 import { useCalculations } from '../../hooks/useCalculations';
 import { useDashboardStore } from '../../store/useDashboardStore';
-import { REF_KOMODITAS, REF_WILAYAH, REF_KALENDER, REF_KLASTER_RESPONDEN } from '../../data/seedData';
+import { REF_WILAYAH } from '../../data/seedData';
+import { GlobalFilterBar } from '../common/GlobalFilterBar';
 import { ExecutiveIntelligenceBox } from '../executive/ExecutiveIntelligenceBox';
 import {
   ResponsiveContainer,
@@ -22,21 +20,16 @@ import {
   ZAxis,
   ReferenceLine
 } from 'recharts';
-import { RotateCcw, TrendingUp, TrendingDown, DollarSign, Percent, ShieldCheck } from 'lucide-react';
+import { TrendingUp, TrendingDown, DollarSign, Percent, ShieldCheck } from 'lucide-react';
 
 export function Tab3HargaMarjin() {
   const calculations = useCalculations();
   const {
-    selectedPeriode,
-    setSelectedPeriode,
-    selectedKomoditas,
-    setSelectedKomoditas,
-    selectedWilayah,
-    setSelectedWilayah,
-    selectedKlaster,
-    setSelectedKlaster,
-    resetFilters
+    selectedKomoditas = 'Beras Medium I',
+    setSelectedKomoditas
   } = useDashboardStore();
+
+  const komoditasLabel = (selectedKomoditas || 'Beras Medium I').replace(' (Ton)', '').replace(' (Liter)', '');
 
   const {
     currentMetrics,
@@ -48,179 +41,77 @@ export function Tab3HargaMarjin() {
     tab3RegionPrices = [],
     maxRegionPrice = 0,
     minRegionPrice = 0,
-    tab3SpiData
   } = calculations;
 
-  const currentKalender = REF_KALENDER.find(k => k.id_periode === selectedPeriode) || REF_KALENDER[REF_KALENDER.length - 1];
-
   const categoryColors = {
-    'Beras & Padi-padian': '#2563eb',
-    'Hortikultura & Sayuran': '#f59e0b',
-    'Peternakan & Daging': '#10b981',
-    'Minyak & Olahan': '#8b5cf6'
-  };
-
-  const [isResetting, setIsResetting] = React.useState(false);
-
-  const handleReset = () => {
-    setIsResetting(true);
-    resetFilters();
-    setTimeout(() => setIsResetting(false), 500);
+    'Beras & Padi-padian': '#1E74C7',
+    'Hortikultura & Sayuran': '#17B6A7',
+    'Peternakan & Daging': '#C89B3C',
+    'Minyak & Olahan': '#7DB4E8'
   };
 
   return (
     <div className="space-y-4">
       
-      {/* 1. Header & Slicers Bar */}
-      <div className="clean-card p-4 bg-white space-y-3.5 shadow-2xs">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-slate-100">
-          <div className="flex items-center gap-2.5">
-            <div className="w-9 h-9 rounded-lg bg-amber-500/10 text-amber-700 flex items-center justify-center shrink-0 border border-amber-200/60">
-              <DollarSign className="w-5 h-5" />
-            </div>
-            <div>
-              <div className="flex items-center gap-2 flex-wrap">
-                <h2 className="text-base font-bold text-slate-900 tracking-tight">
-                  Transmisi Harga & Marjin Tataniaga Pangan DIY
-                </h2>
-                <span className="text-[10px] font-bold bg-amber-100 text-amber-900 px-2 py-0.5 rounded border border-amber-200">
-                  Analisis Harga
-                </span>
-              </div>
-              <p className="text-[11px] text-slate-500 mt-0.5">
-                Monitoring kestabilan harga komoditas pangan, marjin tataniaga & disparitas wilayah DIY
-              </p>
-            </div>
-          </div>
-        </div>
-
-        {/* 5-Column Precision Slicer & Action Controls */}
-        <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-5 gap-2.5 items-end">
-          <div>
-            <label className="block text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-1">Periode</label>
-            <select
-              value={selectedPeriode}
-              onChange={(e) => setSelectedPeriode(e.target.value)}
-              className="w-full bg-slate-50 border border-slate-200 text-slate-800 text-xs rounded-lg px-2.5 py-2 outline-none font-medium cursor-pointer shadow-2xs hover:border-slate-300 transition-colors h-[38px]"
-            >
-              <option value="Semua">All Periode</option>
-              {REF_KALENDER.map((k) => (
-                <option key={k.id_periode} value={k.id_periode}>{k.label_periode}</option>
-              ))}
-            </select>
-          </div>
-
-          <div>
-            <label className="block text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-1">Komoditas</label>
-            <select
-              value={selectedKomoditas}
-              onChange={(e) => setSelectedKomoditas(e.target.value)}
-              className="w-full bg-slate-50 border border-slate-200 text-slate-800 text-xs rounded-lg px-2.5 py-2 outline-none font-medium cursor-pointer shadow-2xs hover:border-slate-300 transition-colors h-[38px]"
-            >
-              <option value="Semua">All Komoditas</option>
-              {REF_KOMODITAS.map(k => (
-                <option key={k.id_komoditas} value={k.nama_komoditas}>{k.nama_komoditas}</option>
-              ))}
-            </select>
-          </div>
-
-          <div>
-            <label className="block text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-1">Wilayah</label>
-            <select
-              value={selectedWilayah}
-              onChange={(e) => setSelectedWilayah(e.target.value)}
-              className="w-full bg-slate-50 border border-slate-200 text-slate-800 text-xs rounded-lg px-2.5 py-2 outline-none font-medium cursor-pointer shadow-2xs hover:border-slate-300 transition-colors h-[38px]"
-            >
-              <option value="Semua Wilayah DIY">All Wilayah</option>
-              {REF_WILAYAH.map(w => (
-                <option key={w.id_kab_kota} value={w.nama_kab_kota}>{w.nama_kab_kota}</option>
-              ))}
-            </select>
-          </div>
-
-          <div>
-            <label className="block text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-1">Jenis Responden</label>
-            <select
-              value={selectedKlaster}
-              onChange={(e) => setSelectedKlaster(e.target.value)}
-              className="w-full bg-slate-50 border border-slate-200 text-slate-800 text-xs rounded-lg px-2.5 py-2 outline-none font-medium cursor-pointer shadow-2xs hover:border-slate-300 transition-colors h-[38px]"
-            >
-              <option value="semua">All Responden</option>
-              {REF_KLASTER_RESPONDEN.map(kl => (
-                <option key={kl.id} value={kl.id}>{kl.label}</option>
-              ))}
-            </select>
-          </div>
-
-          <div className="col-span-2 sm:col-span-2 lg:col-span-1">
-            <button
-              onClick={handleReset}
-              className="w-full h-[38px] flex items-center justify-center gap-2 px-3 text-xs font-semibold text-slate-700 hover:text-slate-950 bg-slate-100 hover:bg-slate-200 active:bg-slate-300 border border-slate-300 rounded-lg transition-all cursor-pointer shadow-2xs active:scale-[0.98]"
-              title="Reset Semua Filter ke Nilai Default"
-            >
-              <RotateCcw className={`w-3.5 h-3.5 text-slate-600 transition-transform ${isResetting ? 'animate-spin' : ''}`} />
-              <span>Reset Filter</span>
-            </button>
-          </div>
-        </div>
-      </div>
+      {/* 1. UNIFIED GLOBAL SLICER BAR */}
+      <GlobalFilterBar showBadge={false} />
 
       {/* 2. 5 Price KPIs */}
       <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
-        <div className="clean-card p-3.5 bg-white">
-          <div className="text-[10px] font-semibold text-slate-500 uppercase tracking-wider mb-1">Rerata Harga Beli</div>
-          <div className="text-xl font-extrabold text-slate-900 tracking-tight">
+        <div className="clean-card p-4 bg-white">
+          <div className="text-[10px] font-semibold text-[#667085] uppercase tracking-wider mb-1">Rerata Harga Beli</div>
+          <div className="text-xl sm:text-2xl font-bold text-[#101828] tracking-tight tabular-nums">
             Rp {Math.round(currentMetrics.avgHargaBeli).toLocaleString('id-ID')}
-            <span className="text-xs font-normal text-slate-400 ml-0.5">/kg</span>
+            <span className="text-xs font-normal text-[#667085] ml-1">/kg</span>
           </div>
-          <div className="text-[10px] text-slate-400 mt-1">Tingkat Distributor</div>
+          <div className="text-xs text-[#667085] mt-1">Tingkat Distributor</div>
         </div>
 
-        <div className="clean-card p-3.5 bg-white">
-          <div className="text-[10px] font-semibold text-slate-500 uppercase tracking-wider mb-1">Rerata Harga Jual</div>
-          <div className="text-xl font-extrabold text-slate-900 tracking-tight">
+        <div className="clean-card p-4 bg-white">
+          <div className="text-[10px] font-semibold text-[#667085] uppercase tracking-wider mb-1">Rerata Harga Jual</div>
+          <div className="text-xl sm:text-2xl font-bold text-[#101828] tracking-tight tabular-nums">
             Rp {Math.round(currentMetrics.avgHargaJual).toLocaleString('id-ID')}
-            <span className="text-xs font-normal text-slate-400 ml-0.5">/kg</span>
+            <span className="text-xs font-normal text-[#667085] ml-1">/kg</span>
           </div>
-          <div className="text-[10px] text-slate-400 mt-1">Tingkat Grosir / Pedagang</div>
+          <div className="text-xs text-[#667085] mt-1">Tingkat Grosir / Pedagang</div>
         </div>
 
-        <div className="clean-card p-3.5 bg-white">
-          <div className="text-[10px] font-semibold text-slate-500 uppercase tracking-wider mb-1">Spread Marjin</div>
-          <div className="text-xl font-extrabold text-slate-900 tracking-tight">
+        <div className="clean-card p-4 bg-white">
+          <div className="text-[10px] font-semibold text-[#667085] uppercase tracking-wider mb-1">Spread Marjin</div>
+          <div className="text-xl sm:text-2xl font-bold text-[#101828] tracking-tight tabular-nums">
             Rp {Math.round(currentMetrics.marginRp).toLocaleString('id-ID')}
-            <span className="text-xs font-normal text-slate-400 ml-0.5">/kg</span>
+            <span className="text-xs font-normal text-[#667085] ml-1">/kg</span>
           </div>
-          <div className="text-[10px] text-slate-400 mt-1">Selisih Jual - Beli</div>
+          <div className="text-xs text-[#667085] mt-1">Selisih Jual - Beli</div>
         </div>
 
-        <div className="clean-card p-3.5 bg-white">
-          <div className="text-[10px] font-semibold text-slate-500 uppercase tracking-wider mb-1">Persentase Marjin</div>
-          <div className="text-xl font-extrabold text-slate-900 tracking-tight">
+        <div className="clean-card p-4 bg-white">
+          <div className="text-[10px] font-semibold text-[#667085] uppercase tracking-wider mb-1">Persentase Marjin</div>
+          <div className="text-xl sm:text-2xl font-bold text-[#101828] tracking-tight tabular-nums">
             {currentMetrics.marginPct.toFixed(1)}%
           </div>
           <div className="mt-1">
-            <span className={`inline-block px-1.5 py-0.5 rounded text-[10px] font-bold ${
-              currentMetrics.marginPct > 5 ? 'bg-emerald-50 text-emerald-700' :
-              currentMetrics.marginPct >= 1 ? 'bg-amber-50 text-amber-700' :
-              'bg-rose-50 text-rose-700'
+            <span className={`inline-block px-2 py-0.5 rounded-full text-[10px] font-bold ${
+              currentMetrics.marginPct > 5 ? 'bg-[rgba(18,183,106,0.12)] text-[#12B76A]' :
+              currentMetrics.marginPct >= 1 ? 'bg-[rgba(247,144,9,0.12)] text-[#F79009]' :
+              'bg-[rgba(240,68,56,0.12)] text-[#F04438]'
             }`}>
               {currentMetrics.marginLabel}
             </span>
           </div>
         </div>
 
-        <div className="clean-card p-3.5 bg-white">
-          <div className="text-[10px] font-semibold text-slate-500 uppercase tracking-wider mb-1">Dinamika vs Mgg Lalu</div>
-          <div className="text-xl font-extrabold text-slate-900 tracking-tight flex items-center gap-1">
+        <div className="clean-card p-4 bg-white">
+          <div className="text-[10px] font-semibold text-[#667085] uppercase tracking-wider mb-1">Dinamika vs Mgg Lalu</div>
+          <div className="text-xl sm:text-2xl font-bold text-[#101828] tracking-tight flex items-center gap-1.5 tabular-nums">
             <span>{deltas.hargaJualDelta >= 0 ? '+' : ''}{deltas.hargaJualDelta.toFixed(1)}%</span>
             {deltas.hargaJualDelta >= 0 ? (
-              <TrendingUp className="w-4 h-4 text-emerald-600" />
+              <TrendingUp className="w-4 h-4 text-[#12B76A]" />
             ) : (
-              <TrendingDown className="w-4 h-4 text-rose-600" />
+              <TrendingDown className="w-4 h-4 text-[#F04438]" />
             )}
           </div>
-          <div className="text-[10px] text-slate-400 mt-1">Pergerakan Harga Jual</div>
+          <div className="text-xs text-[#667085] mt-1">Pergerakan Harga Jual</div>
         </div>
       </div>
 
@@ -228,65 +119,65 @@ export function Tab3HargaMarjin() {
       <ExecutiveIntelligenceBox tabId="tab3" title="Executive Intelligence · Analisis Harga & Transmisi Marjin" />
 
       {/* 4. Matriks Harga & Marjin */}
-      <div className="clean-card p-4 bg-white">
+      <div className="clean-card p-5 bg-white">
         <div className="flex items-center justify-between mb-3">
           <div>
-            <h3 className="text-xs font-bold text-slate-900 uppercase tracking-wider">
+            <h3 className="text-xs font-bold text-[#101828] uppercase tracking-wider">
               Matriks Harga & Marjin Tataniaga per Komoditas × Wilayah
             </h3>
-            <p className="text-[11px] text-slate-500">Harga Beli, Jual (Rp/kg), dan Marjin (%) per Wilayah DIY</p>
+            <p className="text-xs text-[#667085]">Harga Beli, Jual (Rp/kg), dan Marjin (%) per Wilayah DIY</p>
           </div>
         </div>
 
-        <div className="overflow-x-auto border border-slate-200/80 rounded-lg max-h-72">
+        <div className="overflow-x-auto border border-[#E4E7EC] rounded-xl max-h-72">
           <table className="w-full text-xs text-left">
-            <thead className="bg-slate-50 text-slate-700 text-[10px] font-semibold sticky top-0 z-20">
-              <tr className="border-b border-slate-200">
-                <th rowSpan="2" className="px-3 py-2 border-r border-slate-200 bg-slate-50 sticky left-0 z-30">Komoditas</th>
+            <thead className="bg-[#F9FAFB] text-[#344054] text-[10px] font-semibold sticky top-0 z-20">
+              <tr className="border-b border-[#E4E7EC]">
+                <th rowSpan="2" className="px-3 py-2 border-r border-[#E4E7EC] bg-[#F9FAFB] sticky left-0 z-30">Komoditas</th>
                 {REF_WILAYAH.map(w => (
-                  <th key={w.id_kab_kota} colSpan="3" className="px-2 py-1 text-center border-r border-slate-200">{w.nama_kab_kota.replace('Kab. ', '')}</th>
+                  <th key={w.id_kab_kota} colSpan="3" className="px-2 py-1.5 text-center border-r border-[#E4E7EC]">{w.nama_kab_kota.replace('Kab. ', '')}</th>
                 ))}
-                <th colSpan="3" className="px-2 py-1 text-center bg-slate-100 font-bold">Rata-rata DIY</th>
+                <th colSpan="3" className="px-2 py-1.5 text-center bg-[#F2F4F7] font-bold">Rata-rata DIY</th>
               </tr>
-              <tr className="border-b border-slate-200 bg-slate-50/70 text-[9.5px] text-slate-500">
+              <tr className="border-b border-[#E4E7EC] bg-[#F9FAFB]/70 text-[9.5px] text-[#667085]">
                 {REF_WILAYAH.map(w => (
                   <React.Fragment key={`sub-p-${w.id_kab_kota}`}>
                     <th className="px-1.5 py-1 text-right">Beli</th>
                     <th className="px-1.5 py-1 text-right">Jual</th>
-                    <th className="px-1.5 py-1 text-right font-bold border-r border-slate-200">M%</th>
+                    <th className="px-1.5 py-1 text-right font-bold border-r border-[#E4E7EC]">M%</th>
                   </React.Fragment>
                 ))}
-                <th className="px-1.5 py-1 text-right bg-slate-100 font-medium">Beli</th>
-                <th className="px-1.5 py-1 text-right bg-slate-100 font-medium">Jual</th>
-                <th className="px-1.5 py-1 text-right bg-slate-100 font-bold">M%</th>
+                <th className="px-1.5 py-1 text-right bg-[#F2F4F7] font-medium">Beli</th>
+                <th className="px-1.5 py-1 text-right bg-[#F2F4F7] font-medium">Jual</th>
+                <th className="px-1.5 py-1 text-right bg-[#F2F4F7] font-bold">M%</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-100 bg-white">
+            <tbody className="divide-y divide-[#F2F4F7] bg-white">
               {tab3PriceMatrix.map(row => {
                 const isSelected = row.komoditas === selectedKomoditas;
                 return (
                   <tr
                     key={row.id_komoditas}
                     onClick={() => setSelectedKomoditas(row.komoditas)}
-                    className={`hover:bg-slate-50 cursor-pointer transition-colors ${isSelected ? 'bg-blue-50/60 font-semibold' : ''}`}
+                    className={`hover:bg-[#F2F7FD] cursor-pointer transition-colors ${isSelected ? 'bg-[#F2F7FD] font-semibold' : ''}`}
                   >
-                    <td className="px-3 py-1.5 whitespace-nowrap border-r border-slate-100 sticky left-0 bg-white font-medium text-slate-800">
-                      {row.komoditas.replace(' (Ton)', '')}
+                    <td className="px-3 py-1.5 whitespace-nowrap border-r border-[#E4E7EC] sticky left-0 bg-white font-medium text-[#101828]">
+                      {row.komoditas.replace(' (Ton)', '').replace(' (Liter)', '')}
                     </td>
                     {REF_WILAYAH.map(w => {
                       const p = row.wilayahPrices[w.nama_kab_kota] || { hargaBeli: 0, hargaJual: 0, marginPct: 0 };
-                      const badge = p.marginPct > 5 ? 'text-emerald-700' : p.marginPct >= 1 ? 'text-amber-700' : 'text-rose-600';
+                      const badge = p.marginPct > 5 ? 'text-[#12B76A]' : p.marginPct >= 1 ? 'text-[#F79009]' : 'text-[#F04438]';
                       return (
                         <React.Fragment key={`p-${w.id_kab_kota}`}>
-                          <td className="px-1.5 py-1.5 text-right font-mono text-[10.5px] text-slate-400">{p.hargaBeli ? p.hargaBeli.toLocaleString('id-ID') : '-'}</td>
-                          <td className="px-1.5 py-1.5 text-right font-mono text-[10.5px] text-slate-700">{p.hargaJual ? p.hargaJual.toLocaleString('id-ID') : '-'}</td>
-                          <td className={`px-1.5 py-1.5 text-right font-mono text-[10.5px] border-r border-slate-100 font-semibold ${badge}`}>{p.marginPct}%</td>
+                          <td className="px-1.5 py-1.5 text-right font-mono text-[10.5px] text-[#98A2B3]">{p.hargaBeli ? p.hargaBeli.toLocaleString('id-ID') : '-'}</td>
+                          <td className="px-1.5 py-1.5 text-right font-mono text-[10.5px] text-[#344054]">{p.hargaJual ? p.hargaJual.toLocaleString('id-ID') : '-'}</td>
+                          <td className={`px-1.5 py-1.5 text-right font-mono text-[10.5px] border-r border-[#E4E7EC] font-semibold ${badge}`}>{p.marginPct}%</td>
                         </React.Fragment>
                       );
                     })}
-                    <td className="px-1.5 py-1.5 text-right font-mono text-[10.5px] bg-slate-50 text-slate-500">{row.avgBeliAll.toLocaleString('id-ID')}</td>
-                    <td className="px-1.5 py-1.5 text-right font-mono text-[10.5px] bg-slate-50 font-medium text-slate-900">{row.avgJualAll.toLocaleString('id-ID')}</td>
-                    <td className={`px-1.5 py-1.5 text-right font-mono font-bold text-[10.5px] bg-slate-50 ${row.avgMarginPct > 5 ? 'text-emerald-700' : row.avgMarginPct >= 1 ? 'text-amber-700' : 'text-rose-600'}`}>{row.avgMarginPct}%</td>
+                    <td className="px-1.5 py-1.5 text-right font-mono text-[10.5px] bg-[#F9FAFB] text-[#667085]">{row.avgBeliAll.toLocaleString('id-ID')}</td>
+                    <td className="px-1.5 py-1.5 text-right font-mono text-[10.5px] bg-[#F9FAFB] font-medium text-[#101828]">{row.avgJualAll.toLocaleString('id-ID')}</td>
+                    <td className={`px-1.5 py-1.5 text-right font-mono font-bold text-[10.5px] bg-[#F9FAFB] ${row.avgMarginPct > 5 ? 'text-[#12B76A]' : row.avgMarginPct >= 1 ? 'text-[#F79009]' : 'text-[#F04438]'}`}>{row.avgMarginPct}%</td>
                   </tr>
                 );
               })}
@@ -297,59 +188,63 @@ export function Tab3HargaMarjin() {
 
       {/* 5. Tren Harga & Ranking Marjin */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-3">
-        <div className="clean-card p-4 lg:col-span-7 bg-white">
+        <div className="clean-card p-5 lg:col-span-7 bg-white">
           <div className="flex items-center justify-between mb-2">
             <div>
-              <h3 className="text-xs font-bold text-slate-900 uppercase tracking-wider">
-                Tren Harga Beli vs Jual ({selectedKomoditas.replace(' (Ton)', '')})
+              <h3 className="text-xs font-bold text-[#101828] uppercase tracking-wider">
+                Tren Harga Beli vs Jual ({komoditasLabel})
               </h3>
-              <p className="text-[11px] text-slate-500">Perkembangan harga historis mingguan (Rp/kg)</p>
+              <p className="text-xs text-[#667085]">Perkembangan harga historis mingguan (Rp/kg)</p>
             </div>
-            <div className="flex items-center gap-3 text-[11px] font-medium">
-              <span className="flex items-center gap-1 text-amber-700"><span className="w-2.5 h-2.5 rounded-full bg-amber-500"></span> Beli</span>
-              <span className="flex items-center gap-1 text-emerald-700"><span className="w-2.5 h-2.5 rounded-full bg-emerald-600"></span> Jual</span>
+            <div className="flex items-center gap-3 text-xs font-medium">
+              <span className="flex items-center gap-1.5 text-[#C89B3C]"><span className="w-2.5 h-2.5 rounded-full bg-[#C89B3C]"></span> Harga Beli</span>
+              <span className="flex items-center gap-1.5 text-[#1E74C7]"><span className="w-2.5 h-2.5 rounded-full bg-[#1E74C7]"></span> Harga Jual</span>
             </div>
           </div>
           <div className="h-56">
             <ResponsiveContainer width="100%" height="100%">
               <LineChart data={historicalTrends} margin={{ top: 10, right: 15, left: 20, bottom: 0 }}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" vertical={false} />
-                <XAxis dataKey="label" tick={{ fontSize: 9, fill: '#64748b' }} axisLine={false} tickLine={false} />
-                <YAxis tick={{ fontSize: 9, fill: '#64748b' }} axisLine={false} tickLine={false} tickFormatter={v => `Rp ${(v/1000).toFixed(0)} ribu`} />
+                <CartesianGrid strokeDasharray="3 3" stroke="#F2F4F7" vertical={false} />
+                <XAxis dataKey="label" tick={{ fontSize: 9, fill: '#667085' }} axisLine={false} tickLine={false} />
+                <YAxis tick={{ fontSize: 9, fill: '#667085' }} axisLine={false} tickLine={false} tickFormatter={v => `Rp ${(v/1000).toFixed(0)} rb`} />
                 <Tooltip
-                  contentStyle={{ backgroundColor: '#0f172a', borderRadius: '8px', border: 'none', color: '#fff', fontSize: '11px' }}
+                  contentStyle={{ backgroundColor: '#071D3D', borderRadius: '10px', border: '1px solid #1E74C7', color: '#ffffff', fontSize: '11px' }}
+                  itemStyle={{ color: '#ffffff' }}
+                  labelStyle={{ color: '#ffffff', fontWeight: 'bold' }}
                   formatter={(val, name) => [`Rp ${Number(val).toLocaleString('id-ID')}`, name === 'hargaBeli' ? 'Harga Beli' : 'Harga Jual']}
                 />
-                <ReferenceLine y={13500} stroke="#cbd5e1" strokeDasharray="3 3" />
-                <Line type="monotone" dataKey="hargaBeli" stroke="#d97706" strokeWidth={2.5} dot={{ r: 3.5, fill: '#d97706' }} />
-                <Line type="monotone" dataKey="hargaJual" stroke="#059669" strokeWidth={2.5} dot={{ r: 3.5, fill: '#059669' }} />
+                <ReferenceLine y={13500} stroke="#D0D5DD" strokeDasharray="3 3" />
+                <Line type="monotone" dataKey="hargaBeli" stroke="#C89B3C" strokeWidth={2.5} dot={{ r: 3.5, fill: '#C89B3C' }} />
+                <Line type="monotone" dataKey="hargaJual" stroke="#1E74C7" strokeWidth={2.5} dot={{ r: 3.5, fill: '#1E74C7' }} />
               </LineChart>
             </ResponsiveContainer>
           </div>
         </div>
 
-        <div className="clean-card p-4 lg:col-span-5 bg-white">
+        <div className="clean-card p-5 lg:col-span-5 bg-white">
           <div className="flex items-center justify-between mb-2">
             <div>
-              <h3 className="text-xs font-bold text-slate-900 uppercase tracking-wider">
+              <h3 className="text-xs font-bold text-[#101828] uppercase tracking-wider">
                 Peringkat Marjin (%)
               </h3>
-              <p className="text-[11px] text-slate-500">Persentase spread per komoditas</p>
+              <p className="text-xs text-[#667085]">Persentase spread per komoditas</p>
             </div>
           </div>
           <div className="h-56">
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={tab3MarginRanking} margin={{ top: 10, right: 10, left: -15, bottom: 35 }}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" vertical={false} />
-                <XAxis dataKey="komoditas" angle={-30} textAnchor="end" tick={{ fontSize: 9, fill: '#64748b' }} interval={0} axisLine={false} tickLine={false} />
-                <YAxis tick={{ fontSize: 9, fill: '#64748b' }} axisLine={false} tickLine={false} unit="%" />
+                <CartesianGrid strokeDasharray="3 3" stroke="#F2F4F7" vertical={false} />
+                <XAxis dataKey="komoditas" angle={-30} textAnchor="end" tick={{ fontSize: 9, fill: '#667085' }} interval={0} axisLine={false} tickLine={false} />
+                <YAxis tick={{ fontSize: 9, fill: '#667085' }} axisLine={false} tickLine={false} unit="%" />
                 <Tooltip
-                  contentStyle={{ backgroundColor: '#0f172a', borderRadius: '6px', border: 'none', color: '#fff', fontSize: '10px' }}
+                  contentStyle={{ backgroundColor: '#071D3D', borderRadius: '10px', border: '1px solid #1E74C7', color: '#ffffff', fontSize: '11px' }}
+                  itemStyle={{ color: '#ffffff' }}
+                  labelStyle={{ color: '#ffffff', fontWeight: 'bold' }}
                   formatter={(val) => [`${val}%`, 'Marjin']}
                 />
-                <Bar dataKey="marginPct" radius={[3, 3, 0, 0]}>
+                <Bar dataKey="marginPct" radius={[4, 4, 0, 0]}>
                   {tab3MarginRanking.map((entry, index) => (
-                    <Cell key={`cell-${index}`} fill={entry.marginPct > 8 ? '#059669' : entry.marginPct > 4 ? '#d97706' : '#e11d48'} />
+                    <Cell key={`cell-${index}`} fill={entry.marginPct > 8 ? '#12B76A' : entry.marginPct > 4 ? '#17B6A7' : '#F04438'} />
                   ))}
                 </Bar>
               </BarChart>
@@ -360,29 +255,44 @@ export function Tab3HargaMarjin() {
 
       {/* 6. Scatter & Disparitas */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-3">
-        <div className="clean-card p-4 lg:col-span-7 bg-white">
+        <div className="clean-card p-5 lg:col-span-7 bg-white">
           <div className="flex items-center justify-between mb-2">
             <div>
-              <h3 className="text-xs font-bold text-slate-900 uppercase tracking-wider">
+              <h3 className="text-xs font-bold text-[#101828] uppercase tracking-wider">
                 Matriks Posisi: Harga Beli vs Jual & Volume
               </h3>
-              <p className="text-[11px] text-slate-500">Ukuran bubble mencerminkan total volume (Ton)</p>
+              <p className="text-xs text-[#667085]">Ukuran bubble mencerminkan total volume (Ton)</p>
             </div>
           </div>
           <div className="h-56">
             <ResponsiveContainer width="100%" height="100%">
               <ScatterChart margin={{ top: 15, right: 15, bottom: 15, left: 20 }}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" />
-                <XAxis type="number" dataKey="hargaBeli" name="Harga Beli" tickFormatter={(v) => `Rp ${(v/1000).toFixed(0)} ribu`} tick={{ fontSize: 9 }} axisLine={false} tickLine={false} />
-                <YAxis type="number" dataKey="hargaJual" name="Harga Jual" tickFormatter={(v) => `Rp ${(v/1000).toFixed(0)} ribu`} tick={{ fontSize: 9 }} axisLine={false} tickLine={false} />
+                <CartesianGrid strokeDasharray="3 3" stroke="#F2F4F7" />
+                <XAxis type="number" dataKey="hargaBeli" name="Harga Beli" tickFormatter={(v) => `Rp ${(v/1000).toFixed(0)} rb`} tick={{ fontSize: 9, fill: '#667085' }} axisLine={false} tickLine={false} />
+                <YAxis type="number" dataKey="hargaJual" name="Harga Jual" tickFormatter={(v) => `Rp ${(v/1000).toFixed(0)} rb`} tick={{ fontSize: 9, fill: '#667085' }} axisLine={false} tickLine={false} />
                 <ZAxis type="number" dataKey="volume" range={[40, 250]} name="Volume" />
                 <Tooltip
-                  contentStyle={{ backgroundColor: '#0f172a', borderRadius: '8px', border: 'none', color: '#fff', fontSize: '10px' }}
-                  formatter={(val, name) => [name === 'Volume' ? `${val} T` : `Rp ${Number(val).toLocaleString('id-ID')}`, name]}
+                  cursor={{ strokeDasharray: '3 3' }}
+                  content={({ active, payload }) => {
+                    if (active && payload && payload.length) {
+                      const d = payload[0].payload;
+                      return (
+                        <div className="bg-[#071D3D] border border-[#1E74C7] rounded-xl p-3 shadow-xl text-xs text-white">
+                          <div className="font-bold text-white border-b border-white/15 pb-1 mb-1.5">{d.komoditas || 'Komoditas'}</div>
+                          <div className="space-y-1 text-xs">
+                            <div className="flex justify-between gap-4 text-slate-300"><span>Harga Beli:</span> <span className="font-mono text-white font-semibold">Rp {Number(d.hargaBeli).toLocaleString('id-ID')}</span></div>
+                            <div className="flex justify-between gap-4 text-slate-300"><span>Harga Jual:</span> <span className="font-mono text-white font-semibold">Rp {Number(d.hargaJual).toLocaleString('id-ID')}</span></div>
+                            <div className="flex justify-between gap-4 text-slate-300"><span>Volume:</span> <span className="font-mono text-white font-semibold">{d.volume} {d.satuan || 'Ton'}</span></div>
+                          </div>
+                        </div>
+                      );
+                    }
+                    return null;
+                  }}
                 />
-                <Scatter name="Komoditas" data={tab3ScatterData} fill="#2563eb">
+                <Scatter name="Komoditas" data={tab3ScatterData} fill="#1E74C7">
                   {tab3ScatterData.map((entry, index) => (
-                    <Cell key={`cell-sc-${index}`} fill={categoryColors[entry.kelompok] || '#2563eb'} />
+                    <Cell key={`cell-sc-${index}`} fill={categoryColors[entry.kelompok] || '#1E74C7'} />
                   ))}
                 </Scatter>
               </ScatterChart>
@@ -390,42 +300,42 @@ export function Tab3HargaMarjin() {
           </div>
         </div>
 
-        <div className="clean-card p-4 lg:col-span-5 bg-white flex flex-col justify-between">
+        <div className="clean-card p-5 lg:col-span-5 bg-white flex flex-col justify-between">
           <div>
             <div className="flex items-center justify-between mb-1">
-              <h3 className="text-xs font-bold text-slate-900 uppercase tracking-wider">
-                Disparitas Wilayah: {selectedKomoditas.replace(' (Ton)', '')}
+              <h3 className="text-xs font-bold text-[#101828] uppercase tracking-wider">
+                Disparitas Wilayah: {komoditasLabel}
               </h3>
-              <span className="text-[10px] font-semibold text-slate-500 bg-slate-100 px-2 py-0.5 rounded">Spasial</span>
+              <span className="text-[10px] font-semibold text-[#0D3E77] bg-[#DCEAFA] px-2.5 py-0.5 rounded-full border border-[#B3D4F2]">Spasial</span>
             </div>
-            <p className="text-[11px] text-slate-500 mb-3">Tingkat harga jual per kabupaten/kota</p>
-            <div className="space-y-2">
+            <p className="text-xs text-[#667085] mb-3">Tingkat harga jual per kabupaten/kota</p>
+            <div className="space-y-2.5">
               {tab3RegionPrices.map((item, idx) => {
                 const isMax = item.hargaJual === maxRegionPrice && maxRegionPrice > 0;
                 const isMin = item.hargaJual === minRegionPrice && minRegionPrice > 0;
                 return (
                   <div key={idx} className="text-xs">
-                    <div className="flex items-center justify-between mb-0.5">
-                      <span className="text-slate-700 font-medium">
+                    <div className="flex items-center justify-between mb-1">
+                      <span className="text-[#344054] font-medium">
                         {item.wilayah.replace('Kab. ', '')}
-                        {isMax && <span className="ml-1.5 text-[9px] text-rose-600 bg-rose-50 border border-rose-200/60 px-1 py-0.2 rounded font-bold">Tertinggi</span>}
-                        {isMin && <span className="ml-1.5 text-[9px] text-emerald-600 bg-emerald-50 border border-emerald-200/60 px-1 py-0.2 rounded font-bold">Terendah</span>}
+                        {isMax && <span className="ml-1.5 text-[9px] text-[#F04438] bg-[#FEF3F2] border border-[#FECDCA] px-1.5 py-0.2 rounded-full font-bold">Tertinggi</span>}
+                        {isMin && <span className="ml-1.5 text-[9px] text-[#12B76A] bg-[rgba(18,183,106,0.1)] border border-[#12B76A]/20 px-1.5 py-0.2 rounded-full font-bold">Terendah</span>}
                       </span>
-                      <span className="font-mono font-bold text-slate-900">
+                      <span className="font-mono font-bold text-[#101828]">
                         Rp {item.hargaJual.toLocaleString('id-ID')}
                       </span>
                     </div>
-                    <div className="w-full bg-slate-100 h-2 rounded-full overflow-hidden">
-                      <div className={`h-2 rounded-full ${isMax ? 'bg-rose-500' : isMin ? 'bg-emerald-500' : 'bg-slate-400'}`} style={{ width: `${Math.max(20, (item.hargaJual / (maxRegionPrice || 1)) * 100)}%` }}></div>
+                    <div className="w-full bg-[#F2F4F7] h-2 rounded-full overflow-hidden">
+                      <div className={`h-2 rounded-full ${isMax ? 'bg-[#F04438]' : isMin ? 'bg-[#12B76A]' : 'bg-[#1E74C7]'}`} style={{ width: `${Math.max(20, (item.hargaJual / (maxRegionPrice || 1)) * 100)}%` }}></div>
                     </div>
                   </div>
                 );
               })}
             </div>
           </div>
-          <div className="mt-3 pt-2 border-t border-slate-100 text-[11px] text-slate-500 flex justify-between font-medium">
+          <div className="mt-3 pt-2.5 border-t border-[#F2F4F7] text-xs text-[#667085] flex justify-between font-medium">
             <span>Spread Harga: Rp {(maxRegionPrice - minRegionPrice).toLocaleString('id-ID')}/kg</span>
-            <span className="text-emerald-700 font-semibold">Terkendali</span>
+            <span className="text-[#12B76A] font-semibold">Terkendali</span>
           </div>
         </div>
       </div>

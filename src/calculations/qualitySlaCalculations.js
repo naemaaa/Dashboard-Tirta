@@ -6,7 +6,8 @@
  * ============================================================================
  */
 
-import { REF_KOMODITAS, REF_WILAYAH } from '../data/seedData';
+import { REF_KOMODITAS, REF_WILAYAH, REF_KALENDER } from '../data/seedData.js';
+import { matchKomoditasUnified } from './coreCalculations.js';
 
 /**
  * 1. Menghitung Metrik Kualitas & Integritas Data Survei (Tab 5 Panel A & B)
@@ -33,7 +34,9 @@ export function calculateQualityMetrics(rawRingkasan = [], rawQualityIssues = []
 
   const zeroVolumeCount = masukRows.filter(
     r => (!r.is_deleted || r.is_deleted === 'FALSE') &&
-         (!r.volume_ton || Number(r.volume_ton) === 0)
+         (!r.volume_ton || Number(r.volume_ton) === 0) &&
+         (!r.volume_liter || Number(r.volume_liter) === 0) &&
+         (!r.Value || Number(r.Value) === 0)
   ).length;
 
   const missingPeriodCount = masukRows.filter(
@@ -105,22 +108,66 @@ export function calculateQualityMetrics(rawRingkasan = [], rawQualityIssues = []
       pctLengkap,
       labelStatusKualitas
     },
+    pctLengkap,
+    labelStatusKualitas,
     summaryTable
   };
 }
 
 /**
- * 2. Kelengkapan Data per Kabupaten/Kota (Tab 5 Panel D)
- * DAX 7.2: Pct_Lengkap per Wilayah
+ * 2. Kelengkapan Data per Kabupaten/Kota (Tab 5 Panel D) — Real-time Calculation
+ * DAX 7.2: Pct_Lengkap per Wilayah = Record Lengkap / Total Record * 100
+ *
+ * Record "Lengkap" = harga_beli > 0 AND harga_jual > 0 AND volume > 0 AND id_periode valid
  */
-export function calculateQualityByRegion(activeRecordsCount = 180) {
-  const completenessList = [99.2, 98.4, 96.7, 95.1, 93.8];
-  return REF_WILAYAH.map((wil, idx) => {
-    const completeness = completenessList[idx] || 95;
+export function calculateQualityByRegion(rawRingkasanOrCount = 180) {
+  // Support both legacy (number) and new (array) call signatures
+  const rawRows = Array.isArray(rawRingkasanOrCount) ? rawRingkasanOrCount : [];
+
+  return REF_WILAYAH.map((wil) => {
+    if (rawRows.length === 0) {
+      // Fallback if called with number (legacy compatibility)
+      return {
+        wilayah: wil.nama_kab_kota,
+        kelengkapan: 95,
+        totalLaporan: Math.round((typeof rawRingkasanOrCount === 'number' ? rawRingkasanOrCount : 180) / 5),
+        isProblematic: false,
+        status: 'Lengkap'
+      };
+    }
+
+    // Filter rows for this region (vol_masuk_ton only for 1 row per report)
+    const regionRows = rawRows.filter(
+      r => r.jenis_aliran === 'vol_masuk_ton' && r.kab_kota === wil.nama_kab_kota
+    );
+    const totalLaporan = regionRows.length;
+
+    if (totalLaporan === 0) {
+      return {
+        wilayah: wil.nama_kab_kota,
+        kelengkapan: 0,
+        totalLaporan: 0,
+        isProblematic: true,
+        status: 'Bermasalah'
+      };
+    }
+
+    // Count records that are fully complete
+    const completeRecords = regionRows.filter(r =>
+      !r.is_deleted &&
+      Number(r.harga_beli) > 0 &&
+      Number(r.harga_jual) > 0 &&
+      (Number(r.volume_ton) > 0 || Number(r.volume_liter) > 0) &&
+      r.id_periode
+    ).length;
+
+    const completeness = Number(((completeRecords / totalLaporan) * 100).toFixed(1));
+
     return {
       wilayah: wil.nama_kab_kota,
       kelengkapan: completeness,
-      totalLaporan: Math.round(activeRecordsCount / 5),
+      totalLaporan,
+      completeRecords,
       isProblematic: completeness < 95,
       status: completeness >= 95 ? 'Lengkap' : completeness >= 80 ? 'Perlu Perhatian' : 'Bermasalah'
     };
@@ -128,16 +175,51 @@ export function calculateQualityByRegion(activeRecordsCount = 180) {
 }
 
 /**
- * 3. Kelengkapan Data per Komoditas (Tab 5 Panel E)
+ * 3. Kelengkapan Data per Komoditas (Tab 5 Panel E) — Real-time Calculation
  * DAX 7.2: Pct_Lengkap per Komoditas
  */
-export function calculateQualityByCommodity(activeRecordsCount = 180) {
-  const completenessList = [99.5, 98.8, 97.2, 96.5, 95.8, 94.0, 98.2, 97.9, 96.1, 98.0];
-  return REF_KOMODITAS.map((kom, idx) => {
-    const pct = completenessList[idx % completenessList.length] || 96;
+export function calculateQualityByCommodity(rawRingkasanOrCount = 180) {
+  const rawRows = Array.isArray(rawRingkasanOrCount) ? rawRingkasanOrCount : [];
+
+  return REF_KOMODITAS.map((kom) => {
+    if (rawRows.length === 0) {
+      return {
+        komoditas: kom.nama_komoditas,
+        totalRecord: Math.round((typeof rawRingkasanOrCount === 'number' ? rawRingkasanOrCount : 180) / 16),
+        kelengkapan: 96,
+        status: 'Lengkap'
+      };
+    }
+
+    const komRows = rawRows.filter(
+      r => r.jenis_aliran === 'vol_masuk_ton' &&
+           (r.komoditas === kom.nama_komoditas || r.id_komoditas === kom.id_komoditas ||
+            matchKomoditasUnified(r.komoditas, kom.nama_komoditas))
+    );
+    const totalRecord = komRows.length;
+
+    if (totalRecord === 0) {
+      return {
+        komoditas: kom.nama_komoditas,
+        totalRecord: 0,
+        kelengkapan: 0,
+        status: 'Bermasalah'
+      };
+    }
+
+    const completeRecords = komRows.filter(r =>
+      !r.is_deleted &&
+      Number(r.harga_beli) > 0 &&
+      Number(r.harga_jual) > 0 &&
+      (Number(r.volume_ton) > 0 || Number(r.volume_liter) > 0)
+    ).length;
+
+    const pct = Number(((completeRecords / totalRecord) * 100).toFixed(1));
+
     return {
       komoditas: kom.nama_komoditas,
-      totalRecord: Math.round(activeRecordsCount / 10),
+      totalRecord,
+      completeRecords,
       kelengkapan: pct,
       status: pct >= 95 ? 'Lengkap' : pct >= 80 ? 'Perlu Perhatian' : 'Bermasalah'
     };

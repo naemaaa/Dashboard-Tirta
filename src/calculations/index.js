@@ -6,8 +6,8 @@
  * ============================================================================
  */
 
-export * from './coreCalculations';
-export * from './flowMatrixCalculations';
-export * from './priceMarginMatrixCalculations';
-export * from './trendAntarwaktuCalculations';
-export * from './qualitySlaCalculations';
+export * from './coreCalculations.js';
+export * from './flowMatrixCalculations.js';
+export * from './priceMarginMatrixCalculations.js';
+export * from './trendAntarwaktuCalculations.js';
+export * from './qualitySlaCalculations.js';
