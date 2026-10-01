@@ -241,7 +241,11 @@ export function Tab5KualitasData() {
                     <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" horizontal={false} />
                     <XAxis type="number" tick={{ fontSize: 9 }} axisLine={false} tickLine={false} />
                     <YAxis dataKey="isu" type="category" tick={{ fontSize: 9, fill: '#64748b' }} width={80} axisLine={false} tickLine={false} />
-                    <Tooltip contentStyle={{ backgroundColor: '#0f172a', borderRadius: '6px', border: 'none', color: '#fff', fontSize: '10px' }} />
+                    <Tooltip
+                      contentStyle={{ backgroundColor: '#0f172a', borderRadius: '8px', border: '1px solid #334155', color: '#ffffff', fontSize: '11px' }}
+                      itemStyle={{ color: '#ffffff' }}
+                      labelStyle={{ color: '#ffffff', fontWeight: 'bold' }}
+                    />
                     <Bar dataKey="count" fill="#2563eb" radius={[0, 3, 3, 0]} />
                   </BarChart>
                 </ResponsiveContainer>
@@ -264,7 +268,12 @@ export function Tab5KualitasData() {
                     <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" horizontal={false} />
                     <XAxis type="number" domain={[0, 100]} unit="%" tick={{ fontSize: 9 }} axisLine={false} tickLine={false} />
                     <YAxis dataKey="wilayah" type="category" tick={{ fontSize: 9, fill: '#334155' }} axisLine={false} tickLine={false} tickFormatter={v => v.replace('Kab. ', '')} />
-                    <Tooltip formatter={(val) => [`${val}%`, 'Kelengkapan']} />
+                    <Tooltip
+                      contentStyle={{ backgroundColor: '#0f172a', borderRadius: '8px', border: '1px solid #334155', color: '#ffffff', fontSize: '11px' }}
+                      itemStyle={{ color: '#ffffff' }}
+                      labelStyle={{ color: '#ffffff', fontWeight: 'bold' }}
+                      formatter={(val) => [`${val}%`, 'Kelengkapan']}
+                    />
                     <Bar dataKey="kelengkapan" fill="#059669" radius={[0, 3, 3, 0]} label={{ position: 'right', fill: '#047857', fontSize: 9, fontWeight: 700, formatter: v => `${v.toFixed(0)}%` }} />
                   </BarChart>
                 </ResponsiveContainer>

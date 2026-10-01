@@ -4,30 +4,27 @@
  * PRD Dashboard Komoditas DIY v1.0 - Section 6.3 & Section 7.2
  * Bank Indonesia KPw DIY · PSEKUIN UPN Veteran Yogyakarta
  * ============================================================================
+ *
+ * AUDIT FIX LOG (21 Sep 2026):
+ * - BUG-4: Local matchKomoditas / matchWilayah / matchKlaster dihapus.
+ *   Diganti import dari matchKomoditasUnified, matchWilayahUnified, matchKlasterUnified
+ *   di coreCalculations.js — single source of truth untuk semua tab.
+ * - BUG-2: Fallback hardcode 'Kab. Sleman' pada calculateGeospatialFlows() dihapus.
+ *   Node tidak dikenal kini di-skip (bukan di-assign ke Sleman).
  */
 
-import { REF_KOMODITAS, REF_WILAYAH } from '../data/seedData';
+import { REF_KOMODITAS, REF_WILAYAH, GEO_NODES } from '../data/seedData.js';
+import {
+  getRowVolume,
+  matchKomoditasUnified,
+  matchWilayahUnified,
+  matchKlasterUnified
+} from './coreCalculations.js';
 
-// Helper matching functions
+// matchPeriode tetap lokal karena hanya digunakan di modul ini
 const matchPeriode = (rowPeriode, targetPeriode) => {
   if (!targetPeriode || targetPeriode === 'Semua' || targetPeriode === 'All') return true;
   return rowPeriode === targetPeriode;
-};
-
-const matchKomoditas = (rowKomoditas, targetKomoditas) => {
-  if (!targetKomoditas || targetKomoditas === 'Semua' || targetKomoditas === 'All') return true;
-  if (!rowKomoditas) return false;
-  const n1 = rowKomoditas.toString().toLowerCase().replace(/\s*\(ton\)|\s*\(kg\)/g, '').trim();
-  const n2 = targetKomoditas.toString().toLowerCase().replace(/\s*\(ton\)|\s*\(kg\)/g, '').trim();
-  return n1 === n2 || rowKomoditas === targetKomoditas;
-};
-
-const matchWilayah = (rowWilayah, targetWilayah) => {
-  if (!targetWilayah || targetWilayah === 'Semua Wilayah DIY' || targetWilayah === 'All' || targetWilayah === 'Semua') return true;
-  if (!rowWilayah) return false;
-  const n1 = rowWilayah.toString().toLowerCase().replace(/^(kab\.|kota)\s*/g, '').trim();
-  const n2 = targetWilayah.toString().toLowerCase().replace(/^(kab\.|kota)\s*/g, '').trim();
-  return n1 === n2 || rowWilayah === targetWilayah;
 };
 
 /**
@@ -50,18 +47,18 @@ export function calculateMatrixNeracaTab1(rawRingkasan = [], selectedPeriode, se
       const matches = rawRingkasan.filter(r =>
         !r.is_deleted &&
         matchPeriode(r.id_periode, selectedPeriode) &&
-        matchKomoditas(r.komoditas, kom.nama_komoditas) &&
-        matchWilayah(r.kab_kota, wil.nama_kab_kota) &&
-        (selectedKlaster === 'semua' || r.tipe_responden === selectedKlaster)
+        matchKomoditasUnified(r.komoditas, kom.nama_komoditas) &&
+        matchWilayahUnified(r.kab_kota, wil.nama_kab_kota) &&
+        matchKlasterUnified(r.tipe_responden, selectedKlaster)
       );
 
       const vIn = matches
         .filter(r => r.jenis_aliran === 'vol_masuk_ton')
-        .reduce((sum, r) => sum + (Number(r.volume_ton) || 0), 0);
+        .reduce((sum, r) => sum + getRowVolume(r), 0);
 
       const vOut = matches
         .filter(r => r.jenis_aliran === 'vol_keluar_ton')
-        .reduce((sum, r) => sum + (Number(r.volume_ton) || 0), 0);
+        .reduce((sum, r) => sum + getRowVolume(r), 0);
 
       const net = vIn - vOut;
       row.wilayah[wil.nama_kab_kota] = Number(net.toFixed(2));
@@ -82,18 +79,18 @@ export function calculateButterflyData(rawRingkasan = [], selectedPeriode, selec
     const matches = rawRingkasan.filter(r =>
       !r.is_deleted &&
       matchPeriode(r.id_periode, selectedPeriode) &&
-      matchKomoditas(r.komoditas, kom.nama_komoditas) &&
-      matchWilayah(r.kab_kota, selectedWilayah) &&
-      (selectedKlaster === 'semua' || r.tipe_responden === selectedKlaster)
+      matchKomoditasUnified(r.komoditas, kom.nama_komoditas) &&
+      matchWilayahUnified(r.kab_kota, selectedWilayah) &&
+      matchKlasterUnified(r.tipe_responden, selectedKlaster)
     );
 
     const vIn = matches
       .filter(r => r.jenis_aliran === 'vol_masuk_ton')
-      .reduce((sum, r) => sum + (Number(r.volume_ton) || 0), 0);
+      .reduce((sum, r) => sum + getRowVolume(r), 0);
 
     const vOut = matches
       .filter(r => r.jenis_aliran === 'vol_keluar_ton')
-      .reduce((sum, r) => sum + (Number(r.volume_ton) || 0), 0);
+      .reduce((sum, r) => sum + getRowVolume(r), 0);
 
     const net = vIn - vOut;
 
@@ -128,15 +125,15 @@ export function calculateTab2GroupedMatrix(rawRingkasan = [], selectedPeriode, t
       const matches = rawRingkasan.filter(r =>
         !r.is_deleted &&
         matchPeriode(r.id_periode, selectedPeriode) &&
-        matchKomoditas(r.komoditas, kom.nama_komoditas) &&
-        matchWilayah(r.kab_kota, wil.nama_kab_kota) &&
+        matchKomoditasUnified(r.komoditas, kom.nama_komoditas) &&
+        matchWilayahUnified(r.kab_kota, wil.nama_kab_kota) &&
         (tab2Responden === 'Semua' ||
          (tab2Responden === 'Pedagang Besar' && r.tipe_responden === 'pedagang_besar') ||
          (tab2Responden === 'Produsen' && r.tipe_responden === 'produsen'))
       );
 
-      const vIn = matches.filter(r => r.jenis_aliran === 'vol_masuk_ton').reduce((s, r) => s + (Number(r.volume_ton) || 0), 0);
-      const vOut = matches.filter(r => r.jenis_aliran === 'vol_keluar_ton').reduce((s, r) => s + (Number(r.volume_ton) || 0), 0);
+      const vIn  = matches.filter(r => r.jenis_aliran === 'vol_masuk_ton').reduce((s, r) => s + getRowVolume(r), 0);
+      const vOut = matches.filter(r => r.jenis_aliran === 'vol_keluar_ton').reduce((s, r) => s + getRowVolume(r), 0);
       const selisih = vIn - vOut;
 
       row.wilayahData[wil.nama_kab_kota] = {
@@ -164,12 +161,12 @@ export function calculateTab2Decomposition(rawRingkasan = [], selectedPeriode, t
     const matches = rawRingkasan.filter(r =>
       !r.is_deleted &&
       matchPeriode(r.id_periode, selectedPeriode) &&
-      matchKomoditas(r.komoditas, targetKomoditas) &&
-      matchWilayah(r.kab_kota, wil.nama_kab_kota)
+      matchKomoditasUnified(r.komoditas, targetKomoditas) &&
+      matchWilayahUnified(r.kab_kota, wil.nama_kab_kota)
     );
 
-    const vIn = matches.filter(r => r.jenis_aliran === 'vol_masuk_ton').reduce((s, r) => s + (Number(r.volume_ton) || 0), 0);
-    const vOut = matches.filter(r => r.jenis_aliran === 'vol_keluar_ton').reduce((s, r) => s + (Number(r.volume_ton) || 0), 0);
+    const vIn  = matches.filter(r => r.jenis_aliran === 'vol_masuk_ton').reduce((s, r) => s + getRowVolume(r), 0);
+    const vOut = matches.filter(r => r.jenis_aliran === 'vol_keluar_ton').reduce((s, r) => s + getRowVolume(r), 0);
     const net = vIn - vOut;
 
     return {
@@ -181,4 +178,158 @@ export function calculateTab2Decomposition(rawRingkasan = [], selectedPeriode, t
       isPositive: net >= 0
     };
   });
+}
+
+/**
+ * 5. Geospatial Origin-Destination Flow Aggregator (Tab 2 From-To Map)
+ *
+ * AUDIT FIX (BUG-2): Fallback GEO_NODES['Kab. Sleman'] dihapus.
+ * Baris dengan origin/tujuan tidak dikenal kini di-skip (bukan divisualisasikan seolah ke Sleman).
+ * Ini mencegah penggelembungan palsu volume Sleman di peta arus.
+ */
+export function calculateGeospatialFlows(
+  arusMasuk = [],
+  arusKeluar = [],
+  selectedPeriode,
+  selectedKomoditas,
+  selectedWilayah = 'Semua',
+  flowMode = 'all' // 'all', 'inflow', 'outflow'
+) {
+  const routesMap = new Map();
+
+  const matchPeriodeLocal = (p) => !selectedPeriode || selectedPeriode === 'Semua' || p === selectedPeriode;
+  const matchKomLocal = (k) => matchKomoditasUnified(k, selectedKomoditas);
+  const matchWilLocal = (w) => {
+    if (!selectedWilayah || selectedWilayah === 'Semua' || selectedWilayah === 'Semua Wilayah DIY') return true;
+    return (w || '').toLowerCase().includes(selectedWilayah.toLowerCase().replace(/^(kab\.|kota)\s*/g, ''));
+  };
+
+  // 1. Process Arus Masuk (From: daerah_asal -> To: kab_kota DIY)
+  if (flowMode === 'all' || flowMode === 'inflow') {
+    arusMasuk.forEach(row => {
+      if (!matchPeriodeLocal(row.id_periode) || !matchKomLocal(row.komoditas || row.id_komoditas)) return;
+      if (selectedWilayah !== 'Semua' && selectedWilayah !== 'Semua Wilayah DIY' && !matchWilLocal(row.kab_kota)) return;
+
+      const fromName = row.daerah_asal || 'Luar DIY Lainnya';
+      const toName = row.kab_kota || 'Kab. Sleman';
+      const vol = Number(row.volume_ton) || 0;
+      if (vol <= 0) return;
+
+      // FIX (BUG-2): Skip jika node tidak ditemukan di GEO_NODES (jangan fallback ke Sleman)
+      const fromNode = GEO_NODES[fromName];
+      const toNode = GEO_NODES[toName];
+      if (!fromNode || !toNode) return; // Skip unknown nodes
+
+      const key = `${fromName}|${toName}|inflow`;
+      if (!routesMap.has(key)) {
+        routesMap.set(key, {
+          id: key,
+          type: 'inflow',
+          from: fromName,
+          to: toName,
+          fromCoords: [fromNode.lng, fromNode.lat],
+          toCoords: [toNode.lng, toNode.lat],
+          fromLabel: fromNode.label || fromName,
+          toLabel: toNode.label || toName,
+          volume: 0,
+          commodity: row.komoditas,
+          isExternal: Boolean(row.luar_diy),
+          partnerType: row.jenis_pemasok || 'Pemasok Pangan'
+        });
+      }
+      routesMap.get(key).volume += vol;
+    });
+  }
+
+  // 2. Process Arus Keluar (From: kab_kota DIY -> To: daerah_tujuan)
+  if (flowMode === 'all' || flowMode === 'outflow') {
+    arusKeluar.forEach(row => {
+      if (!matchPeriodeLocal(row.id_periode) || !matchKomLocal(row.komoditas || row.id_komoditas)) return;
+      if (selectedWilayah !== 'Semua' && selectedWilayah !== 'Semua Wilayah DIY' && !matchWilLocal(row.kab_kota)) return;
+
+      const fromName = row.kab_kota || 'Kab. Sleman';
+      const toName = row.daerah_tujuan || 'Lainnya (DIY)';
+      const vol = Number(row.volume_ton) || 0;
+      if (vol <= 0) return;
+
+      // FIX (BUG-2): Skip jika node tidak ditemukan di GEO_NODES (jangan fallback ke node acak)
+      const fromNode = GEO_NODES[fromName];
+      const toNode = GEO_NODES[toName];
+      if (!fromNode || !toNode) return; // Skip unknown nodes
+
+      const key = `${fromName}|${toName}|outflow`;
+      if (!routesMap.has(key)) {
+        routesMap.set(key, {
+          id: key,
+          type: 'outflow',
+          from: fromName,
+          to: toName,
+          fromCoords: [fromNode.lng, fromNode.lat],
+          toCoords: [toNode.lng, toNode.lat],
+          fromLabel: fromNode.label || fromName,
+          toLabel: toNode.label || toName,
+          volume: 0,
+          commodity: row.komoditas,
+          isExternal: Boolean(row.luar_diy || row.keluar_diy),
+          partnerType: row.jenis_pembeli || 'Distribusi Pangan'
+        });
+      }
+      routesMap.get(key).volume += vol;
+    });
+  }
+
+  const routes = Array.from(routesMap.values()).map(r => ({
+    ...r,
+    volume: Number(r.volume.toFixed(2))
+  })).sort((a, b) => b.volume - a.volume);
+
+  const totalFlowVolume = routes.reduce((s, r) => s + r.volume, 0);
+
+  // Aggregate Node Volumes
+  const nodeStats = {};
+  Object.keys(GEO_NODES).forEach(nodeName => {
+    nodeStats[nodeName] = {
+      ...GEO_NODES[nodeName],
+      totalIn: 0,
+      totalOut: 0,
+      activeRoutes: 0
+    };
+  });
+
+  routes.forEach(r => {
+    if (nodeStats[r.from]) {
+      nodeStats[r.from].totalOut += r.volume;
+      nodeStats[r.from].activeRoutes += 1;
+    }
+    if (nodeStats[r.to]) {
+      nodeStats[r.to].totalIn += r.volume;
+      nodeStats[r.to].activeRoutes += 1;
+    }
+  });
+
+  return {
+    routes,
+    totalFlowVolume: Number(totalFlowVolume.toFixed(2)),
+    nodeStats: Object.values(nodeStats).filter(n => n.totalIn > 0 || n.totalOut > 0 || n.type.startsWith('diy'))
+  };
+}
+
+/**
+ * 6. Respondent Pinpoint Location Aggregator (Tab 2 Pinpoint Map)
+ */
+export function calculateRespondentLocations(respondents = [], targetKomoditas, targetKabupaten, tipeResponden = 'Semua') {
+  return respondents.filter(r => {
+    if (targetKabupaten && targetKabupaten !== 'Semua' && targetKabupaten !== 'Semua Wilayah DIY' && r.kabupaten !== targetKabupaten) {
+      return false;
+    }
+    // FIX: Null-safe tipe_responden check
+    const tipe = r.tipe_responden || '';
+    if (tipeResponden === 'Pedagang Besar' && !tipe.includes('Pedagang')) return false;
+    if (tipeResponden === 'Produsen' && !tipe.includes('Produsen')) return false;
+    return true;
+  }).map(r => ({
+    ...r,
+    lat: r.latitude || (r.kabupaten?.includes('Sleman') ? -7.716 : r.kabupaten?.includes('Bantul') ? -7.893 : r.kabupaten?.includes('Kota') ? -7.797 : -7.828),
+    lng: r.longitude || (r.kabupaten?.includes('Sleman') ? 110.355 : r.kabupaten?.includes('Bantul') ? 110.334 : r.kabupaten?.includes('Kota') ? 110.370 : 110.158)
+  }));
 }
