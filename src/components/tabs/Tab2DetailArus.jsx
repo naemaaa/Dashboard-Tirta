@@ -1,6 +1,3 @@
-// Tab 2: Detail Masuk vs Keluar
-// Bank Indonesia KPw DIY · PSEKUIN UPN Veteran Yogyakarta
-
 import React, { useState, useMemo } from 'react';
 import { useCalculations } from '../../hooks/useCalculations';
 import { useDashboardStore } from '../../store/useDashboardStore';
