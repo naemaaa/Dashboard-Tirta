@@ -325,9 +325,9 @@ export function Tab7EarlyWarningSystem() {
                 <thead>
                   <tr className="border-b border-[#E4E7EC] text-[10px] font-bold text-[#475467] bg-[#F8FAFC] sticky top-0">
                     <th className="py-2 px-2">Komoditas</th>
-                    <th className="py-2 px-2 text-right">Heatmap_PB</th>
-                    <th className="py-2 px-2 text-right">Heatmap_PE</th>
-                    <th className="py-2 px-2 text-right">Heatmap_PROD</th>
+                    <th className={`py-2 px-2 text-right transition-colors ${ewsTipeResponden === 'PB' ? 'bg-[#DCEAFA] text-[#0D3E77] font-extrabold' : ''}`}>Heatmap_PB</th>
+                    <th className={`py-2 px-2 text-right transition-colors ${ewsTipeResponden === 'PE' ? 'bg-[#DCEAFA] text-[#0D3E77] font-extrabold' : ''}`}>Heatmap_PE</th>
+                    <th className={`py-2 px-2 text-right transition-colors ${ewsTipeResponden === 'PROD' ? 'bg-[#FFEDD5] text-[#EA580C] font-extrabold' : ''}`}>Heatmap_PROD</th>
                     <th className="py-2 px-2 text-center">ALPS</th>
                   </tr>
                 </thead>
@@ -339,13 +339,13 @@ export function Tab7EarlyWarningSystem() {
                         <td className="py-2 px-2 text-[#101828] font-medium text-[10px] max-w-[120px] truncate" title={row.komoditas}>
                           {row.komoditas}
                         </td>
-                        <td className={`py-2 px-2 text-right font-mono ${row.heatmap_pb > 15 ? 'text-[#F04438] font-bold' : row.heatmap_pb > 0 ? 'text-[#D97706]' : 'text-[#344054]'}`}>
+                        <td className={`py-2 px-2 text-right font-mono ${ewsTipeResponden === 'PB' ? 'bg-blue-50/80 font-bold text-[#0D3E77]' : ''} ${row.heatmap_pb > 15 ? 'text-[#F04438]' : row.heatmap_pb > 0 ? 'text-[#D97706]' : 'text-[#344054]'}`}>
                           {pct(row.heatmap_pb)}
                         </td>
-                        <td className={`py-2 px-2 text-right font-mono ${row.heatmap_pe > 15 ? 'text-[#F04438] font-bold' : row.heatmap_pe > 0 ? 'text-[#D97706]' : 'text-[#344054]'}`}>
+                        <td className={`py-2 px-2 text-right font-mono ${ewsTipeResponden === 'PE' ? 'bg-blue-50/80 font-bold text-[#0D3E77]' : ''} ${row.heatmap_pe > 15 ? 'text-[#F04438]' : row.heatmap_pe > 0 ? 'text-[#D97706]' : 'text-[#344054]'}`}>
                           {pct(row.heatmap_pe, 0)}
                         </td>
-                        <td className={`py-2 px-2 text-right font-mono ${row.heatmap_prod > 15 ? 'text-[#F04438] font-bold' : row.heatmap_prod > 0 ? 'text-[#D97706]' : 'text-[#344054]'}`}>
+                        <td className={`py-2 px-2 text-right font-mono ${ewsTipeResponden === 'PROD' ? 'bg-orange-50/80 font-bold text-[#EA580C]' : ''} ${row.heatmap_prod > 15 ? 'text-[#F04438]' : row.heatmap_prod > 0 ? 'text-[#D97706]' : 'text-[#344054]'}`}>
                           {pct(row.heatmap_prod, 0)}
                         </td>
                         <td className="py-2 px-2 text-center">
@@ -455,9 +455,33 @@ export function Tab7EarlyWarningSystem() {
                     axisLine={false}
                   />
                   <Tooltip content={<LineTooltip />} />
-                  <Line type="monotoneX" dataKey="PB"   stroke="#1E74C7" strokeWidth={1.8} dot={false} name="Pedagang Besar (PB)" />
-                  <Line type="monotoneX" dataKey="PE"   stroke="#0A2E5C" strokeWidth={1.8} dot={false} name="Pedagang Eceran (PE)" />
-                  <Line type="monotoneX" dataKey="PROD" stroke="#EA580C" strokeWidth={1.8} dot={false} name="Produsen (PROD)" />
+                  <Line
+                    type="monotoneX"
+                    dataKey="PB"
+                    stroke="#1E74C7"
+                    strokeWidth={ewsTipeResponden === 'PB' ? 3.2 : ewsTipeResponden === 'All' ? 1.8 : 1}
+                    strokeOpacity={ewsTipeResponden === 'All' || ewsTipeResponden === 'PB' ? 1 : 0.25}
+                    dot={false}
+                    name="Pedagang Besar (PB)"
+                  />
+                  <Line
+                    type="monotoneX"
+                    dataKey="PE"
+                    stroke="#0A2E5C"
+                    strokeWidth={ewsTipeResponden === 'PE' ? 3.2 : ewsTipeResponden === 'All' ? 1.8 : 1}
+                    strokeOpacity={ewsTipeResponden === 'All' || ewsTipeResponden === 'PE' ? 1 : 0.25}
+                    dot={false}
+                    name="Pedagang Eceran (PE)"
+                  />
+                  <Line
+                    type="monotoneX"
+                    dataKey="PROD"
+                    stroke="#EA580C"
+                    strokeWidth={ewsTipeResponden === 'PROD' ? 3.2 : ewsTipeResponden === 'All' ? 1.8 : 1}
+                    strokeOpacity={ewsTipeResponden === 'All' || ewsTipeResponden === 'PROD' ? 1 : 0.25}
+                    dot={false}
+                    name="Produsen (PROD)"
+                  />
                 </LineChart>
               </ResponsiveContainer>
             </div>

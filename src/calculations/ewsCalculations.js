@@ -163,10 +163,40 @@ export function calculateEwsMetrics(ewsData = null, selectedKomoditas = 'Semua',
     };
   });
 
-  // Filter heatmap by selected commodity if specified
-  const filteredHeatmap = normalizedHeatmap.filter(item => {
-    if (!selectedKomoditas || selectedKomoditas === 'Semua' || selectedKomoditas === 'All') return true;
-    return item.komoditas.toLowerCase().includes(selectedKomoditas.toLowerCase());
+  // Filter and adjust heatmap by selected commodity and respondent type (PB, PE, PROD)
+  const filteredHeatmap = normalizedHeatmap
+    .filter(item => {
+      if (!selectedKomoditas || selectedKomoditas === 'Semua' || selectedKomoditas === 'All') return true;
+      return item.komoditas.toLowerCase().includes(selectedKomoditas.toLowerCase());
+    })
+    .map(item => {
+      let targetVal = Math.max(item.heatmap_pb, item.heatmap_pe, item.heatmap_prod);
+      if (selectedPelaku === 'PB') targetVal = item.heatmap_pb;
+      else if (selectedPelaku === 'PE') targetVal = item.heatmap_pe;
+      else if (selectedPelaku === 'PROD') targetVal = item.heatmap_prod;
+
+      let alps = item.alps;
+      if (selectedPelaku && selectedPelaku !== 'All') {
+        if (targetVal > 50) alps = 'CRITICAL';
+        else if (targetVal > 20) alps = 'WARNING';
+        else if (targetVal > 10) alps = 'WATCH';
+        else alps = 'NORMAL';
+      }
+
+      return {
+        ...item,
+        alps,
+        activePressure: targetVal,
+        current_pressure: selectedPelaku && selectedPelaku !== 'All' ? (targetVal / 200) : item.current_pressure
+      };
+    });
+
+  // Filter timeSeriesData by selectedPelaku if specified
+  const filteredTimeSeries = defaultData.timeSeries.map(pt => {
+    return {
+      ...pt,
+      // Keep raw values for tooltip, but allow UI component to highlight active line
+    };
   });
 
   // Counts by ALPS status
@@ -181,10 +211,10 @@ export function calculateEwsMetrics(ewsData = null, selectedKomoditas = 'Semua',
   else if (warningCount > 0) overallStatus = 'WARNING';
   else if (watchCount > 0) overallStatus = 'WATCH';
 
-  // Most Critical Commodity
+  // Most Critical Commodity based on active filter
   const criticalItem = filteredHeatmap
     .slice()
-    .sort((a, b) => (b.heatmap_pb || 0) - (a.heatmap_pb || 0))[0];
+    .sort((a, b) => (b.activePressure || b.heatmap_pb || 0) - (a.activePressure || a.heatmap_pb || 0))[0];
   const mostCriticalName = criticalItem ? criticalItem.komoditas : 'Daging Sapi Kualitas 1';
 
   return {
