@@ -70,7 +70,7 @@ export function Navbar() {
                 </span>
               </div>
               <p className="text-[10.5px] text-[#667085] hidden xl:block leading-none mt-0.5 whitespace-nowrap">
-                BI KPw DIY &bull; TPID DIY &bull; PSEKUIN UPN
+               TPID DIY &bull;   BI KPw DIY&bull; PSEKUIN UPN
               </p>
             </div>
           </div>
