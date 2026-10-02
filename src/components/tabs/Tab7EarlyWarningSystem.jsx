@@ -291,8 +291,11 @@ export function Tab7EarlyWarningSystem() {
             </select>
           </div>
 
-          <div className="pt-1 text-[10px] text-[#667085] leading-relaxed bg-[#F2F7FD] p-2.5 rounded-xl border border-[#B3D4F2]">
-            💡 Filter ini berdiri sendiri untuk EWS — tidak mempengaruhi tab lainnya.
+          <div className="pt-1 text-[10px] text-[#0D3E77] leading-relaxed bg-[#F2F7FD] p-2.5 rounded-xl border border-[#B3D4F2] space-y-1">
+            <p className="font-bold">💡 Prinsip Riset (Worst-Case Aggregation):</p>
+            <p className="text-[#344054]">
+              Pada mode <strong>All</strong>, sistem mengambil risiko tertinggi (terburuk) di antara PB, PE, dan PROD. Komoditas yang tampak normal di produsen namun tertekan di pedagang besar akan diangkat ke status pengawasan, sehingga jumlah <em>Normal</em> pada All secara logis lebih sedikit.
+            </p>
           </div>
 
           {/* Data Source Info */}
