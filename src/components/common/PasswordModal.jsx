@@ -14,8 +14,9 @@ import { ADMIN_PIN_HASH } from '../../config/env.js';
 // DO NOT put plain text passwords here.
 const VALID_HASHES = new Set([
   ADMIN_PIN_HASH, // PIN utama dari .env → default: tpid2026
-  'b85aadee1df64ca8c42bace29c748d5f3419bead2e4b77f0e54daa1e7e476f90', // bi2026
-  '7a86b4a7f7395b1f62c2ed5254e6fe6c38e279b3671c45c7acbf03aef9a3a765', // tirta2026
+  'f78ef352232bc815cea522871da3028cb80a3fb968a505b92fce01ff6837dd5b', // tpid2026
+  'e83622e30837ced4df78f0838b46c876af39c2230be0634c85191a0c4d9ae81e', // bi2026
+  'c4f33724652a67ec3779fd6fcac553192684ebd754bebd3c6b147adcf8b98a28', // tirta2026
 ].filter(Boolean));
 
 async function sha256(message) {

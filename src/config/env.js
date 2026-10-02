@@ -37,7 +37,7 @@ export const ONEDRIVE_EWS_URL = import.meta.env.VITE_ONEDRIVE_EWS_URL || '';
  */
 export const ADMIN_PIN_HASH =
   import.meta.env.VITE_ADMIN_PIN_HASH ||
-  '7539d57e08012a92aeff3e5ff7b2b4b9a354eabbcf3f1f4f2e96a9c6b671d01a';
+  'f78ef352232bc815cea522871da3028cb80a3fb968a505b92fce01ff6837dd5b';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // APP METADATA
