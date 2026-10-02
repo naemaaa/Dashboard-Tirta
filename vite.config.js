@@ -34,6 +34,33 @@ function oneDriveApiPlugin() {
   }
 }
 
+// Helper to reliably retrieve Groq API keys from process.env or .env file
+function getGroqKeys() {
+  const keys = [
+    process.env.GROQ_API_KEY,
+    process.env.GROQ_API_KEY_SECONDARY,
+    process.env.VITE_GROQ_API_KEY,
+  ];
+
+  try {
+    const envPath = path.resolve(__dirname, '.env');
+    if (fs.existsSync(envPath)) {
+      const envContent = fs.readFileSync(envPath, 'utf-8');
+      envContent.split('\n').forEach(line => {
+        const trimmed = line.trim();
+        if (trimmed.startsWith('GROQ_API_KEY=') || trimmed.startsWith('GROQ_API_KEY_SECONDARY=') || trimmed.startsWith('VITE_GROQ_API_KEY=')) {
+          const parts = trimmed.split('=');
+          parts.shift();
+          const val = parts.join('=').trim();
+          if (val) keys.push(val);
+        }
+      });
+    }
+  } catch (e) {}
+
+  return [...new Set(keys.filter(Boolean).map(k => k.trim()))];
+}
+
 // Custom dev middleware for /api/ai-advisor
 function aiAdvisorPlugin() {
   return {
@@ -52,10 +79,12 @@ function aiAdvisorPlugin() {
               if (rawBody) body = JSON.parse(rawBody);
             }
 
-            const GROQ_KEYS = [
-              process.env.GROQ_API_KEY,
-              process.env.GROQ_API_KEY_SECONDARY
-            ].filter(Boolean);
+            const GROQ_KEYS = getGroqKeys();
+            const GROQ_MODELS = [
+              'llama-3.3-70b-versatile',
+              'llama-3.1-8b-instant',
+              'mixtral-8x7b-32768'
+            ];
 
             const systemPrompt = `Anda adalah Senior Macroeconomic & Food Supply Policy Advisor di Bank Indonesia Kantor Perwakilan DIY dan Tim Pengendalian Inflasi Daerah (TPID) D.I. Yogyakarta.
 Berikan 3 rekomendasi kebijakan taktis dan strategis berbasis data nyata.
@@ -105,32 +134,41 @@ OUTPUT WAJIB JSON DENGAN STRUKTUR:
 Berikan output JSON kebijakan sekarang:`;
 
             for (const key of GROQ_KEYS) {
-              const groqRes = await fetch('https://api.groq.com/openai/v1/chat/completions', {
-                method: 'POST',
-                headers: {
-                  'Authorization': `Bearer ${key}`,
-                  'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                  model: 'openai/gpt-oss-120b',
-                  messages: [
-                    { role: 'system', content: systemPrompt },
-                    { role: 'user', content: userPrompt }
-                  ],
-                  response_format: { type: 'json_object' },
-                  temperature: 0.3,
-                  max_tokens: 800
-                })
-              });
+              for (const model of GROQ_MODELS) {
+                try {
+                  const groqRes = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+                    method: 'POST',
+                    headers: {
+                      'Authorization': `Bearer ${key}`,
+                      'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                      model,
+                      messages: [
+                        { role: 'system', content: systemPrompt },
+                        { role: 'user', content: userPrompt }
+                      ],
+                      response_format: { type: 'json_object' },
+                      temperature: 0.3,
+                      max_tokens: 800
+                    })
+                  });
 
-              if (groqRes.ok) {
-                const groqJson = await groqRes.json();
-                const contentStr = groqJson.choices?.[0]?.message?.content;
-                if (contentStr) {
-                  res.setHeader('Content-Type', 'application/json');
-                  res.setHeader('X-AI-Engine', 'Groq-LPU-120B');
-                  res.statusCode = 200;
-                  return res.end(contentStr);
+                  if (groqRes.ok) {
+                    const groqJson = await groqRes.json();
+                    const contentStr = groqJson.choices?.[0]?.message?.content;
+                    if (contentStr) {
+                      res.setHeader('Content-Type', 'application/json');
+                      res.setHeader('X-AI-Engine', `Groq-${model}`);
+                      res.statusCode = 200;
+                      return res.end(contentStr);
+                    }
+                  } else {
+                    const errText = await groqRes.text();
+                    console.warn(`[Groq Dev Middleware] Key/Model (${model}) error ${groqRes.status}:`, errText);
+                  }
+                } catch (e) {
+                  console.warn(`[Groq Dev Middleware] Fetch error with model ${model}:`, e.message);
                 }
               }
             }

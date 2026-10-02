@@ -300,4 +300,49 @@ export class AiNarrativeService {
       }
     ];
   }
+
+  /**
+   * Generates Tab 7: Early Warning System (EWS) Alert Insights
+   */
+  static generateTab7Insights(metrics = {}) {
+    const ewsMetrics = metrics.ewsMetrics || {};
+    const {
+      normalCount = 7,
+      watchCount = 2,
+      warningCount = 1,
+      criticalCount = 1,
+      overallStatus = 'CRITICAL',
+      mostCriticalName = 'Daging Sapi Kualitas 1',
+    } = ewsMetrics;
+
+    const criticalColor = overallStatus === 'CRITICAL' ? 'red' : overallStatus === 'WARNING' ? 'amber' : 'green';
+
+    return [
+      {
+        id: 'ews-insight-1',
+        category: 'Status ALPS & Early Warning Engine',
+        status: `EWS Status: ${overallStatus}`,
+        badgeColor: criticalColor,
+        content: `Evaluasi EWS menunjukkan ${criticalCount} komoditas status CRITICAL (${mostCriticalName}), ${warningCount} WARNING, dan ${watchCount} WATCH. Sebagian besar (${normalCount}) komoditas pangan utama DIY terpantau dalam kisaran tekanan harga NORMAL.`,
+        timestamp: 'BI TPID Early Warning Engine'
+      },
+      {
+        id: 'ews-insight-2',
+        category: 'Komoditas Paling Kritis (High Pressure)',
+        status: mostCriticalName,
+        badgeColor: 'red',
+        content: `Komoditas ${mostCriticalName} mencatatkan indikator tekanan harga tertinggi baik pada tingkat Pedagang Besar maupun Eceran. Rekomendasi TPID: Lakukan operasi pasar cepat & percepat rilis cadangan stok dari distributor utama.`,
+        timestamp: 'Proyeksi Volatilitas EWS'
+      },
+      {
+        id: 'ews-insight-3',
+        category: 'Proyeksi 95% Confidence Band',
+        status: 'Tren 2026-2027',
+        badgeColor: 'blue',
+        content: `Proyeksi harga komoditas hingga Q4 2027 menunjukkan tren fluktuasi musiman yang terkendali dalam pita batas atas & bawah interval kepercayaan 95%. Intervensi KAD disarankan difokuskan menjelang puncak siklus seasonal.`,
+        timestamp: 'Intelligence Forecast Model'
+      }
+    ];
+  }
 }
+

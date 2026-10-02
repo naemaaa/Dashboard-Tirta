@@ -7,6 +7,7 @@ import { Tab3HargaMarjin } from './components/tabs/Tab3HargaMarjin';
 import { Tab4TrenAntarwaktu } from './components/tabs/Tab4TrenAntarwaktu';
 import { Tab5PetaArus } from './components/tabs/Tab5PetaArus';
 import { Tab5KualitasData } from './components/tabs/Tab5KualitasData';
+import { Tab7EarlyWarningSystem } from './components/tabs/Tab7EarlyWarningSystem';
 import { DataModal } from './components/common/DataModal';
 import { AlertCircle, Landmark } from 'lucide-react';
 
@@ -42,7 +43,7 @@ export function App() {
         {activeTab === 'tab3' && <Tab3HargaMarjin />}
         {activeTab === 'tab4' && <Tab4TrenAntarwaktu />}
         {activeTab === 'tab5' && <Tab5PetaArus />}
-        {activeTab === 'tab6' && <Tab5KualitasData />}
+        {activeTab === 'tab7' && <Tab7EarlyWarningSystem />}
 
       </main>
 
@@ -57,7 +58,7 @@ export function App() {
               Kajian Aliran Komoditas Strategis DIY 2026
             </span>
             <span className="text-[#D0D5DD]">&bull;</span>
-            <span>Kantor Perwakilan Bank Indonesia Daerah Istimewa Yogyakarta</span>
+            <span>Tim Pengendalian Inflasi Daerah DIY &bull; Kantor Perwakilan Bank Indonesia Daerah Istimewa Yogyakarta</span>
           </div>
 
           <div className="flex items-center gap-3 text-[11px] text-[#667085]">

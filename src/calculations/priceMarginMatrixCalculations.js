@@ -134,15 +134,19 @@ export function calculateTab3PriceMatrix(rawRingkasan = [], selectedPeriode, sel
  */
 export function calculateTab3MarginRanking(priceMatrix = []) {
   return priceMatrix
-    .map(r => ({
-      komoditas: r.komoditas.replace(' (Ton)', ''),
-      full_name: r.komoditas,
-      marginPct: r.avgMarginPct,
-      marginRp: r.avgMarginRp,
-      hargaBeli: r.avgBeliAll,
-      hargaJual: r.avgJualAll,
-      status: r.statusMargin
-    }))
+    .map(r => {
+      const cleanName = r.komoditas.replace(' (Ton)', '').replace(' (Liter)', '');
+      return {
+        komoditas: cleanName,
+        shortName: cleanName,
+        full_name: r.komoditas,
+        marginPct: r.avgMarginPct,
+        marginRp: r.avgMarginRp,
+        hargaBeli: r.avgBeliAll,
+        hargaJual: r.avgJualAll,
+        status: r.statusMargin
+      };
+    })
     .sort((a, b) => b.marginPct - a.marginPct);
 }
 

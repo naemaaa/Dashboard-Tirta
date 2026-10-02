@@ -3,8 +3,15 @@
 
 const GROQ_KEYS = [
   process.env.GROQ_API_KEY,
-  process.env.GROQ_API_KEY_SECONDARY
-].filter(Boolean);
+  process.env.GROQ_API_KEY_SECONDARY,
+  process.env.VITE_GROQ_API_KEY
+].filter(Boolean).map(k => k.trim());
+
+const GROQ_MODELS = [
+  'llama-3.3-70b-versatile',
+  'llama-3.1-8b-instant',
+  'mixtral-8x7b-32768'
+];
 
 export default async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
@@ -90,41 +97,43 @@ OUTPUT WAJIB DALAM FORMAT JSON DENGAN STRUKTUR BERIKUT:
 
 Berikan sintesis kebijakan JSON sekarang:`;
 
-  // Try calling Groq with available keys
+  // Try calling Groq with available keys and models
   for (const key of GROQ_KEYS) {
-    try {
-      const response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${key}`,
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          model: 'openai/gpt-oss-120b',
-          messages: [
-            { role: 'system', content: systemPrompt },
-            { role: 'user', content: userPrompt }
-          ],
-          response_format: { type: 'json_object' },
-          temperature: 0.3,
-          max_tokens: 800
-        })
-      });
+    for (const model of GROQ_MODELS) {
+      try {
+        const response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${key}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            model,
+            messages: [
+              { role: 'system', content: systemPrompt },
+              { role: 'user', content: userPrompt }
+            ],
+            response_format: { type: 'json_object' },
+            temperature: 0.3,
+            max_tokens: 800
+          })
+        });
 
-      if (response.ok) {
-        const groqData = await response.json();
-        const contentStr = groqData.choices?.[0]?.message?.content;
-        if (contentStr) {
-          const parsed = JSON.parse(contentStr);
-          if (parsed.insights && Array.isArray(parsed.insights)) {
-            res.setHeader('Content-Type', 'application/json');
-            res.setHeader('X-AI-Engine', 'Groq-LPU-120B');
-            return res.status(200).json(parsed);
+        if (response.ok) {
+          const groqData = await response.json();
+          const contentStr = groqData.choices?.[0]?.message?.content;
+          if (contentStr) {
+            const parsed = JSON.parse(contentStr);
+            if (parsed.insights && Array.isArray(parsed.insights)) {
+              res.setHeader('Content-Type', 'application/json');
+              res.setHeader('X-AI-Engine', `Groq-${model}`);
+              return res.status(200).json(parsed);
+            }
           }
         }
+      } catch (err) {
+        console.warn(`[Groq API] Key/Model (${model}) failed:`, err.message);
       }
-    } catch (err) {
-      console.warn('[Groq API] Key failed or error:', err.message);
     }
   }
 

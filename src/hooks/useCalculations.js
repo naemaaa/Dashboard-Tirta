@@ -37,6 +37,7 @@ import {
   calculateQualityMetrics,
   calculateQualityByRegion,
   calculateQualityByCommodity,
+  calculateEwsMetrics,
   // AUDIT FIX: Unified matchers — single source of truth
   matchKomoditasUnified,
   matchWilayahUnified,
@@ -52,6 +53,7 @@ export function useCalculations() {
     selectedKlaster,
     // Tab-local filters (kept in store for backwards compat but global slicers take priority)
     tab2Responden,
+    ewsDatabase,
   } = useDashboardStore();
 
   const calculations = useMemo(() => {
@@ -331,6 +333,9 @@ export function useCalculations() {
       qualityByCommodity,
       cleaningReport,
 
+      // Tab 7 (EWS Analytics)
+      ewsMetrics: calculateEwsMetrics(ewsDatabase || data?.ews_data, selectedKomoditas, selectedKlaster),
+
       // Metadata
       respondents:      rawRespondents,
       qualityIssues:    rawQualityIssues,
@@ -341,9 +346,9 @@ export function useCalculations() {
       availableKabKota,
     };
   }, [
-    data,
+    data, ewsDatabase,
     selectedPeriode, selectedKomoditas, selectedWilayah, selectedKlaster,
-    tab2Responden, // keep as it's used for respondent filter in Tab2 matrix
+    tab2Responden,
   ]);
 
   return calculations;

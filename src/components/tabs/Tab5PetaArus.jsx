@@ -17,7 +17,11 @@ export function Tab5PetaArus() {
     <div className="space-y-4">
       
       {/* 1. UNIFIED GLOBAL SLICER BAR */}
-      <GlobalFilterBar showBadge={false} />
+      <GlobalFilterBar
+        showBadge={true}
+        title="Tab 5 — Peta Arus Pasokan & Monitoring Kualitas Data"
+        subtitle="Pemetaan spasial jaringan arus antar wilayah dan evaluasi konsistensi kelengkapan record"
+      />
 
       {/* 2. MAIN CONTENT AREA: Real Leaflet Map */}
       <div className="space-y-3">

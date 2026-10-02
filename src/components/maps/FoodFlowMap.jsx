@@ -4,6 +4,7 @@
 import React, { useEffect, useRef, useState, useMemo } from 'react';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
+import { useDashboardStore } from '../../store/useDashboardStore';
 import {
   calculateGeospatialFlows,
   calculateRespondentLocations
@@ -23,7 +24,9 @@ import {
   Navigation,
   Activity,
   Boxes,
-  Compass
+  Compass,
+  Lock,
+  Unlock
 } from 'lucide-react';
 
 // Free & Open Tile Layer options (No API Key, No Watermark)
@@ -62,6 +65,8 @@ export function FoodFlowMap({
   selectedWilayah,
   onSelectWilayah
 }) {
+  const { isRespondentUnlocked, setRespondentUnlocked } = useDashboardStore();
+
   const mapContainerRef = useRef(null);
   const mapInstanceRef = useRef(null);
   const flowLayerGroupRef = useRef(null);
@@ -69,7 +74,7 @@ export function FoodFlowMap({
 
   // States
   const [mapMode, setMapMode] = useState('flow'); // 'flow' | 'respondents'
-  const [tileStyle, setTileStyle] = useState('esri_street'); // 'esri_street' | 'esri_light' | 'esri_dark' | 'osm' | 'esri_topo'
+  const [tileStyle, setTileStyle] = useState('esri_street');
   const [flowDirection, setFlowDirection] = useState('all'); // 'all', 'inflow', 'outflow'
   const [activeRouteId, setActiveRouteId] = useState(null);
   const [selectedNodeName, setSelectedNodeName] = useState(null);
@@ -276,10 +281,12 @@ export function FoodFlowMap({
       });
 
     } else {
-      // 2C. Render Respondent Pinpoint Markers
-      respondentLocations.forEach((resp) => {
+      // 2C. Render Respondent Pinpoint Markers (Check Global 1 Credential Unlock State)
+      respondentLocations.forEach((resp, idx) => {
         const isPB = resp.tipe_responden.includes('Pedagang');
         const isSelected = selectedRespondent?.id_responden === resp.id_responden;
+        const displayName = isRespondentUnlocked ? resp.nama_responden : `Responden #${idx + 1}`;
+        const displayAddress = isRespondentUnlocked ? (resp.alamat || resp.kabupaten) : `${resp.kabupaten} (Alamat Tersandi)`;
 
         const customIcon = L.divIcon({
           className: 'custom-resp-pin',
@@ -314,10 +321,10 @@ export function FoodFlowMap({
               ${resp.tipe_responden}
             </div>
             <div style="font-size: 13px; font-weight: bold; color: #0f172a; margin-bottom: 4px;">
-              ${resp.nama_responden}
+              ${displayName}
             </div>
             <div style="color: #64748b; font-size: 11px; margin-bottom: 6px;">
-              📍 ${resp.alamat || resp.kabupaten}
+              📍 ${displayAddress}
             </div>
             <div style="border-top: 1px solid #e2e8f0; padding-top: 4px; font-size: 11px;">
               <div><strong>Komoditas Utama:</strong> ${resp.komoditas_utama}</div>
@@ -332,7 +339,7 @@ export function FoodFlowMap({
       });
     }
 
-  }, [mapMode, routes, nodeStats, respondentLocations, activeRouteId, selectedNodeName, selectedRespondent]);
+  }, [mapMode, routes, nodeStats, respondentLocations, activeRouteId, selectedNodeName, selectedRespondent, isRespondentUnlocked]);
 
   // Reset map view to center
   const handleResetView = () => {
@@ -351,17 +358,29 @@ export function FoodFlowMap({
       {/* 1. Header Controls Bar */}
       <div className="p-4 border-b border-[#E4E7EC] flex flex-col md:flex-row md:items-center justify-between gap-3 bg-white">
         
-        {/* Left: Mode Title */}
+        {/* Left: Mode Title & Privacy Indicator */}
         <div className="flex items-center gap-2.5">
           <div className="w-8 h-8 rounded-xl bg-[#DCEAFA] text-[#0D3E77] flex items-center justify-center shrink-0">
             <Compass className="w-4 h-4 text-[#12539E]" />
           </div>
           <div>
-            <h3 className="text-xs sm:text-sm font-bold text-[#101828] uppercase tracking-wider">
-              {mapMode === 'flow' ? 'Peta Spasial Aliran Distribusi Komoditas' : 'Peta Sebaran Titik Responden & Sentra'}
-            </h3>
+            <div className="flex items-center gap-2">
+              <h3 className="text-xs sm:text-sm font-bold text-[#101828] uppercase tracking-wider m-0">
+                {mapMode === 'flow' ? 'Peta Spasial Aliran Distribusi Komoditas' : 'Peta Sebaran Titik Responden & Sentra'}
+              </h3>
+              {mapMode === 'respondents' && (
+                <span className={`inline-flex items-center gap-1 text-[10px] font-bold px-2 py-0.5 rounded-full border ${
+                  isRespondentUnlocked
+                    ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
+                    : 'bg-amber-50 text-amber-700 border-amber-200'
+                }`}>
+                  {isRespondentUnlocked ? <Unlock className="w-3 h-3 text-emerald-600" /> : <Lock className="w-3 h-3 text-amber-600" />}
+                  {isRespondentUnlocked ? 'Identitas Terbuka' : 'Privat (Tersandi)'}
+                </span>
+              )}
+            </div>
             <p className="text-xs text-[#667085]">
-              {mapMode === 'flow' ? 'Visualisasi rute logistik inter-regional & intra-DIY' : 'Pinpoint lokasi pedagang besar & kelompok produsen'}
+              {mapMode === 'flow' ? 'Visualisasi rute logistik inter-regional & intra-DIY' : 'Pinpoint lokasi pedagang besar & kelompok produsen (Identitas terproteksi)'}
             </p>
           </div>
         </div>
@@ -465,7 +484,7 @@ export function FoodFlowMap({
         <div ref={mapContainerRef} className="w-full h-full z-0"></div>
 
         {/* Overlay Legend */}
-        <div className="absolute top-3 left-3 z-1000 bg-white/95 backdrop-blur-md p-3.5 rounded-2xl border border-[#E4E7EC] text-[#101828] text-xs shadow-lg max-w-[230px]">
+        <div className="absolute top-3 left-3 z-20 bg-white/95 backdrop-blur-md p-3.5 rounded-2xl border border-[#E4E7EC] text-[#101828] text-xs shadow-lg max-w-[230px]">
           <div className="flex items-center gap-2 font-bold text-[#101828] border-b border-[#E4E7EC] pb-1.5 mb-2">
             <Layers className="w-4 h-4 text-[#C89B3C]" />
             <span>Keterangan Aliran</span>
@@ -523,7 +542,6 @@ export function FoodFlowMap({
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3">
             {routes.slice(0, 4).map((r, i) => {
               const pct = totalFlowVolume > 0 ? ((r.volume / totalFlowVolume) * 100).toFixed(1) : 0;
-              const rankColor = i === 0 ? 'bg-[#C89B3C]' : i === 1 ? 'bg-[#98A2B3]' : 'bg-[#B3D4F2]';
               return (
                 <div
                   key={r.id}
@@ -561,7 +579,7 @@ export function FoodFlowMap({
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
-            {respondentLocations.slice(0, 6).map((resp) => (
+            {respondentLocations.slice(0, 6).map((resp, idx) => (
               <div
                 key={resp.id_responden}
                 onClick={() => setSelectedRespondent(resp)}
@@ -577,8 +595,12 @@ export function FoodFlowMap({
                   </span>
                   <span className="text-[10px] font-medium text-[#667085]">{resp.kabupaten}</span>
                 </div>
-                <h5 className="text-xs font-bold text-[#101828] truncate">{resp.nama_responden}</h5>
-                <p className="text-[10px] text-[#667085] truncate mt-0.5">{resp.alamat}</p>
+                <h5 className="text-xs font-bold text-[#101828] truncate">
+                  {isRespondentUnlocked ? resp.nama_responden : `Responden #${idx + 1}`}
+                </h5>
+                <p className="text-[10px] text-[#667085] truncate mt-0.5">
+                  {isRespondentUnlocked ? resp.alamat : `${resp.kabupaten} (Alamat Tersandi)`}
+                </p>
               </div>
             ))}
           </div>

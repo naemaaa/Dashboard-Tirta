@@ -11,7 +11,7 @@ export function ExecutiveIntelligenceBox({ tabId = 'tab1', title = 'Executive In
   const calculations = useCalculations();
   const { selectedKomoditas, selectedWilayah, selectedPeriode, selectedKlaster } = useDashboardStore();
   const [isGenerating, setIsGenerating] = useState(false);
-  const [isCollapsed, setIsCollapsed] = useState(false);
+  const [isCollapsed, setIsCollapsed] = useState(true);
   const [copiedId, setCopiedId] = useState(null);
   const [groqInsights, setGroqInsights] = useState(null);
   const [engineType, setEngineType] = useState('Smart Synthesis');
@@ -26,6 +26,8 @@ export function ExecutiveIntelligenceBox({ tabId = 'tab1', title = 'Executive In
     fallbackInsights = AiNarrativeService.generateTab4Insights(calculations);
   } else if (tabId === 'tab5') {
     fallbackInsights = AiNarrativeService.generateTab5Insights(calculations);
+  } else if (tabId === 'tab7') {
+    fallbackInsights = AiNarrativeService.generateTab7Insights(calculations);
   } else {
     fallbackInsights = AiNarrativeService.generateExecutiveInsights(calculations, {
       selectedKomoditas,
@@ -85,10 +87,15 @@ export function ExecutiveIntelligenceBox({ tabId = 'tab1', title = 'Executive In
     <div className="bg-white rounded-2xl border border-[#E4E7EC] shadow-2xs mb-5 overflow-hidden transition-all duration-200">
       
       {/* Header */}
-      <div className="px-4 py-3.5 sm:px-5 sm:py-4 flex items-center justify-between border-b border-[#E4E7EC] bg-gradient-to-r from-[#F2F7FD] via-white to-[#F2F7FD]/50">
+      <div 
+        onClick={() => setIsCollapsed(!isCollapsed)}
+        className={`px-4 py-3 sm:px-5 sm:py-3.5 flex items-center justify-between bg-gradient-to-r from-[#F2F7FD] via-white to-[#F2F7FD]/50 cursor-pointer select-none transition-colors ${
+          !isCollapsed ? 'border-b border-[#E4E7EC]' : ''
+        }`}
+      >
         <div className="flex items-center gap-3.5">
-          <div className="w-9 h-9 rounded-xl bg-[#DCEAFA] border border-[#B3D4F2] flex items-center justify-center text-[#0D3E77] shadow-2xs shrink-0">
-            <BrainCircuit className="w-5 h-5 text-[#12539E]" />
+          <div className="w-8 h-8 rounded-xl bg-[#DCEAFA] border border-[#B3D4F2] flex items-center justify-center text-[#0D3E77] shadow-2xs shrink-0">
+            <BrainCircuit className="w-4 h-4 text-[#12539E]" />
           </div>
           <div>
             <div className="flex items-center gap-2">
@@ -100,13 +107,13 @@ export function ExecutiveIntelligenceBox({ tabId = 'tab1', title = 'Executive In
                 {engineType}
               </span>
             </div>
-            <p className="text-xs text-[#667085] hidden sm:block mt-0.5">
-              Sintesis otomatis indikator neraca perdagangan & rekomendasi pengendalian inflasi TPID DIY
+            <p className="text-[11px] text-[#667085] hidden sm:block mt-0.5">
+              Klik untuk {isCollapsed ? 'buka' : 'ciutkan'} sintesis indikator neraca perdagangan & rekomendasi kebijakan TPID DIY
             </p>
           </div>
         </div>
 
-        <div className="flex items-center gap-2 shrink-0">
+        <div className="flex items-center gap-2 shrink-0" onClick={e => e.stopPropagation()}>
           <button
             onClick={handleRegenerate}
             disabled={isGenerating}
@@ -122,7 +129,7 @@ export function ExecutiveIntelligenceBox({ tabId = 'tab1', title = 'Executive In
             className="p-1.5 text-[#667085] hover:text-[#101828] hover:bg-[#F2F4F7] rounded-full transition-colors cursor-pointer"
             title={isCollapsed ? "Tampilkan insight" : "Ciutkan insight"}
           >
-            {isCollapsed ? <ChevronDown className="w-4 h-4" /> : <ChevronUp className="w-4 h-4" />}
+            {isCollapsed ? <ChevronDown className="w-4 h-4 text-[#1E74C7]" /> : <ChevronUp className="w-4 h-4 text-[#667085]" />}
           </button>
         </div>
       </div>

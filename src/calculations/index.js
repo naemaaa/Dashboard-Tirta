@@ -11,3 +11,4 @@ export * from './flowMatrixCalculations.js';
 export * from './priceMarginMatrixCalculations.js';
 export * from './trendAntarwaktuCalculations.js';
 export * from './qualitySlaCalculations.js';
+export * from './ewsCalculations.js';

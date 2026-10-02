@@ -1,13 +1,75 @@
 // SheetJS Excel Parser & Data Pipeline Service
 // Bank Indonesia KPw DIY · PSEKUIN UPN Veteran Yogyakarta
+// AUDIT FIXES:
+// - C1: syncKalenderFromData() — auto-extend REF_KALENDER saat periode baru dari upload Excel
+// - P1: fetchFromUrl() — 15-detik AbortController timeout
+// - P2: cacheData() — quota-safe try/catch dengan estimasi ukuran
 
 import * as XLSX from 'xlsx';
 import { generateMasterDataset, REF_WILAYAH, REF_KOMODITAS, REF_KALENDER, REF_SATUAN } from '../data/seedData.js';
 import { cleanDataset } from './dataCleaningService.js';
-
-const CACHE_KEY = 'dashboard_komoditas_diy_data_v8';
+import { CACHE_KEY, FETCH_TIMEOUT_MS, API_SYNC_ONEDRIVE } from '../config/env.js';
 
 export class ExcelService {
+
+  // ─────────────────────────────────────────────────────────────────
+  // C1 FIX: Auto-extend REF_KALENDER from uploaded data
+  // Jika data Excel mengandung id_periode yang belum ada di REF_KALENDER,
+  // tambahkan entri baru ke array kalender agar FK validator tidak membuang baris.
+  // ─────────────────────────────────────────────────────────────────
+  static syncKalenderFromData(rows = [], refKalender = []) {
+    const existingIds = new Set(refKalender.map(k => k.id_periode));
+    let added = 0;
+
+    rows.forEach(row => {
+      const pid = row.id_periode;
+      if (!pid || existingIds.has(pid)) return;
+
+      // Parse periode ID format: PER_YYYY_Www
+      const match = pid.match(/PER_(\d{4})_W(\d+)/);
+      let label = pid;
+      let labelSingkat = pid;
+      let tglMulai = new Date().toISOString().slice(0, 10);
+      let namaBulan = '';
+      let mingguKe = 0;
+
+      if (match) {
+        const year = match[1];
+        const week = parseInt(match[2], 10);
+        mingguKe = week;
+        // Approximate date: Jan 1 + (week-1)*7 days
+        const jan1 = new Date(parseInt(year), 0, 1);
+        const dayOffset = (week - 1) * 7;
+        const weekDate = new Date(jan1.getTime() + dayOffset * 86400000);
+        tglMulai = weekDate.toISOString().slice(0, 10);
+        const monthNames = ['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];
+        namaBulan = monthNames[weekDate.getMonth()];
+        label = `${year}-W${week} (${namaBulan})`;
+        labelSingkat = `${year}-W${week}`;
+      }
+
+      refKalender.push({
+        id_periode: pid,
+        label_periode: label,
+        label_singkat: labelSingkat,
+        tgl_mulai: tglMulai,
+        nama_bulan: namaBulan,
+        minggu_ke: mingguKe,
+        _auto_generated: true, // flag agar dapat diidentifikasi
+      });
+      existingIds.add(pid);
+      added++;
+    });
+
+    if (added > 0) {
+      // Sort by tanggal
+      refKalender.sort((a, b) => new Date(a.tgl_mulai) - new Date(b.tgl_mulai));
+      console.info(`[ExcelService] C1 Fix: Auto-extended REF_KALENDER dengan ${added} periode baru.`);
+    }
+
+    return refKalender;
+  }
+
   /**
    * Fetch master dataset from static JSON with cache-busting
    */
@@ -16,7 +78,7 @@ export class ExcelService {
 
     // 1. Try Live Serverless API Proxy for OneDrive
     try {
-      const apiRes = await fetch(`/api/sync-onedrive?t=${timestamp}`, {
+      const apiRes = await this._fetchWithTimeout(`${API_SYNC_ONEDRIVE}?t=${timestamp}`, {
         headers: { 'Cache-Control': 'no-cache', 'Pragma': 'no-cache' }
       });
       if (apiRes.ok) {
@@ -41,7 +103,7 @@ export class ExcelService {
 
     // 2. Try static master database JSON
     try {
-      const res = await fetch(`/data/masterDatabase.json?t=${timestamp}`, {
+      const res = await this._fetchWithTimeout(`/data/masterDatabase.json?t=${timestamp}`, {
         headers: { 'Cache-Control': 'no-cache', 'Pragma': 'no-cache' }
       });
       if (res.ok) {
@@ -77,6 +139,25 @@ export class ExcelService {
   }
 
   /**
+   * P1 FIX: Fetch with AbortController timeout (15 seconds)
+   */
+  static async _fetchWithTimeout(url, options = {}) {
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), FETCH_TIMEOUT_MS);
+    try {
+      const response = await fetch(url, { ...options, signal: controller.signal });
+      clearTimeout(timer);
+      return response;
+    } catch (err) {
+      clearTimeout(timer);
+      if (err.name === 'AbortError') {
+        throw new Error(`Permintaan ke ${url} melebihi batas waktu ${FETCH_TIMEOUT_MS / 1000} detik. Cek koneksi internet.`);
+      }
+      throw err;
+    }
+  }
+
+  /**
    * Load data either from network masterDatabase, cache, or seed generator
    */
   static async getInitialData() {
@@ -84,13 +165,34 @@ export class ExcelService {
   }
 
   /**
-   * Cache dataset in localStorage
+   * P2 FIX: Cache dataset in localStorage with quota-safe try/catch
+   * If data is too large (>4MB estimate), skip caching gracefully.
    */
   static cacheData(data) {
     try {
-      localStorage.setItem(CACHE_KEY, JSON.stringify(data));
+      const serialized = JSON.stringify(data);
+      // Estimate: 4MB = 4 * 1024 * 1024 = 4194304 chars (each JS char ≈ 2 bytes in memory)
+      if (serialized.length > 4_000_000) {
+        console.warn(`[ExcelService] P2: Dataset terlalu besar untuk cache (${(serialized.length / 1024).toFixed(0)} KB). Cache dilewati.`);
+        return;
+      }
+      localStorage.setItem(CACHE_KEY, serialized);
     } catch (e) {
-      console.warn('Failed to cache in localStorage', e);
+      // Catch QuotaExceededError and others gracefully
+      if (e.name === 'QuotaExceededError' || e.code === 22) {
+        console.warn('[ExcelService] P2: localStorage quota exceeded. Cache dilewati — app tetap berfungsi dengan data di memori.');
+        // Try to free space by removing old cache versions
+        try {
+          ['v1','v2','v3','v4','v5','v6','v7'].forEach(v => {
+            localStorage.removeItem(`dashboard_komoditas_diy_data_${v}`);
+          });
+          localStorage.setItem(CACHE_KEY, JSON.stringify(data));
+        } catch {
+          console.warn('[ExcelService] P2: Cache tidak dapat disimpan bahkan setelah pembesihan. Data hanya di memori.');
+        }
+      } else {
+        console.warn('[ExcelService] P2: Cache gagal disimpan:', e);
+      }
     }
   }
 
@@ -99,11 +201,9 @@ export class ExcelService {
    */
   static clearCache() {
     try {
-      // AUDIT FIX: v8 (versi aktif) ditambahkan agar refresh benar-benar membersihkan cache terkini
       ['v1', 'v2', 'v3', 'v4', 'v5', 'v6', 'v7', 'v8'].forEach(v => {
         localStorage.removeItem(`dashboard_komoditas_diy_data_${v}`);
       });
-      // Juga hapus dengan CACHE_KEY lengkap untuk keamanan
       localStorage.removeItem(CACHE_KEY);
     } catch (e) {
       console.warn('Failed to clear cache', e);
@@ -171,9 +271,6 @@ export class ExcelService {
       const hargaBeli = Number(row.harga_beli) || 0;
       const hargaJual = Number(row.harga_jual) || 0;
 
-      // Use jenis_aliran suffix based on unit awareness
-      // For liquid commodities (Minyak Goreng): still use 'vol_masuk_ton' key for compatibility
-      // but route the numeric value into volume_liter, not volume_ton
       const inflowType  = 'vol_masuk_ton';
       const outflowType = 'vol_keluar_ton';
 
@@ -187,7 +284,6 @@ export class ExcelService {
         komoditas,
         id_periode: idPeriode,
         jenis_aliran: inflowType,
-        // Unit-aware volume routing: liquid goes to volume_liter, solid to volume_ton
         volume_ton:   isLiquid ? 0 : volMasuk,
         volume_liter: isLiquid ? volMasuk : 0,
         harga_beli: hargaBeli,
@@ -232,7 +328,7 @@ export class ExcelService {
     const result = {
       REF_WILAYAH,
       REF_KOMODITAS,
-      REF_KALENDER,
+      REF_KALENDER: [...REF_KALENDER], // mutable copy for C1 fix
       REF_SATUAN,
       laporan_ringkasan: [],
       arus_masuk: [],
@@ -267,6 +363,15 @@ export class ExcelService {
         result.REF_WILAYAH = json;
       } else if (/ref_kalender/i.test(cleanName)) {
         result.REF_KALENDER = json;
+      } else if (/ews_heatmap|ews_summary|early_warning|ews_data/i.test(cleanName)) {
+        if (!result.ews_data) result.ews_data = {};
+        result.ews_data.heatmap = json;
+      } else if (/ews_time_series|ews_history|ews_pelaku/i.test(cleanName)) {
+        if (!result.ews_data) result.ews_data = {};
+        result.ews_data.timeSeries = json;
+      } else if (/ews_forecast|ews_proyeksi/i.test(cleanName)) {
+        if (!result.ews_data) result.ews_data = {};
+        result.ews_data.forecast = json;
       }
     });
 
@@ -275,6 +380,9 @@ export class ExcelService {
       const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
       rawRingkasan = XLSX.utils.sheet_to_json(firstSheet, { defval: null });
     }
+
+    // C1 FIX: Auto-extend REF_KALENDER from actual data before cleaning
+    result.REF_KALENDER = this.syncKalenderFromData(rawRingkasan, result.REF_KALENDER);
 
     // Normalize and unpivot laporan_ringkasan (pass komoditasRef for unit-aware routing)
     const komoditasRefForNorm = result.REF_KOMODITAS?.length > 0 ? result.REF_KOMODITAS : REF_KOMODITAS;
@@ -323,11 +431,138 @@ export class ExcelService {
   }
 
   /**
-   * Fetch from OneDrive or Public HTTP URL with fallback
+   * Parse EWS Excel File (Database 2 — Standalone)
+   * File: Dashboard ALPS EWS DIY PIHPS AB29092026.xlsx
+   *
+   * Membaca semua sheet dan mengekstrak data EWS secara fleksibel.
+   * Sheet yang dicari (case-insensitive, trim):
+   *   - heatmap / ews_heatmap / alps / summary → ewsData.heatmap
+   *   - time_series / pelaku / history / perkembangan → ewsData.timeSeries
+   *   - forecast / proyeksi / arima → ewsData.forecast
+   *
+   * Kolom heatmap yang dinormalisasi (case-insensitive):
+   *   komoditas | heatmap_pb / pb | heatmap_pe / pe | heatmap_prod / prod
+   *   alps komoditas / alps / status | current_pressure | forecast_pressure
+   */
+  static async parseEwsExcelBuffer(arrayBuffer) {
+    const workbook = XLSX.read(arrayBuffer, { type: 'array' });
+
+    const ewsData = {
+      heatmap: [],
+      timeSeries: [],
+      forecast: [],
+    };
+
+    console.info('[EWS Parser] Sheet ditemukan:', workbook.SheetNames);
+
+    workbook.SheetNames.forEach(sheetName => {
+      const cn = sheetName.trim().toLowerCase().replace(/\s+/g, '_');
+      const sheet = workbook.Sheets[sheetName];
+      const json = XLSX.utils.sheet_to_json(sheet, { defval: null });
+
+      if (json.length === 0) return;
+
+      // ── Heatmap / ALPS Summary Sheet ──────────────────────────────────────
+      if (
+        /heatmap|ews_heatmap|alps|early.warning.*harga|summary|komoditas.*diy|harga.*komoditas/i.test(cn)
+      ) {
+        console.info(`[EWS Parser] Sheet HEATMAP terdeteksi: "${sheetName}" (${json.length} baris)`);
+        ewsData.heatmap = json;
+        return;
+      }
+
+      // ── Time Series / Perkembangan Harga Pelaku ───────────────────────────
+      if (
+        /time.series|pelaku|perkembangan|history|ews_history|tingkat.*produsen|produsen.*pedagang/i.test(cn)
+      ) {
+        console.info(`[EWS Parser] Sheet TIME SERIES terdeteksi: "${sheetName}" (${json.length} baris)`);
+        ewsData.timeSeries = json;
+        return;
+      }
+
+      // ── Forecast / Proyeksi ARIMA ─────────────────────────────────────────
+      if (
+        /forecast|proyeksi|arima|prediksi|tren.*harga|harga.*tren/i.test(cn)
+      ) {
+        console.info(`[EWS Parser] Sheet FORECAST terdeteksi: "${sheetName}" (${json.length} baris)`);
+        ewsData.forecast = json;
+        return;
+      }
+    });
+
+    // ── Fallback: Jika hanya 1 sheet, anggap sebagai heatmap ─────────────────
+    if (ewsData.heatmap.length === 0 && workbook.SheetNames.length > 0) {
+      const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
+      ewsData.heatmap = XLSX.utils.sheet_to_json(firstSheet, { defval: null });
+      console.warn('[EWS Parser] Tidak ada sheet bernama heatmap/alps. Menggunakan sheet pertama sebagai fallback heatmap.');
+    }
+
+    console.info('[EWS Parser] Hasil parse:', {
+      heatmap: ewsData.heatmap.length,
+      timeSeries: ewsData.timeSeries.length,
+      forecast: ewsData.forecast.length,
+    });
+
+    return ewsData;
+  }
+
+  /**
+   * Universal OneDrive URL Converter
+   * Handles ALL OneDrive link formats and converts them to direct binary download URLs.
+   *
+   * Format yang didukung:
+   *   1. 1drv.ms short links  → https://1drv.ms/x/c/...?e=...
+   *   2. Doc.aspx viewer      → https://onedrive.live.com/.../Doc.aspx?sourcedoc=...
+   *   3. Direct download.aspx → passthrough
+   *   4. SharePoint embed     → passthrough
+   */
+  static convertOneDriveUrlToDownloadUrl(url) {
+    if (!url) return url;
+    let converted = url.trim();
+
+    // Format 1: 1drv.ms short link
+    // Konversi 1drv.ms ke OneDrive download endpoint menggunakan parameter download=1
+    // Contoh: https://1drv.ms/x/c/91bfd97920eb749f/IQAMD...?e=actP9C
+    if (converted.includes('1drv.ms')) {
+      // Tambahkan parameter download=1 agar forced ke download bukan preview
+      // Jika sudah ada query string pakai &, jika tidak pakai ?
+      if (converted.includes('?')) {
+        // Hapus parameter berlebih yang tidak relevan lalu tambah download=1
+        converted = converted + '&download=1';
+      } else {
+        converted = converted + '?download=1';
+      }
+      return converted;
+    }
+
+    // Format 2: OneDrive live Doc.aspx (web viewer) → ubah ke download.aspx
+    // Contoh: https://onedrive.live.com/personal/xxx/_layouts/15/Doc.aspx?sourcedoc={...}&action=default
+    if (converted.includes('onedrive.live.com') && converted.includes('Doc.aspx')) {
+      converted = converted
+        .replace('Doc.aspx', 'download.aspx')
+        .replace('action=default', 'action=download')
+        .replace('mobileredirect=true', '');
+      return converted;
+    }
+
+    // Format 3: onedrive.live.com/download atau sharepoint — passthrough langsung
+    return converted;
+  }
+
+  /**
+   * Fetch Excel dari OneDrive / URL publik manapun dengan 15s timeout.
+   * Mendukung semua format OneDrive URL via convertOneDriveUrlToDownloadUrl().
    */
   static async fetchFromUrl(url) {
     if (!url) throw new Error('URL sumber data tidak boleh kosong');
-    const res = await fetch(url);
+    const directUrl = this.convertOneDriveUrlToDownloadUrl(url);
+    const res = await this._fetchWithTimeout(directUrl, {
+      redirect: 'follow',                  // ikuti redirect 1drv.ms → download server
+      headers: {
+        'User-Agent': 'Mozilla/5.0',
+        'Accept': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, */*'
+      }
+    });
     if (!res.ok) throw new Error(`HTTP Error: ${res.status} ${res.statusText}`);
     const buffer = await res.arrayBuffer();
     return await this.parseExcelBuffer(buffer);

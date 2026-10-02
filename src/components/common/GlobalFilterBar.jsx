@@ -6,6 +6,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useDashboardStore } from '../../store/useDashboardStore';
 import { useCalculations } from '../../hooks/useCalculations';
 import { REF_KOMODITAS, REF_KALENDER, REF_WILAYAH, REF_KLASTER_RESPONDEN } from '../../data/seedData';
+import { PageExportButton } from './PageExportButton';
 import { ChevronDown, RotateCcw, Scale } from 'lucide-react';
 
 export function GlobalFilterBar({ showBadge = true, title = null, subtitle = null }) {
@@ -58,23 +59,27 @@ export function GlobalFilterBar({ showBadge = true, title = null, subtitle = nul
     setTimeout(() => setIsResetting(false), 500);
   };
 
+  // P3: Multi-periode delta disclaimer visibility
+  const showMultiPeriodeDisclaimer = isMultiPeriode;
+
   return (
     <div className="space-y-2">
-      {/* Optional Title Section */}
-      {(title || subtitle) && (
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-1">
-          <div>
-            {title && <h2 className="text-base font-bold text-[#101828] tracking-tight">{title}</h2>}
-            {subtitle && <p className="text-xs text-[#667085] mt-0.5">{subtitle}</p>}
-          </div>
+      {/* Title & Page-Wide Download Action Header */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-1">
+        <div>
+          {title && <h2 className="text-base font-bold text-[#101828] tracking-tight">{title}</h2>}
+          {subtitle && <p className="text-xs text-[#667085] mt-0.5">{subtitle}</p>}
         </div>
-      )}
+        <div className="flex items-center gap-2 self-start sm:self-auto ml-auto">
+          <PageExportButton />
+        </div>
+      </div>
 
       {/* Slicers Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-3 items-stretch">
         
         {/* 4 Universal Slicers */}
-        <div className={`${showBadge ? 'lg:col-span-10' : 'lg:col-span-12'} grid grid-cols-2 sm:grid-cols-4 gap-3 clean-card p-3.5 bg-white`}>
+        <div className={`${showBadge ? 'lg:col-span-9' : 'lg:col-span-12'} grid grid-cols-2 sm:grid-cols-4 gap-3 clean-card p-3.5 bg-white`}>
 
           {/* 1. PERIODE — Multi-select dropdown with checkboxes */}
           <div className="relative" ref={periodeRef}>
@@ -197,7 +202,7 @@ export function GlobalFilterBar({ showBadge = true, title = null, subtitle = nul
 
         {/* Right Badge: Selisih Volume & Reset Action */}
         {showBadge && (
-          <div className="lg:col-span-2 clean-card p-3.5 flex items-center justify-between gap-3 bg-white">
+          <div className="lg:col-span-3 clean-card p-3.5 flex items-center justify-between gap-3 bg-white">
             <div className="flex items-center gap-3 min-w-0">
               <div className={`w-10 h-10 rounded-full flex items-center justify-center shrink-0 ${
                 currentMetrics.neracaBersih >= 0 
@@ -207,10 +212,10 @@ export function GlobalFilterBar({ showBadge = true, title = null, subtitle = nul
                 <Scale className="w-5 h-5" />
               </div>
               <div className="min-w-0">
-                <span className="block text-[10px] uppercase tracking-wider font-semibold text-[#667085] truncate">
+                <span className="block text-[10px] uppercase tracking-wider font-semibold text-[#667085] whitespace-nowrap">
                   Selisih Volume
                 </span>
-                <span className={`text-sm font-bold truncate block tabular-nums ${
+                <span className={`text-base font-bold truncate block tabular-nums ${
                   currentMetrics.neracaBersih >= 0 ? 'text-[#12B76A]' : 'text-[#F04438]'
                 }`}>
                   {currentMetrics.neracaBersih > 0 ? `+${currentMetrics.neracaBersih}` : currentMetrics.neracaBersih} {unitLabel}
@@ -230,6 +235,23 @@ export function GlobalFilterBar({ showBadge = true, title = null, subtitle = nul
         )}
 
       </div>
+
+      {/* P3: Multi-periode disclaimer banner */}
+      {showMultiPeriodeDisclaimer && (
+        <div className="bg-[#EFF8FF] border border-[#B2DDFF] rounded-xl px-3.5 py-2 flex items-center justify-between gap-2 text-xs text-[#175CD3] animate-in fade-in duration-200">
+          <div className="flex items-center gap-2">
+            <span className="font-bold bg-[#D1E9FF] text-[#1570EF] px-2 py-0.5 rounded-md text-[10px] uppercase tracking-wide">
+              Multi-Periode ({jumlahPeriode} Minggu)
+            </span>
+            <span>
+              Metrik volume & neraca ditampilkan sebagai <strong>rata-rata per minggu</strong> dari periode terpilih.
+            </span>
+          </div>
+          <span className="text-[11px] text-[#2E90FA] font-medium hidden sm:inline">
+            BI Analytics Rule v1.0
+          </span>
+        </div>
+      )}
     </div>
   );
 }

@@ -131,7 +131,11 @@ export function calculateTab4CommodityEvolution(rawRingkasan = []) {
   const sortedKalender = [...REF_KALENDER].sort((a, b) => new Date(a.tgl_mulai) - new Date(b.tgl_mulai));
 
   return sortedKalender.map(kal => {
-    const point = { label: kal.label_singkat || kal.label_periode.split(' ')[0] };
+    const labelVal = kal.label_singkat || kal.label_periode.split(' ')[0];
+    const point = { 
+      label: labelVal,
+      periodeLabel: labelVal
+    };
     REF_KOMODITAS.forEach(kom => {
       const matches = rawRingkasan.filter(r =>
         !r.is_deleted &&
@@ -140,7 +144,7 @@ export function calculateTab4CommodityEvolution(rawRingkasan = []) {
         r.jenis_aliran === 'vol_masuk_ton'
       );
       const vol = matches.reduce((s, r) => s + getRowVolume(r), 0);
-      const keyName = kom.nama_singkat || kom.nama_komoditas.replace(' (Ton)', '');
+      const keyName = kom.nama_komoditas.replace(' (Ton)', '').replace(' (Liter)', '');
       point[keyName] = Number(vol.toFixed(1));
     });
     return point;

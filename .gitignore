@@ -1,4 +1,21 @@
-# Logs
+# ============================================================================
+# TIRTA Dashboard — .gitignore
+# Bank Indonesia KPw DIY · PSEKUIN UPN Veteran Yogyakarta
+# ============================================================================
+
+# ─── Environment & Credentials (WAJIB — Jangan dihapus!) ────────────────────
+.env
+.env.local
+.env.*.local
+.env.production
+.env.development
+
+# ─── Build Outputs ───────────────────────────────────────────────────────────
+node_modules
+dist
+dist-ssr
+
+# ─── Logs ────────────────────────────────────────────────────────────────────
 logs
 *.log
 npm-debug.log*
@@ -7,12 +24,7 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
-node_modules
-dist
-dist-ssr
-*.local
-
-# Editor directories and files
+# ─── Editor & IDE ────────────────────────────────────────────────────────────
 .vscode/*
 !.vscode/extensions.json
 .idea
@@ -22,3 +34,14 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+Thumbs.db
+
+# ─── Local Dev Cache ─────────────────────────────────────────────────────────
+*.local
+.cache
+
+# ─── Local Excel Data Files (sensitif — tidak di-push) ───────────────────────
+public/data/masterDatabase.json
+src/data/*.xlsx
+*.local.xlsx
+extracted_online_sheets.json
