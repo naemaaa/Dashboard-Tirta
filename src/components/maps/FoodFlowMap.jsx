@@ -28,6 +28,7 @@ import {
   Lock,
   Unlock
 } from 'lucide-react';
+import { PasswordModal } from '../common/PasswordModal';
 
 // Free & Open Tile Layer options (No API Key, No Watermark)
 const TILE_LAYERS = {
@@ -80,6 +81,7 @@ export function FoodFlowMap({
   const [selectedNodeName, setSelectedNodeName] = useState(null);
   const [selectedRespondent, setSelectedRespondent] = useState(null);
   const [respondentFilter, setRespondentFilter] = useState('Semua');
+  const [showPasswordModal, setShowPasswordModal] = useState(false);
 
   const rawArusMasuk = dataset?.arus_masuk || [];
   const rawArusKeluar = dataset?.arus_keluar || [];
@@ -480,8 +482,41 @@ export function FoodFlowMap({
       </div>
 
       {/* 2. Interactive Map Viewport */}
-      <div className="relative w-full h-[580px] bg-[#F2F7FD]">
-        <div ref={mapContainerRef} className="w-full h-full z-0"></div>
+      <div className="relative w-full h-[580px] bg-[#F2F7FD] overflow-hidden">
+        <div
+          ref={mapContainerRef}
+          className={`w-full h-full z-0 transition-all duration-300 ${
+            mapMode === 'respondents' && !isRespondentUnlocked
+              ? 'filter blur-[14px] pointer-events-none select-none scale-[1.03]'
+              : ''
+          }`}
+        ></div>
+
+        {/* Privacy Lock Overlay Container when in Respondent Mode & Locked */}
+        {mapMode === 'respondents' && !isRespondentUnlocked && (
+          <div className="absolute inset-0 z-30 bg-slate-900/40 backdrop-blur-xs flex flex-col items-center justify-center p-6 text-center">
+            <div className="bg-[#071D3D]/95 border border-[#1E74C7]/40 p-6 sm:p-8 rounded-2xl shadow-2xl max-w-md flex flex-col items-center text-white space-y-4">
+              <div className="w-14 h-14 rounded-2xl bg-amber-500/20 text-amber-400 border border-amber-500/40 flex items-center justify-center shadow-inner">
+                <Lock className="w-7 h-7" />
+              </div>
+              <div>
+                <h3 className="text-sm sm:text-base font-bold text-white uppercase tracking-wider mb-1.5">
+                  Peta Sebaran Titik Responden Tersandi
+                </h3>
+                <p className="text-xs text-slate-300 leading-relaxed">
+                  Titik presisi lokasi pedagang besar &amp; kelompok produsen dilindungi untuk menjaga kerahasiaan data survei TPID Bank Indonesia. Masukkan PIN otorisasi untuk membuka visualisasi titik sebaran.
+                </p>
+              </div>
+              <button
+                onClick={() => setShowPasswordModal(true)}
+                className="px-5 py-2.5 bg-[#1E74C7] hover:bg-[#12539E] text-white font-bold text-xs rounded-xl shadow-lg transition-all flex items-center gap-2 cursor-pointer border border-[#B3D4F2]/30"
+              >
+                <Unlock className="w-4 h-4 text-emerald-400" />
+                <span>Buka Password Otorisasi</span>
+              </button>
+            </div>
+          </div>
+        )}
 
         {/* Overlay Legend */}
         <div className="absolute top-3 left-3 z-20 bg-white/95 backdrop-blur-md p-3.5 rounded-2xl border border-[#E4E7EC] text-[#101828] text-xs shadow-lg max-w-[230px]">
@@ -606,6 +641,14 @@ export function FoodFlowMap({
           </div>
         )}
       </div>
+
+      {/* Password Authorization Modal Triggered Directly from Lock Overlay */}
+      <PasswordModal
+        isOpen={showPasswordModal}
+        onClose={() => setShowPasswordModal(false)}
+        title="Otorisasi Peta Sebaran Titik Responden"
+        subtitle="Masukkan Kata Sandi / PIN Otorisasi TPID BI DIY untuk membuka titik presisi lokasi responden tersandi."
+      />
 
     </div>
   );
