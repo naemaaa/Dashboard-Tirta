@@ -45,7 +45,7 @@ export function ExecutiveIntelligenceBox({ tabId = 'tab1', title = 'Executive In
         tabTitle: title,
         selectedKomoditas: selectedKomoditas || 'Semua Komoditas',
         selectedWilayah: selectedWilayah || 'Semua Wilayah DIY',
-        selectedPeriode: selectedPeriode || '2026-W38',
+        selectedPeriode: selectedPeriode || '',
         selectedKlaster: selectedKlaster || 'Semua Responden',
         currentMetrics: calculations.currentMetrics || {},
         deltas: calculations.deltas || {},

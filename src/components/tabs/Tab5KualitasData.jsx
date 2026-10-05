@@ -72,10 +72,10 @@ export function Tab5KualitasData() {
           </label>
           <select
             value={Array.isArray(selectedPeriode) ? (selectedPeriode[0] || 'semua') : (selectedPeriode || 'semua')}
-            onChange={(e) => setSelectedPeriode(e.target.value === 'semua' ? 'PER_2026_W38' : e.target.value)}
+            onChange={(e) => setSelectedPeriode(e.target.value === 'semua' ? (REF_KALENDER[REF_KALENDER.length - 1]?.id_periode) : e.target.value)}
             className="w-full bg-slate-50 border border-slate-200 text-slate-800 text-xs rounded-lg px-2.5 py-1.5 outline-none focus:border-[#1E74C7] focus:ring-1 focus:ring-[#1E74C7]"
           >
-            <option value="semua">Semua Periode (W34–W38)</option>
+            <option value="semua">Semua Periode</option>
             {REF_KALENDER.map(kal => (
               <option key={kal.id_periode} value={kal.id_periode}>
                 {kal.nama_periode} ({kal.tgl_mulai})

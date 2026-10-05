@@ -22,7 +22,7 @@ export function HeaderBar() {
   const [isRefreshing, setIsRefreshing] = useState(false);
 
   const currentPeriod = (data?.REF_KALENDER || []).find(k => k.id_periode === selectedPeriode) || (data?.REF_KALENDER || [])[(data?.REF_KALENDER || []).length - 1];
-  const periodLabel = currentPeriod ? currentPeriod.label_singkat : '2026-W38';
+  const periodLabel = currentPeriod ? currentPeriod.label_singkat : '2026';
 
   const handleRefresh = async () => {
     setIsRefreshing(true);

@@ -67,6 +67,9 @@ export const REF_KALENDER = [
   { id_periode: 'PER_2026_W36', label_periode: '2026-W36 (01-07 Sep)', label_singkat: '2026-W36', tgl_mulai: '2026-09-01', nama_bulan: 'September', minggu_ke: 36 },
   { id_periode: 'PER_2026_W37', label_periode: '2026-W37 (08-14 Sep)', label_singkat: '2026-W37', tgl_mulai: '2026-09-08', nama_bulan: 'September', minggu_ke: 37 },
   { id_periode: 'PER_2026_W38', label_periode: '2026-W38 (15-21 Sep)', label_singkat: '2026-W38', tgl_mulai: '2026-09-15', nama_bulan: 'September', minggu_ke: 38 },
+  { id_periode: 'PER_2026_W39', label_periode: '2026-W39 (22-28 Sep)', label_singkat: '2026-W39', tgl_mulai: '2026-09-22', nama_bulan: 'September', minggu_ke: 39 },
+  { id_periode: 'PER_2026_W40', label_periode: '2026-W40 (29 Sep-05 Okt)', label_singkat: '2026-W40', tgl_mulai: '2026-09-29', nama_bulan: 'Oktober', minggu_ke: 40 },
+  { id_periode: 'PER_2026_W41', label_periode: '2026-W41 (06-12 Okt)', label_singkat: '2026-W41', tgl_mulai: '2026-10-06', nama_bulan: 'Oktober', minggu_ke: 41 },
 ];
 
 export const REF_SATUAN = [

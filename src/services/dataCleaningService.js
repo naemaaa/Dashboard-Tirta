@@ -121,7 +121,7 @@ function normalizeVolume(rawVolume, inputSatuan, satuanDasar) {
  * @param {Array} existingQualityIssues - Existing quality issues array (will be appended to)
  * @returns {{ cleanedRows: Array, qualityIssues: Array, report: Object }}
  */
-export function cleanLaporanRingkasan(rows = [], existingQualityIssues = []) {
+export function cleanLaporanRingkasan(rows = [], existingQualityIssues = [], refKalender = []) {
   const qualityIssues = [...existingQualityIssues];
   const report = {
     total_input: rows.length,
@@ -131,6 +131,10 @@ export function cleanLaporanRingkasan(rows = [], existingQualityIssues = []) {
     volume_low_filtered: 0,
     cleaned_output: 0,
   };
+
+  // Build dynamic valid periods set from refKalender (or fallback to static REF_KALENDER)
+  const kalenderToUse = (refKalender && refKalender.length > 0) ? refKalender : REF_KALENDER;
+  const validPeriodeIds = new Set(kalenderToUse.map(k => k.id_periode));
 
   // Step 1: Deduplikasi
   const deduplicatedRows = [];
@@ -168,7 +172,7 @@ export function cleanLaporanRingkasan(rows = [], existingQualityIssues = []) {
     let isInvalid = false;
 
     // --- FK: id_periode ---
-    if (row.id_periode && !VALID_PERIODE_IDS.has(row.id_periode)) {
+    if (row.id_periode && !validPeriodeIds.has(row.id_periode)) {
       report.fk_invalid++;
       qualityIssues.push({
         periode: row.id_periode || '-',
@@ -290,7 +294,8 @@ export function cleanDataset(dataset) {
 
   const { cleanedRows, qualityIssues, report } = cleanLaporanRingkasan(
     dataset.laporan_ringkasan,
-    dataset.quality_issues || []
+    dataset.quality_issues || [],
+    dataset.REF_KALENDER
   );
 
   const cleanedDataset = {

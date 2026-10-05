@@ -22,11 +22,35 @@ export class ExcelService {
     let added = 0;
 
     rows.forEach(row => {
-      const pid = row.id_periode;
-      if (!pid || existingIds.has(pid)) return;
+      let pid = row.id_periode;
 
-      // Parse periode ID format: PER_YYYY_Www
-      const match = pid.match(/PER_(\d{4})_W(\d+)/);
+      // Handle missing id_periode by checking periode_mulai or tgl_mulai
+      if (!pid && (row.periode_mulai || row.tgl_mulai)) {
+        const rawDateStr = String(row.periode_mulai || row.tgl_mulai);
+        const dateObj = new Date(rawDateStr);
+        if (!isNaN(dateObj.getTime())) {
+          const year = dateObj.getFullYear();
+          const jan1 = new Date(year, 0, 1);
+          const dayOfYear = Math.floor((dateObj - jan1) / 86400000);
+          const week = Math.ceil((dayOfYear + jan1.getDay() + 1) / 7);
+          pid = `PER_${year}_W${week}`;
+          row.id_periode = pid;
+        }
+      }
+
+      if (!pid) return;
+
+      // Normalize period format (PER_YYYY_Www or YYYY-Www)
+      const match = pid.match(/(?:PER_)?(\d{4})_?W(\d+)/i);
+      if (match) {
+        const year = match[1];
+        const week = parseInt(match[2], 10);
+        pid = `PER_${year}_W${week}`;
+        row.id_periode = pid;
+      }
+
+      if (existingIds.has(pid)) return;
+
       let label = pid;
       let labelSingkat = pid;
       let tglMulai = new Date().toISOString().slice(0, 10);
@@ -37,7 +61,6 @@ export class ExcelService {
         const year = match[1];
         const week = parseInt(match[2], 10);
         mingguKe = week;
-        // Approximate date: Jan 1 + (week-1)*7 days
         const jan1 = new Date(parseInt(year), 0, 1);
         const dayOffset = (week - 1) * 7;
         const weekDate = new Date(jan1.getTime() + dayOffset * 86400000);
@@ -55,14 +78,13 @@ export class ExcelService {
         tgl_mulai: tglMulai,
         nama_bulan: namaBulan,
         minggu_ke: mingguKe,
-        _auto_generated: true, // flag agar dapat diidentifikasi
+        _auto_generated: true,
       });
       existingIds.add(pid);
       added++;
     });
 
     if (added > 0) {
-      // Sort by tanggal
       refKalender.sort((a, b) => new Date(a.tgl_mulai) - new Date(b.tgl_mulai));
       console.info(`[ExcelService] C1 Fix: Auto-extended REF_KALENDER dengan ${added} periode baru.`);
     }

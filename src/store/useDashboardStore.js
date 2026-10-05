@@ -125,7 +125,7 @@ export const useDashboardStore = create((set, get) => ({
         isLoading: false,
         // P5: hanya set lastSyncTime jika data berhasil dimuat, bukan hardcoded
         lastSyncTime: new Date(timestamp).toLocaleString('id-ID', { dateStyle: 'medium', timeStyle: 'short' }) + ' WIB',
-        syncSource: source === 'cache' ? 'Cached Database' : 'Master Database (September 2026)',
+        syncSource: source === 'cache' ? 'Cached Database' : `Master Database (${lastKal?.nama_bulan || 'Oktober'} 2026)`,
       });
     } catch (err) {
       set({ isLoading: false, error: err.message || 'Gagal memuat dataset' });
