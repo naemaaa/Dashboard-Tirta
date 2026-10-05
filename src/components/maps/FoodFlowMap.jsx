@@ -32,13 +32,12 @@ import {
 } from 'lucide-react';
 import { PasswordModal } from '../common/PasswordModal';
 
-// High-availability, clean Tile Layers (No API Key Required)
+// High-availability, 100% Free Tile Layers (No API Key Required, No Watermark)
 const TILE_LAYERS = {
-  carto_voyager: {
-    name: 'Peta Wilayah Detail (CartoDB Voyager)',
-    url: 'https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png',
-    subdomains: 'abcd',
-    attribution: '&copy; OpenStreetMap &copy; CARTO'
+  esri_street: {
+    name: 'Peta Wilayah Detail (ESRI Street)',
+    url: 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}',
+    attribution: '&copy; Esri &mdash; Esri, DeLorme, NAVTEQ, TomTom, Intermap'
   },
   osm: {
     name: 'OpenStreetMap (OSM Standard)',
@@ -46,23 +45,20 @@ const TILE_LAYERS = {
     subdomains: 'abc',
     attribution: '&copy; OpenStreetMap contributors'
   },
-  carto_light: {
-    name: 'Peta Terang Minimalis (Carto Light)',
-    url: 'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png',
-    subdomains: 'abcd',
-    attribution: '&copy; OpenStreetMap &copy; CARTO'
+  esri_light: {
+    name: 'Peta Terang Minimalis (ESRI Gray)',
+    url: 'https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}',
+    attribution: '&copy; Esri, HERE, Garmin, NGA, USGS'
   },
-  esri_street: {
-    name: 'Peta Wilayah ESRI Street',
-    url: 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}',
-    subdomains: '',
-    attribution: '&copy; Esri'
+  esri_topo: {
+    name: 'Topografi & Kontur (ESRI Topo)',
+    url: 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}',
+    attribution: '&copy; Esri, HERE, Garmin, Intermap'
   },
-  carto_dark: {
-    name: 'Peta Gelap (Carto Dark)',
-    url: 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',
-    subdomains: 'abcd',
-    attribution: '&copy; OpenStreetMap &copy; CARTO'
+  esri_dark: {
+    name: 'Peta Gelap Minimalis (ESRI Dark)',
+    url: 'https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Base/MapServer/tile/{z}/{y}/{x}',
+    attribution: '&copy; Esri, HERE, Garmin'
   }
 };
 
@@ -83,7 +79,7 @@ export function FoodFlowMap({
 
   // States
   const [mapMode, setMapMode] = useState('flow'); // 'flow' | 'respondents'
-  const [tileStyle, setTileStyle] = useState('carto_voyager');
+  const [tileStyle, setTileStyle] = useState('esri_street');
   const [flowDirection, setFlowDirection] = useState('all'); // 'all', 'inflow', 'outflow'
   const [activeRouteId, setActiveRouteId] = useState(null);
   const [selectedNodeName, setSelectedNodeName] = useState(null);
@@ -149,7 +145,7 @@ export function FoodFlowMap({
       }
     });
 
-    const activeTile = TILE_LAYERS[tileStyle] || TILE_LAYERS.carto_voyager;
+    const activeTile = TILE_LAYERS[tileStyle] || TILE_LAYERS.esri_street;
     const tileOptions = {
       maxZoom: 19,
       attribution: activeTile.attribution
@@ -513,11 +509,11 @@ export function FoodFlowMap({
             onChange={(e) => setTileStyle(e.target.value)}
             className="bg-[#F9FAFB] border border-[#E4E7EC] text-[#344054] text-xs rounded-xl px-3 py-1.5 outline-none font-medium cursor-pointer h-[34px]"
           >
-            <option value="carto_voyager">Peta Wilayah Detail (Carto Voyager)</option>
-            <option value="osm">OpenStreetMap (OSM)</option>
-            <option value="carto_light">Peta Terang Minimalis</option>
-            <option value="esri_street">ESRI Street Map</option>
-            <option value="carto_dark">Peta Gelap (Carto Dark)</option>
+            <option value="esri_street">Peta Wilayah Detail (ESRI Street)</option>
+            <option value="osm">OpenStreetMap (OSM Standard)</option>
+            <option value="esri_light">Peta Terang Minimalis (ESRI Gray)</option>
+            <option value="esri_topo">Topografi &amp; Kontur (ESRI Topo)</option>
+            <option value="esri_dark">Peta Gelap Minimalis (ESRI Dark)</option>
           </select>
 
           {/* Reset Map View Button */}
