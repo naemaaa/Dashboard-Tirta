@@ -318,18 +318,33 @@ export function calculateGeospatialFlows(
  * 6. Respondent Pinpoint Location Aggregator (Tab 2 Pinpoint Map)
  */
 export function calculateRespondentLocations(respondents = [], targetKomoditas, targetKabupaten, tipeResponden = 'Semua') {
-  return respondents.filter(r => {
-    if (targetKabupaten && targetKabupaten !== 'Semua' && targetKabupaten !== 'Semua Wilayah DIY' && r.kabupaten !== targetKabupaten) {
-      return false;
+  return respondents.filter((r, idx) => {
+    const kabName = r.kabupaten || r.kab || '';
+    if (targetKabupaten && targetKabupaten !== 'Semua' && targetKabupaten !== 'Semua Wilayah DIY') {
+      const matchKab = matchWilayahUnified(kabName, targetKabupaten);
+      if (!matchKab) return false;
     }
-    // FIX: Null-safe tipe_responden check
-    const tipe = r.tipe_responden || '';
-    if (tipeResponden === 'Pedagang Besar' && !tipe.includes('Pedagang')) return false;
-    if (tipeResponden === 'Produsen' && !tipe.includes('Produsen')) return false;
+    const tipe = (r.tipe_responden || r.tipe || '').toLowerCase();
+    if (tipeResponden === 'Pedagang Besar' && !tipe.includes('pedagang') && !tipe.includes('pb')) return false;
+    if (tipeResponden === 'Produsen' && !tipe.includes('produsen') && !tipe.includes('gapoktan')) return false;
     return true;
-  }).map(r => ({
-    ...r,
-    lat: r.latitude || (r.kabupaten?.includes('Sleman') ? -7.716 : r.kabupaten?.includes('Bantul') ? -7.893 : r.kabupaten?.includes('Kota') ? -7.797 : -7.828),
-    lng: r.longitude || (r.kabupaten?.includes('Sleman') ? 110.355 : r.kabupaten?.includes('Bantul') ? 110.334 : r.kabupaten?.includes('Kota') ? 110.370 : 110.158)
-  }));
+  }).map((r, idx) => {
+    const kabName = r.kabupaten || r.kab || 'Kab. Sleman';
+    const defaultLat = kabName.includes('Bantul') ? -7.8850 : kabName.includes('Kota') ? -7.7980 : kabName.includes('Kulon') ? -7.8500 : kabName.includes('Gunung') ? -7.9600 : -7.7120;
+    const defaultLng = kabName.includes('Bantul') ? 110.3400 : kabName.includes('Kota') ? 110.3650 : kabName.includes('Kulon') ? 110.1600 : kabName.includes('Gunung') ? 110.6100 : 110.3600;
+    
+    return {
+      ...r,
+      id_responden: r.id_responden || r.id || `R_${idx + 1}`,
+      nama_responden: r.nama_responden || r.nama || `Responden #${idx + 1}`,
+      tipe_responden: r.tipe_responden || (r.tipe === 'pedagang_besar' ? 'Pedagang Besar' : 'Produsen'),
+      kabupaten: kabName,
+      lat: Number(r.latitude || r.lat || defaultLat),
+      lng: Number(r.longitude || r.lng || defaultLng),
+      komoditas_utama: r.komoditas_utama || 'Beras Medium I',
+      volume_mingguan: r.volume_mingguan || '25.0 Ton',
+      kapasitas_gudang: r.kapasitas_gudang || '100 Ton',
+      alamat: r.alamat || `${kabName}, D.I. Yogyakarta`
+    };
+  });
 }
