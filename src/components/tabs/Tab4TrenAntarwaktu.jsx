@@ -269,7 +269,7 @@ export function Tab4TrenAntarwaktu() {
         </div>
 
         {/* Bottom Panel: Evolusi Volume per Komoditas (Stacked/Grouped Area/Line Chart) */}
-        <div className="clean-card p-5 bg-white" id="chart-tab4-comm-evo">
+        <div className="clean-card p-5 bg-white relative z-20" id="chart-tab4-comm-evo">
           <div className="flex items-center justify-between mb-3">
             <div>
               <h3 className="text-xs font-bold text-[#101828] uppercase tracking-wider">
@@ -287,6 +287,7 @@ export function Tab4TrenAntarwaktu() {
                 <XAxis dataKey="periodeLabel" tick={{ fontSize: 9, fill: '#667085' }} axisLine={false} tickLine={false} />
                 <YAxis tick={{ fontSize: 9, fill: '#667085' }} axisLine={false} tickLine={false} tickFormatter={(v) => formatDecimal(v, 2)} />
                 <Tooltip
+                  wrapperStyle={{ zIndex: 99999 }}
                   contentStyle={{ backgroundColor: '#071D3D', borderRadius: '10px', border: '1px solid #1E74C7', color: '#ffffff', fontSize: '11px' }}
                   itemStyle={{ color: '#ffffff' }}
                   labelStyle={{ color: '#ffffff', fontWeight: 'bold' }}
@@ -318,7 +319,7 @@ export function Tab4TrenAntarwaktu() {
         </div>
 
         {/* Tabel Ringkasan Perubahan Periode ke Periode (Historis Lengkap dengan WoW Deltas) */}
-        <div className="clean-card p-5 bg-white" id="table-tab4-summary">
+        <div className="clean-card p-5 bg-white relative z-10" id="table-tab4-summary">
           <div className="flex items-center justify-between mb-3">
             <div>
               <h3 className="text-xs font-bold text-[#101828] uppercase tracking-wider">

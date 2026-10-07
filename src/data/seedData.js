@@ -17,8 +17,6 @@ export const GEO_NODES = {
   'Kab. Bantul': { id: '3402', name: 'Kab. Bantul', lat: -7.893889, lng: 110.334167, type: 'diy_regency', label: 'Bantul' },
   'Kab. Kulon Progo': { id: '3401', name: 'Kab. Kulon Progo', lat: -7.828889, lng: 110.158056, type: 'diy_regency', label: 'Kulon Progo' },
   'Kab. Gunungkidul': { id: '3403', name: 'Kab. Gunungkidul', lat: -7.962222, lng: 110.603333, type: 'diy_regency', label: 'Gunungkidul' },
-  'Lainnya (DIY)': { id: 'DIY_OTHER', name: 'Lainnya (DIY)', lat: -7.840000, lng: 110.420000, type: 'diy_internal', label: 'Lainnya DIY' },
-  'Lokal DIY (Internal)': { id: 'DIY_LOCAL', name: 'Lokal DIY (Internal)', lat: -7.760000, lng: 110.260000, type: 'diy_internal', label: 'Lokal DIY' },
 
   // Sentra Produksi & Pemasok Luar DIY
   'Kab. Brebes (Jateng)': { id: 'EXT_BREBES', name: 'Kab. Brebes (Jateng)', lat: -6.9700, lng: 109.0400, type: 'external_sentra', sentra: 'Bawang Merah', label: 'Brebes' },
@@ -26,8 +24,7 @@ export const GEO_NODES = {
   'Klaten (Jateng)': { id: 'EXT_KLATEN', name: 'Klaten (Jateng)', lat: -7.7058, lng: 110.6067, type: 'external_sentra', sentra: 'Beras & Pangan', label: 'Klaten' },
   'Solo/Sukoharjo (Jateng)': { id: 'EXT_SOLO', name: 'Solo/Sukoharjo (Jateng)', lat: -7.5755, lng: 110.8243, type: 'external_sentra', sentra: 'Grosir & Pedagang Besar', label: 'Solo' },
   'Magelang (Jateng)': { id: 'EXT_MAGELANG', name: 'Magelang (Jateng)', lat: -7.4705, lng: 110.2178, type: 'external_sentra', sentra: 'Hortikultura & Cabai', label: 'Magelang' },
-  'Purworejo (Jateng)': { id: 'EXT_PURWOREJO', name: 'Purworejo (Jateng)', lat: -7.7126, lng: 110.0089, type: 'external_sentra', sentra: 'Beras Sentra Kulon', label: 'Purworejo' },
-  'Luar DIY Lainnya': { id: 'EXT_OTHER', name: 'Luar DIY Lainnya', lat: -7.1500, lng: 110.4000, type: 'external_hub', sentra: 'Distributor Nasional', label: 'Hub Nasional' }
+  'Purworejo (Jateng)': { id: 'EXT_PURWOREJO', name: 'Purworejo (Jateng)', lat: -7.7126, lng: 110.0089, type: 'external_sentra', sentra: 'Beras Sentra Kulon', label: 'Purworejo' }
 };
 
 export const REF_KOMODITAS = [
@@ -104,23 +101,20 @@ export function generateMasterDataset() {
   ];
 
   const daerahAsalList = [
-    { nama: 'Luar DIY Lainnya', luarDiy: true, jenis: 'Distributor Luar DIY' },
     { nama: 'Klaten (Jateng)', luarDiy: true, jenis: 'Penggilingan / Pemasok' },
     { nama: 'Solo/Sukoharjo (Jateng)', luarDiy: true, jenis: 'Grosir Jawa Tengah' },
     { nama: 'Purworejo (Jateng)', luarDiy: true, jenis: 'Sentra Pangan' },
     { nama: 'Magelang (Jateng)', luarDiy: true, jenis: 'Produsen Hortikultura' },
     { nama: 'Kab. Brebes (Jateng)', luarDiy: true, jenis: 'Sentra Bawang Merah' },
     { nama: 'Kab. Blitar (Jatim)', luarDiy: true, jenis: 'Sentra Telur & Unggas' },
-    { nama: 'Lokal DIY (Internal)', luarDiy: false, jenis: 'Pemasok Lokal DIY' },
   ];
 
   const daerahTujuanList = [
     { nama: 'Kab. Sleman', luarDiy: false, jenis: 'Pedagang Pasar & Horeka' },
-    { nama: 'Lainnya (DIY)', luarDiy: false, jenis: 'Konsumen & Industri' },
+    { nama: 'Kab. Gunungkidul', luarDiy: false, jenis: 'Pedagang Pasar Lokal' },
     { nama: 'Kab. Bantul', luarDiy: false, jenis: 'Pedagang Eceran' },
     { nama: 'Kota Yogyakarta', luarDiy: false, jenis: 'Pasar Beringharjo & Giwangan' },
     { nama: 'Purworejo (Jateng)', luarDiy: true, jenis: 'Re-ekspor Luar DIY' },
-    { nama: 'Kab. Gunungkidul', luarDiy: false, jenis: 'Pedagang Pasar Lokal' },
     { nama: 'Kab. Kulon Progo', luarDiy: false, jenis: 'Distribusi Lokal' },
     { nama: 'Klaten (Jateng)', luarDiy: true, jenis: 'Re-ekspor Luar DIY' },
   ];
@@ -326,11 +320,11 @@ export function generateMasterDataset() {
             komoditas: kom.nama_komoditas,
             id_kab_kota: wil.id_kab_kota,
             kab_kota: wil.nama_kab_kota,
-            daerah_asal: 'Lokal DIY (Internal)',
+            daerah_asal: wil.nama_kab_kota,
             volume_ton: satuanDasar === 'Ton' ? volLokal : 0,
             volume_liter: satuanDasar === 'Liter' ? volLokal : 0,
             satuan_dasar: satuanDasar,
-            jenis_pemasok: 'Produsen Lokal DIY',
+            jenis_pemasok: `Produsen Lokal ${wil.nama_kab_kota}`,
             luar_diy: false
           });
         }
@@ -342,7 +336,7 @@ export function generateMasterDataset() {
 
         const destOptions = [
           'Kab. Sleman',
-          'Lainnya (DIY)',
+          'Kab. Gunungkidul',
           'Kab. Bantul',
           'Kota Yogyakarta',
           'Kab. Kulon Progo'
@@ -447,11 +441,11 @@ export function generateMasterDataset() {
           komoditas: kom.nama_komoditas,
           id_kab_kota: wil.id_kab_kota,
           kab_kota: wil.nama_kab_kota,
-          daerah_asal: 'Lokal DIY (Internal)',
+          daerah_asal: wil.nama_kab_kota,
           volume_ton: satuanDasar === 'Ton' ? Number((inVolProd * 0.90).toFixed(2)) : 0,
           volume_liter: satuanDasar === 'Liter' ? Number((inVolProd * 0.90).toFixed(2)) : 0,
           satuan_dasar: satuanDasar,
-          jenis_pemasok: 'Sentra Pertanian / Budidaya Lokal',
+          jenis_pemasok: `Sentra Pertanian / Budidaya ${wil.nama_kab_kota}`,
           luar_diy: false
         });
 

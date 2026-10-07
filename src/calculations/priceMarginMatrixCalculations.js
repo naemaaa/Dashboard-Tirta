@@ -41,15 +41,17 @@ export function calculateTab3PriceMatrix(rawRingkasan = [], selectedPeriode, sel
 
     // Per-wilayah prices (untuk matriks detail)
     REF_WILAYAH.forEach(wil => {
-      const matches = rawRingkasan.filter(r =>
-        !r.is_deleted &&
-        (!selectedPeriode || selectedPeriode === 'Semua' || selectedPeriode === 'All' || r.id_periode === selectedPeriode) &&
-        (r.komoditas === kom.nama_komoditas || r.id_komoditas === kom.id_komoditas || matchKomoditasUnified(r.komoditas, kom.nama_komoditas)) &&
-        r.kab_kota === wil.nama_kab_kota &&
-        matchKlasterUnified(r.tipe_responden, selectedKlaster) &&
-        r.jenis_aliran === 'vol_masuk_ton' &&
-        Number(r.harga_beli) > 0
-      );
+      const matches = rawRingkasan.filter(r => {
+        const vol = (kom.satuan_dasar === 'Liter' ? Number(r.volume_liter) : Number(r.volume_ton)) || 0;
+        return !r.is_deleted &&
+          (!selectedPeriode || selectedPeriode === 'Semua' || selectedPeriode === 'All' || r.id_periode === selectedPeriode) &&
+          (r.komoditas === kom.nama_komoditas || r.id_komoditas === kom.id_komoditas || matchKomoditasUnified(r.komoditas, kom.nama_komoditas)) &&
+          r.kab_kota === wil.nama_kab_kota &&
+          matchKlasterUnified(r.tipe_responden, selectedKlaster) &&
+          r.jenis_aliran === 'vol_masuk_ton' &&
+          Number(r.harga_beli) > 0 &&
+          vol > 1; // FIX: exclude closed shop dummy volume 1
+      });
 
       // VWAP per wilayah
       const sumVolWil = matches.reduce((s, r) => {
@@ -84,15 +86,17 @@ export function calculateTab3PriceMatrix(rawRingkasan = [], selectedPeriode, sel
     });
 
     // --- Agregat DIY (VWAP) dengan filter Wilayah & Klaster ---
-    const allDIYRows = rawRingkasan.filter(r =>
-      !r.is_deleted &&
-      (!selectedPeriode || selectedPeriode === 'Semua' || selectedPeriode === 'All' || r.id_periode === selectedPeriode) &&
-      (r.komoditas === kom.nama_komoditas || r.id_komoditas === kom.id_komoditas || matchKomoditasUnified(r.komoditas, kom.nama_komoditas)) &&
-      matchWilayahUnified(r.kab_kota, selectedWilayah) &&
-      matchKlasterUnified(r.tipe_responden, selectedKlaster) &&
-      r.jenis_aliran === 'vol_masuk_ton' &&
-      Number(r.harga_beli) > 0
-    );
+    const allDIYRows = rawRingkasan.filter(r => {
+      const vol = (kom.satuan_dasar === 'Liter' ? Number(r.volume_liter) : Number(r.volume_ton)) || 0;
+      return !r.is_deleted &&
+        (!selectedPeriode || selectedPeriode === 'Semua' || selectedPeriode === 'All' || r.id_periode === selectedPeriode) &&
+        (r.komoditas === kom.nama_komoditas || r.id_komoditas === kom.id_komoditas || matchKomoditasUnified(r.komoditas, kom.nama_komoditas)) &&
+        matchWilayahUnified(r.kab_kota, selectedWilayah) &&
+        matchKlasterUnified(r.tipe_responden, selectedKlaster) &&
+        r.jenis_aliran === 'vol_masuk_ton' &&
+        Number(r.harga_beli) > 0 &&
+        vol > 1; // FIX: exclude closed shop dummy volume 1
+    });
 
     const totalVolAll = allDIYRows.reduce((s, r) => {
       const vol = (kom.satuan_dasar === 'Liter' ? Number(r.volume_liter) : Number(r.volume_ton)) || 0;
@@ -176,15 +180,17 @@ export function calculateTab3ScatterData(priceMatrix = [], butterflyData = []) {
  */
 export function calculateTab3RegionPrices(rawRingkasan = [], selectedPeriode, selectedKomoditas, selectedKlaster) {
   return REF_WILAYAH.map(wil => {
-    const matches = rawRingkasan.filter(r =>
-      !r.is_deleted &&
-      (!selectedPeriode || selectedPeriode === 'Semua' || selectedPeriode === 'All' || r.id_periode === selectedPeriode) &&
-      (!selectedKomoditas || selectedKomoditas === 'Semua' || selectedKomoditas === 'All' || r.komoditas === selectedKomoditas) &&
-      matchKlasterUnified(r.tipe_responden, selectedKlaster) &&
-      r.kab_kota === wil.nama_kab_kota &&
-      r.jenis_aliran === 'vol_masuk_ton' &&
-      Number(r.harga_beli) > 0
-    );
+    const matches = rawRingkasan.filter(r => {
+      const vol = (r.satuan_dasar === 'Liter' ? Number(r.volume_liter) : Number(r.volume_ton)) || 0;
+      return !r.is_deleted &&
+        (!selectedPeriode || selectedPeriode === 'Semua' || selectedPeriode === 'All' || r.id_periode === selectedPeriode) &&
+        (!selectedKomoditas || selectedKomoditas === 'Semua' || selectedKomoditas === 'All' || r.komoditas === selectedKomoditas) &&
+        matchKlasterUnified(r.tipe_responden, selectedKlaster) &&
+        r.kab_kota === wil.nama_kab_kota &&
+        r.jenis_aliran === 'vol_masuk_ton' &&
+        Number(r.harga_beli) > 0 &&
+        vol > 1; // FIX: exclude dummy value 1
+    });
 
     const sumVol = matches.reduce((s, r) => {
       const vol = (r.satuan_dasar === 'Liter' ? Number(r.volume_liter) : Number(r.volume_ton)) || 0;

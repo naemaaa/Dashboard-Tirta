@@ -45,7 +45,7 @@ export function getRowUnit(row) {
 export function calculateVolumeMasuk(rows = []) {
   if (!rows || rows.length === 0) return 0;
   const vol = rows
-    .filter(r => r.jenis_aliran === 'vol_masuk_ton')
+    .filter(r => r.jenis_aliran === 'vol_masuk_ton' && getRowVolume(r) > 1) // FIX: exclude closed shops
     .reduce((sum, r) => sum + getRowVolume(r), 0);
   return Number(vol.toFixed(2));
 }
@@ -59,7 +59,7 @@ export function calculateVolumeMasuk(rows = []) {
 export function calculateVolumeKeluar(rows = []) {
   if (!rows || rows.length === 0) return 0;
   const vol = rows
-    .filter(r => r.jenis_aliran === 'vol_keluar_ton')
+    .filter(r => r.jenis_aliran === 'vol_keluar_ton' && getRowVolume(r) > 1) // FIX: exclude closed shops
     .reduce((sum, r) => sum + getRowVolume(r), 0);
   return Number(vol.toFixed(2));
 }
@@ -71,7 +71,7 @@ export function calculateVolumeKeluar(rows = []) {
 export function calculateVolumeMasukPB(rows = []) {
   if (!rows || rows.length === 0) return 0;
   const vol = rows
-    .filter(r => r.jenis_aliran === 'vol_masuk_ton' && (r.tipe_responden === 'pedagang_besar' || (r.tipe_responden || '').toLowerCase().includes('pedagang')))
+    .filter(r => r.jenis_aliran === 'vol_masuk_ton' && (r.tipe_responden === 'pedagang_besar' || (r.tipe_responden || '').toLowerCase().includes('pedagang')) && getRowVolume(r) > 1)
     .reduce((sum, r) => sum + getRowVolume(r), 0);
   return Number(vol.toFixed(2));
 }
@@ -83,7 +83,7 @@ export function calculateVolumeMasukPB(rows = []) {
 export function calculateVolumeKeluarPB(rows = []) {
   if (!rows || rows.length === 0) return 0;
   const vol = rows
-    .filter(r => r.jenis_aliran === 'vol_keluar_ton' && (r.tipe_responden === 'pedagang_besar' || (r.tipe_responden || '').toLowerCase().includes('pedagang')))
+    .filter(r => r.jenis_aliran === 'vol_keluar_ton' && (r.tipe_responden === 'pedagang_besar' || (r.tipe_responden || '').toLowerCase().includes('pedagang')) && getRowVolume(r) > 1)
     .reduce((sum, r) => sum + getRowVolume(r), 0);
   return Number(vol.toFixed(2));
 }
@@ -95,7 +95,7 @@ export function calculateVolumeKeluarPB(rows = []) {
 export function calculateVolumeProduksi(rows = []) {
   if (!rows || rows.length === 0) return 0;
   const vol = rows
-    .filter(r => r.jenis_aliran === 'vol_masuk_ton' && (r.tipe_responden === 'produsen' || (r.tipe_responden || '').toLowerCase().includes('produsen')))
+    .filter(r => r.jenis_aliran === 'vol_masuk_ton' && (r.tipe_responden === 'produsen' || (r.tipe_responden || '').toLowerCase().includes('produsen')) && getRowVolume(r) > 1)
     .reduce((sum, r) => sum + getRowVolume(r), 0);
   return Number(vol.toFixed(2));
 }
@@ -145,7 +145,7 @@ export function calculateAvgHargaBeli(rows = []) {
   const validRows = rows.filter(
     r => r.jenis_aliran === 'vol_masuk_ton' &&
          Number(r.harga_beli) > 0 &&
-         getRowVolume(r) > 0  // FIX: hanya baris dengan volume nyata > 0
+         getRowVolume(r) > 1  // FIX: volume > 1 to exclude dummy value '1' used for closed shops
   );
   if (validRows.length === 0) return 0;
   // Volume-Weighted Average Price (VWAP) — sesuai PRD formula
@@ -156,7 +156,7 @@ export function calculateAvgHargaBeli(rows = []) {
 
 /**
  * 3.2 Rerata Harga Jual TERTIMBANG VOLUME (VWAP) (Rp/kg)
- * DAX: SUMX(FILTER(..., harga_jual > 0 AND volume > 0), harga_jual * volume) / SUMX(..., volume)
+ * DAX: SUMX(FILTER(..., harga_jual > 0 AND volume > 1), harga_jual * volume) / SUMX(..., volume)
  *
  * AUDIT FIX (BUG-3): Dihapus fallback || 1 pada getRowVolume.
  */
@@ -165,7 +165,7 @@ export function calculateAvgHargaJual(rows = []) {
   const validRows = rows.filter(
     r => r.jenis_aliran === 'vol_masuk_ton' &&
          Number(r.harga_jual) > 0 &&
-         getRowVolume(r) > 0  // FIX: hanya baris dengan volume nyata > 0
+         getRowVolume(r) > 1  // FIX: volume > 1 to exclude dummy value '1'
   );
   if (validRows.length === 0) return 0;
   // Volume-Weighted Average Price (VWAP)
@@ -270,8 +270,13 @@ export function calculateJumlahDataTerekam(rows = []) {
 export function calculatePctLuarDiy(arusMasukRows = []) {
   // Unit-aware volume getter untuk arus_masuk rows
   const getArusVol = (r) => {
-    if (r.satuan_dasar === 'Liter') return Number(r.volume_liter) || Number(r.volume_ton) || 0;
-    return Number(r.volume_ton) || 0;
+    let vol = 0;
+    if (r.satuan_dasar === 'Liter') {
+      vol = Number(r.volume_liter) || Number(r.volume_ton) || 0;
+    } else {
+      vol = Number(r.volume_ton) || 0;
+    }
+    return vol > 1 ? vol : 0; // FIX: exclude closed shop dummy volume 1
   };
 
   const totalVol = arusMasukRows.reduce((sum, r) => sum + getArusVol(r), 0) || 0;

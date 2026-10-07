@@ -13,7 +13,8 @@ import {
   MapPin,
   AlertOctagon,
   Menu,
-  X
+  X,
+  BookOpen
 } from 'lucide-react';
 
 export function Navbar() {
@@ -37,6 +38,7 @@ export function Navbar() {
     { id: 'tab4', label: 'Tren Antarwaktu',  short: 'Tren',      icon: TrendingUp      },
     { id: 'tab5', label: 'Peta Arus',        short: 'Peta',      icon: MapPin          },
     { id: 'tab7', label: 'Early Warning',    short: 'EWS',       icon: AlertOctagon    },
+    { id: 'tab8', label: 'Metadata & Metodologi', short: 'Metadata', icon: BookOpen    },
   ];
 
   const currentPeriod = (data?.REF_KALENDER || []).find(k => k.id_periode === selectedPeriode)

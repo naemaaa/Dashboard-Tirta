@@ -121,6 +121,10 @@ select {
 /* ==========================================================================
    Universal High-Contrast White Text for Recharts Tooltips (Design System Navy)
    ========================================================================== */
+.recharts-tooltip-wrapper {
+  z-index: 99999 !important;
+}
+
 .recharts-default-tooltip {
   background-color: #071D3D !important;
   border: 1px solid #1E74C7 !important;

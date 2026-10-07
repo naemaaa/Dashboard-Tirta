@@ -327,7 +327,7 @@ export function Tab1RingkasanUtama() {
               <div className="flex items-center gap-2">
                 <span className="w-2.5 h-2.5 rounded-full bg-[#1E74C7]"></span>
                 <h4 className="text-xs font-bold text-[#101828] uppercase tracking-wider">
-                  Top 5 Daerah Asal Pasokan (Dari Luar DIY)
+                  Top 5 Daerah Asal Pasokan (Keseluruhan)
                 </h4>
               </div>
               <span className="text-[10px] text-[#667085] font-mono font-semibold">Satuan: {unitLabel}</span>
@@ -360,7 +360,7 @@ export function Tab1RingkasanUtama() {
               <div className="flex items-center gap-2">
                 <span className="w-2.5 h-2.5 rounded-full bg-[#17B6A7]"></span>
                 <h4 className="text-xs font-bold text-[#101828] uppercase tracking-wider">
-                  Top 5 Daerah Tujuan Distribusi (Ke Luar DIY)
+                  Top 5 Daerah Tujuan Distribusi (Keseluruhan)
                 </h4>
               </div>
               <span className="text-[10px] text-[#667085] font-mono font-semibold">Satuan: {unitLabel}</span>

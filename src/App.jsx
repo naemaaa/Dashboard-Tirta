@@ -8,6 +8,7 @@ import { Tab4TrenAntarwaktu } from './components/tabs/Tab4TrenAntarwaktu';
 import { Tab5PetaArus } from './components/tabs/Tab5PetaArus';
 import { Tab5KualitasData } from './components/tabs/Tab5KualitasData';
 import { Tab7EarlyWarningSystem } from './components/tabs/Tab7EarlyWarningSystem';
+import { Tab8Metadata } from './components/tabs/Tab8Metadata';
 import { DataModal } from './components/common/DataModal';
 import { AlertCircle, Landmark } from 'lucide-react';
 
@@ -44,6 +45,7 @@ export function App() {
         {activeTab === 'tab4' && <Tab4TrenAntarwaktu />}
         {activeTab === 'tab5' && <Tab5PetaArus />}
         {activeTab === 'tab7' && <Tab7EarlyWarningSystem />}
+        {activeTab === 'tab8' && <Tab8Metadata />}
 
       </main>
 
