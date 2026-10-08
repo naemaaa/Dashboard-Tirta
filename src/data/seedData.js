@@ -35,6 +35,7 @@ export const GEO_NODES = {
   'Banyuwangi (Jatim)': { id: 'EXT_BANYUWANGI', name: 'Banyuwangi (Jatim)', lat: -8.2192, lng: 114.3691, type: 'external_sentra', sentra: 'Sentra Cabai & Sayuran', label: 'Banyuwangi' },
   'Nganjuk (Jatim)': { id: 'EXT_NGANJUK', name: 'Nganjuk (Jatim)', lat: -7.6042, lng: 111.9025, type: 'external_sentra', sentra: 'Sentra Bawang Merah', label: 'Nganjuk' },
   'Kediri (Jatim)': { id: 'EXT_KEDIRI', name: 'Kediri (Jatim)', lat: -7.8480, lng: 112.0178, type: 'external_sentra', sentra: 'Pabrik Gula & Unggas', label: 'Kediri' },
+  'DKI Jakarta': { id: 'EXT_JAKARTA', name: 'DKI Jakarta', lat: -6.2088, lng: 106.8456, type: 'external_sentra', sentra: 'Pasar Induk Cipinang & Impor', label: 'Jakarta' },
   'Luar DIY Lainnya': { id: 'EXT_LAINNYA', name: 'Luar DIY Lainnya', lat: -6.8000, lng: 110.0000, type: 'external_sentra', sentra: 'Wilayah Sentra Asal/Tujuan Lainnya', label: 'Luar DIY' }
 };
 
@@ -313,29 +314,66 @@ export function generateMasterDataset() {
           satuan_dasar: satuanDasar,
         });
 
-        // Arus Masuk origin breakdown (PB)
+        // Arus Masuk origin breakdown (PB) — dynamic mapping per commodity
         const extShare = (prof.extDep || 95.8) / 100;
-        const volExt1 = Number((inVolPB * extShare * 0.95).toFixed(2));
-        const volExt2 = Number((inVolPB * extShare * 0.05).toFixed(2));
+        const totalExtVol = inVolPB * extShare;
         const volLokal = Number((inVolPB * (1 - extShare)).toFixed(2));
 
-        arus_masuk.push({
-          id_arus_masuk: `IN-${flowInCounter++}`,
-          id_laporan: idLaporanPB,
-          id_periode: kal.id_periode,
-          id_komoditas: kom.id_komoditas,
-          komoditas: kom.nama_komoditas,
-          id_kab_kota: wil.id_kab_kota,
-          kab_kota: wil.nama_kab_kota,
-          daerah_asal: 'Luar DIY Lainnya',
-          volume_ton: satuanDasar === 'Ton' ? volExt1 : 0,
-          volume_liter: satuanDasar === 'Liter' ? volExt1 : 0,
-          satuan_dasar: satuanDasar, // AUDIT FIX: satuan_dasar ditambahkan agar calculatePctLuarDiy() unit-aware
-          jenis_pemasok: 'Distributor Luar DIY',
-          luar_diy: true
-        });
+        // Get dynamic external origins based on commodity
+        let extOrigins = [];
+        if (['KOM_01', 'KOM_02', 'KOM_03', 'KOM_04', 'KOM_05', 'KOM_06'].includes(kom.id_komoditas)) {
+          extOrigins = [
+            { nama: 'Klaten (Jateng)', share: 0.45, jenis: 'PB Beras Delanggu Klaten' },
+            { nama: 'Sragen (Jateng)', share: 0.35, jenis: 'Sentra Penggilingan Sragen' },
+            { nama: 'Purworejo (Jateng)', share: 0.20, jenis: 'Pemasok Beras Purworejo' }
+          ];
+        } else if (kom.id_komoditas === 'KOM_07') {
+          extOrigins = [
+            { nama: 'Kab. Brebes (Jateng)', share: 0.50, jenis: 'Sentra Bawang Brebes' },
+            { nama: 'Nganjuk (Jatim)', share: 0.30, jenis: 'Pemasok Bawang Nganjuk' },
+            { nama: 'Demak (Jateng)', share: 0.20, jenis: 'Sentra Bawang Demak' }
+          ];
+        } else if (kom.id_komoditas === 'KOM_08') {
+          extOrigins = [
+            { nama: 'Surabaya (Jatim)', share: 0.55, jenis: 'Importir Pelabuhan Tanjung Perak' },
+            { nama: 'DKI Jakarta', share: 0.30, jenis: 'Pasar Induk Kramat Jati Jakarta' },
+            { nama: 'Semarang (Jateng)', share: 0.15, jenis: 'Grosir Bawang Semarang' }
+          ];
+        } else if (['KOM_09', 'KOM_10'].includes(kom.id_komoditas)) {
+          extOrigins = [
+            { nama: 'Magelang (Jateng)', share: 0.50, jenis: 'Petani Cabai Magelang' },
+            { nama: 'Banyuwangi (Jatim)', share: 0.35, jenis: 'Sentra Cabai Banyuwangi' },
+            { nama: 'Kediri (Jatim)', share: 0.15, jenis: 'Gapoktan Cabai Kediri' }
+          ];
+        } else if (['KOM_11', 'KOM_12', 'KOM_13'].includes(kom.id_komoditas)) {
+          extOrigins = [
+            { nama: 'Kab. Blitar (Jatim)', share: 0.60, jenis: 'Koperasi Peternak Blitar' },
+            { nama: 'Kediri (Jatim)', share: 0.25, jenis: 'Peternak Layer Kediri' },
+            { nama: 'Solo/Sukoharjo (Jateng)', share: 0.15, jenis: 'Grosir Unggas Solo' }
+          ];
+        } else if (['KOM_14', 'KOM_15'].includes(kom.id_komoditas)) {
+          extOrigins = [
+            { nama: 'Surabaya (Jatim)', share: 0.60, jenis: 'PT Wilmar Nabati / Distributor Surabaya' },
+            { nama: 'Sidoarjo (Jatim)', share: 0.25, jenis: 'Distributor Minyak Sidoarjo' },
+            { nama: 'DKI Jakarta', share: 0.15, jenis: 'Distributor Nasional Jakarta' }
+          ];
+        } else if (kom.id_komoditas === 'KOM_16') {
+          extOrigins = [
+            { nama: 'Sidoarjo (Jatim)', share: 0.50, jenis: 'Pabrik Gula Candi Sidoarjo' },
+            { nama: 'Kediri (Jatim)', share: 0.30, jenis: 'Distributor Gula Kediri' },
+            { nama: 'DKI Jakarta', share: 0.20, jenis: 'Importir Gula Jakarta' }
+          ];
+        } else {
+          extOrigins = [
+            { nama: 'Surabaya (Jatim)', share: 0.50, jenis: 'Distributor Surabaya' },
+            { nama: 'DKI Jakarta', share: 0.30, jenis: 'Pemasok Jakarta' },
+            { nama: 'Solo/Sukoharjo (Jateng)', share: 0.20, jenis: 'Grosir Solo' }
+          ];
+        }
 
-        if (volExt2 > 0) {
+        extOrigins.forEach((orig) => {
+          const v = Number((totalExtVol * orig.share).toFixed(2));
+          if (v <= 0) return;
           arus_masuk.push({
             id_arus_masuk: `IN-${flowInCounter++}`,
             id_laporan: idLaporanPB,
@@ -344,14 +382,14 @@ export function generateMasterDataset() {
             komoditas: kom.nama_komoditas,
             id_kab_kota: wil.id_kab_kota,
             kab_kota: wil.nama_kab_kota,
-            daerah_asal: 'Solo/Sukoharjo (Jateng)',
-            volume_ton: satuanDasar === 'Ton' ? volExt2 : 0,
-            volume_liter: satuanDasar === 'Liter' ? volExt2 : 0,
+            daerah_asal: orig.nama,
+            volume_ton: satuanDasar === 'Ton' ? v : 0,
+            volume_liter: satuanDasar === 'Liter' ? v : 0,
             satuan_dasar: satuanDasar,
-            jenis_pemasok: 'Grosir Jawa Tengah',
+            jenis_pemasok: orig.jenis,
             luar_diy: true
           });
-        }
+        });
 
         if (volLokal > 0) {
           arus_masuk.push({
@@ -384,6 +422,17 @@ export function generateMasterDataset() {
           'Kab. Kulon Progo'
         ];
 
+        const extDestList = [
+          { nama: 'Purworejo (Jateng)', jenis: 'Distributor Purworejo' },
+          { nama: 'Klaten (Jateng)', jenis: 'Grosir Pangan Klaten' },
+          { nama: 'Solo/Sukoharjo (Jateng)', jenis: 'Pedagang Besar Solo' },
+          { nama: 'Surabaya (Jatim)', jenis: 'Distributor Jatim (Surabaya)' },
+          { nama: 'Sidoarjo (Jatim)', jenis: 'Grosir Sidoarjo' },
+          { nama: 'DKI Jakarta', jenis: 'Pasar Induk Cipinang Jakarta' },
+          { nama: 'Semarang (Jateng)', jenis: 'Distributor Semarang' }
+        ];
+        const selectedExtDest = extDestList[(pIdx + wIdx) % extDestList.length];
+
         arus_keluar.push({
           id_arus_keluar: `OUT-${flowOutCounter++}`,
           id_laporan: idLaporanPB,
@@ -407,9 +456,9 @@ export function generateMasterDataset() {
             komoditas: kom.nama_komoditas,
             id_kab_kota: wil.id_kab_kota,
             kab_kota: wil.nama_kab_kota,
-            daerah_tujuan: 'Purworejo (Jateng)',
+            daerah_tujuan: selectedExtDest.nama,
             volume_ton: volReExport,
-            jenis_pembeli: 'Distributor Antar-Provinsi',
+            jenis_pembeli: selectedExtDest.jenis,
             keluar_diy: true
           });
         }
@@ -446,7 +495,6 @@ export function generateMasterDataset() {
         });
 
         // Keluar row (Produsen)
-        // AUDIT FIX (BUG-1): Baris _out tidak membawa stok_akhir/susut (sama seperti PB di atas).
         laporan_ringkasan.push({
           id_laporan: `${idLaporanProd}_out`,
           id_periode: kal.id_periode,
@@ -463,10 +511,10 @@ export function generateMasterDataset() {
           volume_ton: satuanDasar === 'Ton' ? outVolProd : 0,
           volume_liter: satuanDasar === 'Liter' ? outVolProd : 0,
           [volFieldOut]: outVolProd,
-          stok_akhir_ton: 0,    // _out rows tidak membawa stok akhir
-          stok_akhir_liter: 0,  // _out rows tidak membawa stok akhir
-          susut_ton: 0,         // _out rows tidak membawa susut
-          susut_liter: 0,       // _out rows tidak membawa susut
+          stok_akhir_ton: 0,
+          stok_akhir_liter: 0,
+          susut_ton: 0,
+          susut_liter: 0,
           harga_beli: hargaBeliProd,
           harga_jual: hargaJualProd,
           is_deleted: false,
@@ -491,6 +539,7 @@ export function generateMasterDataset() {
           luar_diy: false
         });
 
+        const prodExtOrig = extOrigins[(wIdx + 1) % extOrigins.length];
         arus_masuk.push({
           id_arus_masuk: `IN-${flowInCounter++}`,
           id_laporan: idLaporanProd,
@@ -499,11 +548,11 @@ export function generateMasterDataset() {
           komoditas: kom.nama_komoditas,
           id_kab_kota: wil.id_kab_kota,
           kab_kota: wil.nama_kab_kota,
-          daerah_asal: 'Solo/Sukoharjo (Jateng)',
+          daerah_asal: prodExtOrig ? prodExtOrig.nama : 'Solo/Sukoharjo (Jateng)',
           volume_ton: satuanDasar === 'Ton' ? Number((inVolProd * 0.10).toFixed(2)) : 0,
           volume_liter: satuanDasar === 'Liter' ? Number((inVolProd * 0.10).toFixed(2)) : 0,
           satuan_dasar: satuanDasar,
-          jenis_pemasok: 'Pemasok Sarana Produksi Luar DIY',
+          jenis_pemasok: prodExtOrig ? prodExtOrig.jenis : 'Pemasok Sarana Produksi Luar DIY',
           luar_diy: true
         });
 
@@ -522,6 +571,7 @@ export function generateMasterDataset() {
           keluar_diy: false
         });
 
+        const prodExtDest = extDestList[(wIdx + 2) % extDestList.length];
         arus_keluar.push({
           id_arus_keluar: `OUT-${flowOutCounter++}`,
           id_laporan: idLaporanProd,
@@ -530,9 +580,9 @@ export function generateMasterDataset() {
           komoditas: kom.nama_komoditas,
           id_kab_kota: wil.id_kab_kota,
           kab_kota: wil.nama_kab_kota,
-          daerah_tujuan: 'Purworejo (Jateng)',
+          daerah_tujuan: prodExtDest.nama,
           volume_ton: Number((outVolProd * 0.15).toFixed(2)),
-          jenis_pembeli: 'Pedagang Luar DIY',
+          jenis_pembeli: prodExtDest.jenis,
           keluar_diy: true
         });
       });
