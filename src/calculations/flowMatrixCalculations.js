@@ -197,11 +197,22 @@ export function calculateGeospatialFlows(
 ) {
   const routesMap = new Map();
 
-  const matchPeriodeLocal = (p) => !selectedPeriode || selectedPeriode === 'Semua' || p === selectedPeriode;
-  const matchKomLocal = (k) => matchKomoditasUnified(k, selectedKomoditas);
+  const matchPeriodeLocal = (p) => {
+    if (!selectedPeriode || selectedPeriode === 'Semua' || selectedPeriode === 'All') return true;
+    if (Array.isArray(selectedPeriode)) {
+      return selectedPeriode.length === 0 || selectedPeriode.includes(p);
+    }
+    return p === selectedPeriode;
+  };
+
+  const matchKomLocal = (k) => {
+    if (!selectedKomoditas || selectedKomoditas === 'Semua' || selectedKomoditas === 'Semua Komoditas' || selectedKomoditas === 'All') return true;
+    return matchKomoditasUnified(k, selectedKomoditas);
+  };
+
   const matchWilLocal = (w) => {
-    if (!selectedWilayah || selectedWilayah === 'Semua' || selectedWilayah === 'Semua Wilayah DIY') return true;
-    return (w || '').toLowerCase().includes(selectedWilayah.toLowerCase().replace(/^(kab\.|kota)\s*/g, ''));
+    if (!selectedWilayah || selectedWilayah === 'Semua' || selectedWilayah === 'Semua Wilayah DIY' || selectedWilayah === 'All') return true;
+    return matchWilayahUnified(w, selectedWilayah);
   };
 
   // 1. Process Arus Masuk (From: daerah_asal -> To: kab_kota DIY)

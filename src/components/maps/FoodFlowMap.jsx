@@ -212,6 +212,10 @@ export function FoodFlowMap({
         const fromNode = findGeoNode(route.from);
         const toNode = findGeoNode(route.to);
 
+        if (!fromNode || !toNode || isNaN(fromNode.lat) || isNaN(fromNode.lng) || isNaN(toNode.lat) || isNaN(toNode.lng)) {
+          return;
+        }
+
         const points = generateCurvedPoints([fromNode.lat, fromNode.lng], [toNode.lat, toNode.lng], (idx % 2 === 0 ? 0.18 : -0.14));
         const strokeWidth = Math.max(3, Math.min(9, (route.volume / (maxVol || 1)) * 9));
         const isSelected = activeRouteId === route.id;
@@ -234,6 +238,7 @@ export function FoodFlowMap({
           lineCap: 'round'
         }).addTo(flowGroup);
 
+        const routeCommodity = route.commodity || (selectedKomoditas === 'Semua' || selectedKomoditas === 'Semua Komoditas' ? 'Semua Komoditas' : 'Komoditas Pangan');
         const popupContent = `
           <div style="font-family: system-ui, sans-serif; font-size: 12px; min-width: 180px; padding: 2px;">
             <div style="font-weight: bold; color: ${color}; font-size: 11px; text-transform: uppercase; margin-bottom: 4px;">
@@ -243,9 +248,9 @@ export function FoodFlowMap({
               ${route.from} &rarr; ${route.to}
             </div>
             <div style="border-top: 1px solid #e2e8f0; padding-top: 6px; margin-top: 4px; line-height: 1.5;">
-              <div><strong>Komoditas:</strong> ${route.commodity}</div>
-              <div><strong>Volume:</strong> ${route.volume.toLocaleString('id-ID')} ${flowUnit}</div>
-              <div><strong>Pelaku / Mitra:</strong> ${route.partnerType}</div>
+              <div><strong>Komoditas:</strong> ${routeCommodity}</div>
+              <div><strong>Volume:</strong> ${(route.volume || 0).toLocaleString('id-ID')} ${flowUnit}</div>
+              <div><strong>Pelaku / Mitra:</strong> ${route.partnerType || 'Mitra Pangan'}</div>
             </div>
           </div>
         `;
@@ -257,7 +262,8 @@ export function FoodFlowMap({
 
       // 2B. Render Regional Hub Nodes
       nodeStats.forEach((node) => {
-        const isDIY = Boolean(node.type && node.type.startsWith('diy'));
+        if (!node || isNaN(node.lat) || isNaN(node.lng)) return;
+        const isDIY = Boolean(node.type && typeof node.type === 'string' && node.type.startsWith('diy'));
         const isSelected = selectedNodeName === node.name;
         const totalVol = (node.totalIn || 0) + (node.totalOut || 0);
 
