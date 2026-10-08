@@ -218,6 +218,7 @@ export function useCalculations() {
 
     // Ketergantungan Eksternal
     const pasokanStats = calculatePctLuarDiy(filteredArusMasuk);
+    const pctLuarDiy   = typeof pasokanStats === 'number' ? pasokanStats : (pasokanStats?.pctLuarDiy || 0);
 
     // Saluran Keluar: Pengiriman Antardaerah (ke Luar DIY) vs Tujuan Dalam DIY
     const totalKeluarFlow        = filteredArusKeluar.reduce((a, b) => a + (Number(b.volume_ton) || 0), 0) || 1;
