@@ -15,6 +15,7 @@ export function GlobalFilterBar({ showBadge = true, title = null, subtitle = nul
     selectedKomoditas,
     selectedWilayah,
     selectedKlaster,
+    activeTab,
     setSelectedPeriode,
     togglePeriode,
     setSelectedKomoditas,
@@ -144,7 +145,9 @@ export function GlobalFilterBar({ showBadge = true, title = null, subtitle = nul
               onChange={(e) => setSelectedKomoditas(e.target.value)}
               className="w-full bg-[#F9FAFB] border border-[#E4E7EC] hover:border-[#B3D4F2] text-[#101828] text-xs font-medium rounded-xl px-3 py-1.5 outline-none cursor-pointer h-[36px] transition-all"
             >
-              <option value="Semua">Semua Komoditas</option>
+              {(activeTab === 'tab5' || activeTab === 'peta') && (
+                <option value="Semua">Semua Komoditas (Peta Spasial)</option>
+              )}
               {REF_KOMODITAS.map(k => (
                 <option key={k.id_komoditas} value={k.nama_komoditas}>
                   {k.nama_komoditas} ({k.satuan_dasar})

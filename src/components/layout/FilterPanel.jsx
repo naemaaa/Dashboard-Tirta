@@ -12,6 +12,7 @@ export function FilterPanel() {
     selectedKomoditas,
     selectedWilayah,
     selectedKlaster,
+    activeTab,
     setSelectedPeriode,
     setSelectedKomoditas,
     setSelectedWilayah,
@@ -61,9 +62,12 @@ export function FilterPanel() {
                 onChange={(e) => setSelectedKomoditas(e.target.value)}
                 className="w-full bg-white border border-slate-200 text-slate-800 text-xs rounded-lg px-2.5 py-1.5 focus:border-slate-400 focus:ring-1 focus:ring-slate-400 outline-none font-medium cursor-pointer shadow-2xs"
               >
+                {(activeTab === 'tab5' || activeTab === 'peta') && (
+                  <option value="Semua">Semua Komoditas (Peta Spasial)</option>
+                )}
                 {REF_KOMODITAS.map((k) => (
                   <option key={k.id_komoditas} value={k.nama_komoditas}>
-                    {k.nama_komoditas}
+                    {k.nama_komoditas} ({k.satuan_dasar})
                   </option>
                 ))}
               </select>

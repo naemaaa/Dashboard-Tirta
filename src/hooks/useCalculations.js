@@ -107,7 +107,8 @@ export function useCalculations() {
         ? (Array.isArray(override.periode) ? override.periode : override.periode ? [override.periode] : [])
         : periodeArray;
 
-      const targetKomoditas = override.komoditas !== undefined ? override.komoditas : selectedKomoditas;
+      const safeKomoditas   = (selectedKomoditas === 'Semua' || selectedKomoditas === 'Semua Komoditas') ? REF_KOMODITAS[0].nama_komoditas : selectedKomoditas;
+      const targetKomoditas = override.komoditas !== undefined ? override.komoditas : safeKomoditas;
       const targetWilayah   = override.wilayah   !== undefined ? override.wilayah   : selectedWilayah;
       const targetKlaster   = override.klaster   !== undefined ? override.klaster   : selectedKlaster;
 

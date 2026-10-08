@@ -56,7 +56,12 @@ export const useDashboardStore = create((set, get) => ({
   // Actions — Global Filters & Credentials
   // ─────────────────────────────────────────────────────────────────
   setSelectedPeriode:    (periode) => set({ selectedPeriode: periode }),
-  setSelectedKomoditas:  (komoditas) => set({ selectedKomoditas: komoditas }),
+  setSelectedKomoditas:  (komoditas) => set((state) => {
+    const isMapTab = state.activeTab === 'tab5' || state.activeTab === 'peta';
+    const isSemua = komoditas === 'Semua' || komoditas === 'Semua Komoditas';
+    const finalKomoditas = (!isMapTab && isSemua) ? DEFAULT_KOMODITAS : komoditas;
+    return { selectedKomoditas: finalKomoditas };
+  }),
   setSelectedWilayah:    (wilayah) => set({ selectedWilayah: wilayah }),
   setSelectedKlaster:    (klaster) => set({ selectedKlaster: klaster }),
 
@@ -97,9 +102,16 @@ export const useDashboardStore = create((set, get) => ({
   setTab4Filters: (updates) => set((state) => ({ ...state, ...updates })),
 
   setActiveTab: (tab) => {
-    set({ activeTab: tab });
-    // Increment render key to force React remount of dependent components.
-    set(state => ({ tabRenderKey: (state.tabRenderKey ?? 0) + 1 }));
+    set((state) => {
+      const isMapTab = tab === 'tab5' || tab === 'peta';
+      const isSemua = state.selectedKomoditas === 'Semua' || state.selectedKomoditas === 'Semua Komoditas' || !state.selectedKomoditas;
+      const nextKomoditas = (!isMapTab && isSemua) ? DEFAULT_KOMODITAS : state.selectedKomoditas;
+      return {
+        activeTab: tab,
+        selectedKomoditas: nextKomoditas,
+        tabRenderKey: (state.tabRenderKey ?? 0) + 1
+      };
+    });
   },
   setDataModalOpen: (open) => set({ isDataModalOpen: open }),
 
