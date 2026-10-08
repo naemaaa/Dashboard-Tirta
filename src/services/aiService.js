@@ -270,12 +270,17 @@ export class AiNarrativeService {
       currentMetrics = { volMasuk: 0, volKeluar: 0 },
       pctLuarDiy = 0,
       respondents = []
-    } = metrics;
+    } = metrics || {};
 
-    const topOrigin = top5Origins[0]?.nama || 'Jawa Tengah (Klaten/Sragen)';
-    const topDest = top5Destinations[0]?.nama || 'Kab. Sleman / Kota Yogyakarta';
-    const pbCount = respondents.filter(r => r.tipe_responden?.includes('Pedagang')).length || 18;
-    const prCount = respondents.filter(r => r.tipe_responden?.includes('Produsen')).length || 12;
+    const safePct = Number(pctLuarDiy || 0);
+    const originsArr = Array.isArray(top5Origins) ? top5Origins : [];
+    const destsArr = Array.isArray(top5Destinations) ? top5Destinations : [];
+    const respArr = Array.isArray(respondents) ? respondents : [];
+
+    const topOrigin = originsArr[0]?.name || originsArr[0]?.nama || 'Jawa Tengah (Klaten/Sragen)';
+    const topDest = destsArr[0]?.name || destsArr[0]?.nama || 'Kab. Sleman / Kota Yogyakarta';
+    const pbCount = respArr.filter(r => (r.tipe_responden || '').toLowerCase().includes('pedagang')).length || 18;
+    const prCount = respArr.filter(r => (r.tipe_responden || '').toLowerCase().includes('produsen')).length || 12;
 
     return [
       {
@@ -283,7 +288,7 @@ export class AiNarrativeService {
         category: 'Koridor Pasokan Antar-Wilayah',
         status: 'Aliran Logistik Aktif',
         badgeColor: 'blue',
-        content: `Sebesar ${pctLuarDiy.toFixed(1)}% pasokan pangan masuk ke DIY melalui koridor transportasi logistik Jawa Tengah dan Jawa Timur, dengan simpul asal pasokan terbesar dari ${topOrigin}. Titik masuk dominan mengalir ke sentra agregasi ${topDest}.`,
+        content: `Sebesar ${safePct.toFixed(1)}% pasokan pangan masuk ke DIY melalui koridor transportasi logistik Jawa Tengah dan Jawa Timur, dengan simpul asal pasokan terbesar dari ${topOrigin}. Titik masuk dominan mengalir ke sentra agregasi ${topDest}.`,
         timestamp: 'Geospatial Flow Engine'
       },
       {

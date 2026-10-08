@@ -281,8 +281,8 @@ export function FoodFlowMap({
               ${node.sentra ? `Sentra: ${node.sentra}` : 'Hub Wilayah DIY'}
             </div>
             <div style="border-top: 1px solid #e2e8f0; padding-top: 6px; line-height: 1.5;">
-              <div><strong>Total Masuk:</strong> ${node.totalIn.toFixed(1)} Ton</div>
-              <div><strong>Total Keluar:</strong> ${node.totalOut.toFixed(1)} Ton</div>
+              <div><strong>Total Masuk:</strong> ${(node.totalIn || 0).toFixed(1)} {flowUnit}</div>
+              <div><strong>Total Keluar:</strong> ${(node.totalOut || 0).toFixed(1)} {flowUnit}</div>
             </div>
           </div>
         `;

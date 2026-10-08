@@ -240,7 +240,7 @@ function Tab1RingkasanUtamaInner() {
                     <th className="px-2.5 py-1.5 sticky left-0 bg-[#F9FAFB] z-30 shadow-xs">Komoditas</th>
                     <th className="px-2 py-1.5 text-right">Bantul</th>
                     <th className="px-2 py-1.5 text-right">Gunungkidul</th>
-                    <th className="px-2 py-1.5 text-right">Kota Yk</th>
+                    <th className="px-2 py-1.5 text-right">Yogyakarta</th>
                     <th className="px-2 py-1.5 text-right">Kulon Progo</th>
                     <th className="px-2 py-1.5 text-right">Sleman</th>
                   </tr>

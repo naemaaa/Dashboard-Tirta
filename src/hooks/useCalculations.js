@@ -356,6 +356,9 @@ export function useCalculations() {
       tab4CommodityEvolution,
 
       // Tab 5
+      pctLuarDiy,
+      top5Origins,
+      top5Destinations,
       qualityMetrics:   qualityCounts,
       qualitySummaryTable,
       qualityByRegion,
