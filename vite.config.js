@@ -194,6 +194,14 @@ export default defineConfig({
     oneDriveApiPlugin(),
     aiAdvisorPlugin(),
   ],
+  resolve: {
+    alias: {
+      stream: path.resolve(__dirname, 'src/utils/streamShim.js'),
+    }
+  },
+  define: {
+    'process.env': {},
+  },
   server: {
     host: '0.0.0.0',
     port: 5173,

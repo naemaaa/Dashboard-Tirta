@@ -199,17 +199,53 @@ export function calculateEwsMetrics(ewsData = null, selectedKomoditas = 'Semua',
     };
   });
 
-  // Counts by ALPS status
-  const normalCount   = filteredHeatmap.filter(r => r.alps === 'NORMAL').length;
-  const watchCount    = filteredHeatmap.filter(r => r.alps === 'WATCH').length;
-  const warningCount  = filteredHeatmap.filter(r => r.alps === 'WARNING').length;
-  const criticalCount = filteredHeatmap.filter(r => r.alps === 'CRITICAL').length;
+  // IHK / Strategic Commodity weights for DIY Province status (BPS CPI weights approximation)
+  const ihkWeights = {
+    'Beras': 0.35,
+    'Cabai Rawit': 0.15,
+    'Cabai Merah': 0.12,
+    'Bawang Merah': 0.10,
+    'Daging Ayam': 0.10,
+    'Telur Ayam': 0.08,
+    'Minyak Goreng': 0.06,
+    'Daging Sapi': 0.04
+  };
 
-  // Overall EWS DIY Status
+  const getWeight = (komName = '') => {
+    for (const [key, val] of Object.entries(ihkWeights)) {
+      if (komName.toLowerCase().includes(key.toLowerCase())) return val;
+    }
+    return 0.02; // Default weight for non-strategic commodities
+  };
+
+  // Hitung jumlah status ALPS per kategori
+  const normalCount   = filteredHeatmap.filter(i => i.alps === 'NORMAL').length;
+  const watchCount    = filteredHeatmap.filter(i => i.alps === 'WATCH').length;
+  const warningCount  = filteredHeatmap.filter(i => i.alps === 'WARNING').length;
+  const criticalCount = filteredHeatmap.filter(i => i.alps === 'CRITICAL').length;
+
+  // Status ALPS Score: CRITICAL = 3, WARNING = 2, WATCH = 1, NORMAL = 0
+  const getStatusScore = (st) => st === 'CRITICAL' ? 3 : st === 'WARNING' ? 2 : st === 'WATCH' ? 1 : 0;
+
+  // Calculate CPI-weighted risk score for DIY Province
+  let weightedRiskScore = 0;
+  let totalWeight = 0;
+
+  filteredHeatmap.forEach(item => {
+    const weight = getWeight(item.komoditas);
+    const score = getStatusScore(item.alps);
+    weightedRiskScore += score * weight;
+    totalWeight += weight;
+  });
+
+  const avgWeightedScore = totalWeight > 0 ? weightedRiskScore / totalWeight : 0;
+
+  // Overall EWS DIY Status based on Weighted Inflation Index Risk (REVISI EKONOM)
   let overallStatus = 'NORMAL';
-  if (criticalCount > 0) overallStatus = 'CRITICAL';
-  else if (warningCount > 0) overallStatus = 'WARNING';
-  else if (watchCount > 0) overallStatus = 'WATCH';
+  if (avgWeightedScore >= 2.0) overallStatus = 'CRITICAL';
+  else if (avgWeightedScore >= 1.2) overallStatus = 'WARNING';
+  else if (avgWeightedScore >= 0.5) overallStatus = 'WATCH';
+  else overallStatus = 'NORMAL';
 
   // Most Critical Commodity based on active filter
   const criticalItem = filteredHeatmap
@@ -223,6 +259,7 @@ export function calculateEwsMetrics(ewsData = null, selectedKomoditas = 'Semua',
     warningCount,
     criticalCount,
     overallStatus,
+    weightedRiskScore: Number(avgWeightedScore.toFixed(2)),
     mostCriticalName,
     heatmapData: filteredHeatmap,
     timeSeriesData: (dataset.timeSeries && dataset.timeSeries.length > 0) ? dataset.timeSeries : defaultData.timeSeries,

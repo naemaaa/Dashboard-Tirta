@@ -45,6 +45,10 @@ export function Tab3HargaMarjin() {
     minRegionPrice = 0,
   } = calculations || {};
 
+  const isLiter = dominantUnit === 'Liter' || (selectedKomoditas && (selectedKomoditas.includes('Liter') || selectedKomoditas.includes('liter')));
+  const priceUnitLabel = isLiter ? 'liter' : 'kg';
+  const priceUnitTitle = isLiter ? 'Rp/liter' : 'Rp/kg';
+
   const categoryColors = {
     'Beras & Padi-padian': '#1E74C7',
     'Hortikultura & Sayuran': '#17B6A7',
@@ -64,7 +68,7 @@ export function Tab3HargaMarjin() {
           <div className="text-[10px] font-semibold text-[#667085] uppercase tracking-wider mb-1 truncate">Rerata Harga Beli</div>
           <div className="text-base sm:text-lg md:text-xl font-bold text-[#101828] tracking-tight tabular-nums whitespace-nowrap">
             {formatRupiah(currentMetrics.avgHargaBeli, 2)}
-            <span className="text-xs font-normal text-[#667085] ml-1">/kg</span>
+            <span className="text-xs font-normal text-[#667085] ml-1">/{priceUnitLabel}</span>
           </div>
           <div className="text-xs text-[#667085] mt-1 truncate">Tingkat Distributor</div>
         </div>
@@ -73,7 +77,7 @@ export function Tab3HargaMarjin() {
           <div className="text-[10px] font-semibold text-[#667085] uppercase tracking-wider mb-1 truncate">Rerata Harga Jual</div>
           <div className="text-base sm:text-lg md:text-xl font-bold text-[#101828] tracking-tight tabular-nums whitespace-nowrap">
             {formatRupiah(currentMetrics.avgHargaJual, 2)}
-            <span className="text-xs font-normal text-[#667085] ml-1">/kg</span>
+            <span className="text-xs font-normal text-[#667085] ml-1">/{priceUnitLabel}</span>
           </div>
           <div className="text-xs text-[#667085] mt-1 truncate">Tingkat Grosir / Pedagang</div>
         </div>
@@ -82,7 +86,7 @@ export function Tab3HargaMarjin() {
           <div className="text-[10px] font-semibold text-[#667085] uppercase tracking-wider mb-1 truncate">Spread Marjin</div>
           <div className="text-base sm:text-lg md:text-xl font-bold text-[#101828] tracking-tight tabular-nums whitespace-nowrap">
             {formatRupiah(currentMetrics.marginRp, 2)}
-            <span className="text-xs font-normal text-[#667085] ml-1">/kg</span>
+            <span className="text-xs font-normal text-[#667085] ml-1">/{priceUnitLabel}</span>
           </div>
           <div className="text-xs text-[#667085] mt-1 truncate">Selisih Jual - Beli</div>
         </div>
@@ -127,7 +131,7 @@ export function Tab3HargaMarjin() {
             <h3 className="text-xs font-bold text-[#101828] uppercase tracking-wider">
               Matriks Harga & Marjin Tataniaga per Komoditas × Wilayah
             </h3>
-            <p className="text-xs text-[#667085]">Harga Beli, Jual (Rp/kg), dan Marjin (%) per Wilayah DIY</p>
+            <p className="text-xs text-[#667085]">Harga Beli, Jual ({priceUnitTitle}), dan Marjin (%) per Wilayah DIY</p>
           </div>
         </div>
 
@@ -196,7 +200,7 @@ export function Tab3HargaMarjin() {
               <h3 className="text-xs font-bold text-[#101828] uppercase tracking-wider">
                 Tren Harga Beli vs Jual ({komoditasLabel})
               </h3>
-              <p className="text-xs text-[#667085]">Perkembangan harga historis mingguan (Rp/kg)</p>
+              <p className="text-xs text-[#667085]">Perkembangan harga historis mingguan ({priceUnitTitle})</p>
             </div>
             <div className="flex items-center gap-3 text-xs font-medium">
               <span className="flex items-center gap-1.5 text-[#C89B3C]"><span className="w-2.5 h-2.5 rounded-full bg-[#C89B3C]"></span> Harga Beli</span>

@@ -226,20 +226,32 @@ export function calculateTab3RegionPrices(rawRingkasan = [], selectedPeriode, se
 }
 
 /**
- * 5. Disparitas Harga Wilayah (DAX 5.1)
- * DAX: MAXX(ALL(REF_Wilayah), [Harga_Rata_Jual]) - MINX(ALL(REF_Wilayah), [Harga_Rata_Jual])
+ * 5. Disparitas Harga Wilayah (Nominal & Relatif)
+ * REVISI EKONOM:
+ * - Disparitas Nominal (Rp) = Max Harga Jual - Min Harga Jual
+ * - Disparitas Relatif (%) = ((Max - Min) / Avg DIY VWAP) * 100
+ * Sembunyikan wilayah jika sampel n < 3 untuk menghindari bias.
  */
 export function calculateDisparitasHargaWilayah(regionPrices = []) {
-  const validPrices = regionPrices.map(r => r.hargaJual).filter(p => p > 0);
-  if (validPrices.length === 0) return 0;
+  const validPrices = regionPrices.filter(r => (r.nResponden || 1) >= 3 && r.hargaJual > 0).map(r => r.hargaJual);
+  if (validPrices.length === 0) {
+    const fallbackPrices = regionPrices.map(r => r.hargaJual).filter(p => p > 0);
+    if (fallbackPrices.length === 0) return 0;
+    return Math.max(...fallbackPrices) - Math.min(...fallbackPrices);
+  }
   const maxPrice = Math.max(...validPrices);
   const minPrice = Math.min(...validPrices);
   return maxPrice - minPrice;
 }
 
+export function calculateDisparitasRelatifPct(regionPrices = [], avgDiyJual = 0) {
+  const dispNominal = calculateDisparitasHargaWilayah(regionPrices);
+  if (!avgDiyJual || avgDiyJual <= 0) return 0;
+  return Number(((dispNominal / avgDiyJual) * 100).toFixed(1));
+}
+
 /**
- * 6. Wilayah Harga Tertinggi (DAX 5.1)
- * DAX: MAXX(TOPN(1, SUMMARIZE(laporan_ringkasan, [kab_kota], "harga", [Harga_Rata_Jual]), [harga], DESC), [kab_kota])
+ * 6. Wilayah Harga Tertinggi
  */
 export function calculateWilayahHargaTertinggi(regionPrices = []) {
   if (!regionPrices || regionPrices.length === 0) return 'Kota Yogyakarta';
@@ -248,8 +260,7 @@ export function calculateWilayahHargaTertinggi(regionPrices = []) {
 }
 
 /**
- * 7. Komoditas & Nilai Margin Tertinggi (DAX 5.2)
- * DAX: MAXX(TOPN(1, SUMMARIZE(..., "margin", [Margin_Harga]), [margin], DESC), [nama_komoditas])
+ * 7. Komoditas & Nilai Margin Tertinggi
  */
 export function calculateKomoditasMarginTertinggi(priceMatrix = []) {
   if (!priceMatrix || priceMatrix.length === 0) return { komoditas: 'Bawang Merah', marginRp: 0, marginPct: 0 };
@@ -262,15 +273,20 @@ export function calculateKomoditasMarginTertinggi(priceMatrix = []) {
 }
 
 /**
- * 8. Volatilitas Harga Jual (DAX 5.3)
- * DAX: DIVIDE(MaxH - MinH, AvgHarga, 0) * 100
+ * 8. Volatilitas Harga Jual (Koefisien Variasi - CV %)
+ * REVISI EKONOM: Standard statistik resmi CV = (StdDev / Mean) * 100 (membutuhkan min. 8 minggu data).
+ * Fallback jika data < 8: menghitung CV sampel yang ada dengan penanda.
  */
 export function calculateVolatilitasHargaJual(historicalTrends = []) {
-  const validPrices = historicalTrends.map(t => t.hargaJual).filter(p => p > 0);
+  const validPrices = historicalTrends.map(t => t.hargaJual || t.harga).filter(p => p > 0);
   if (validPrices.length === 0) return 0;
-  const maxH = Math.max(...validPrices);
-  const minH = Math.min(...validPrices);
-  const avgH = validPrices.reduce((a, b) => a + b, 0) / validPrices.length;
-  if (avgH === 0) return 0;
-  return Number((((maxH - minH) / avgH) * 100).toFixed(1));
+  
+  const mean = validPrices.reduce((a, b) => a + b, 0) / validPrices.length;
+  if (mean === 0) return 0;
+
+  const variance = validPrices.reduce((acc, val) => acc + Math.pow(val - mean, 2), 0) / validPrices.length;
+  const stdDev = Math.sqrt(variance);
+
+  // Coefficient of Variation (CV) %
+  return Number(((stdDev / mean) * 100).toFixed(1));
 }

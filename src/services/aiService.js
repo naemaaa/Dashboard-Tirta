@@ -130,6 +130,7 @@ export class AiNarrativeService {
 
     const topInflowMasuk = (topInflow.volMasuk || 0).toLocaleString('id-ID');
     const topInflowKeluar = (topInflow.volKeluar || 0).toLocaleString('id-ID');
+    const unitLabel = metrics.dominantUnit === 'Liter' ? 'Liter' : 'Ton';
 
     return [
       {
@@ -137,7 +138,7 @@ export class AiNarrativeService {
         category: 'Simpul Distribusi Terbesar',
         status: 'Konsentrasi Sentra',
         badgeColor: 'blue',
-        content: `Komoditas dengan volume aliran terbesar adalah ${topInflow.komoditas} dengan pasokan masuk ${topInflowMasuk} Ton dan penjualan ${topInflowKeluar} Ton. Sleman dan Bantul menjadi simpul pergerakan logistik utama di wilayah DIY.`,
+        content: `Komoditas dengan volume aliran terbesar adalah ${topInflow.komoditas} dengan pasokan masuk ${topInflowMasuk} ${unitLabel} dan penjualan ${topInflowKeluar} ${unitLabel}. Sleman dan Bantul menjadi simpul pergerakan logistik utama di wilayah DIY.`,
         timestamp: 'Analisis Aliran Komoditas'
       },
       {
@@ -145,7 +146,7 @@ export class AiNarrativeService {
         category: 'Dekomposisi Selisih Aliran',
         status: currentMetrics.statusNeraca === 'SURPLUS' ? 'Akumulasi Stok (+)' : 'Pengurangan Stok (-)',
         badgeColor: currentMetrics.statusNeraca === 'SURPLUS' ? 'green' : 'amber',
-        content: `Net balance arus perdagangan DIY saat ini tercatat ${(currentMetrics.neracaBersih || 0) >= 0 ? '+' : ''}${(currentMetrics.neracaBersih || 0).toFixed(1)} Ton. Selisih ini mengindikasikan akumulasi stok penyangga di tingkat pedagang grosir untuk menjaga kontinuitas pasokan pasar tradisional.`,
+        content: `Net balance arus perdagangan DIY saat ini tercatat ${(currentMetrics.neracaBersih || 0) >= 0 ? '+' : ''}${(currentMetrics.neracaBersih || 0).toFixed(1)} ${unitLabel}. Selisih ini mengindikasikan akumulasi stok penyangga di tingkat pedagang grosir untuk menjaga kontinuitas pasokan pasar tradisional.`,
         timestamp: 'Dekomposisi Neraca'
       },
       {
@@ -176,13 +177,16 @@ export class AiNarrativeService {
     const prices = (tab3RegionPrices || []).map(r => r.hargaJual).filter(p => p > 0);
     const spread = prices.length > 1 ? Math.max(...prices) - Math.min(...prices) : 450;
 
+    const unitLabel = metrics.dominantUnit === 'Liter' ? 'Liter' : 'Ton';
+    const priceUnitLabel = (metrics.dominantUnit === 'Liter' || (metrics.selectedKomoditas && metrics.selectedKomoditas.toLowerCase().includes('liter'))) ? 'liter' : 'kg';
+
     return [
       {
         id: 'tab3-insight-1',
         category: 'Karakteristik Marjin Tataniaga',
         status: margin >= 4 ? 'Rentang Ideal' : 'Marjin Terbatas',
         badgeColor: margin >= 4 ? 'green' : 'amber',
-        content: `Marjin keuntungan agregat pedagang berada pada angka ${margin.toFixed(1)}% (Rp ${Math.round(currentMetrics.marginRp || 0).toLocaleString('id-ID')}/kg). Marjin tertinggi tercatat pada ${topMargin.komoditas} (${(topMargin.marginPct || 0).toFixed(1)}%), sedangkan marjin terendah pada ${lowestMargin.komoditas} (${(lowestMargin.marginPct || 0).toFixed(1)}%).`,
+        content: `Marjin keuntungan agregat pedagang berada pada angka ${margin.toFixed(1)}% (Rp ${Math.round(currentMetrics.marginRp || 0).toLocaleString('id-ID')}/${priceUnitLabel}). Marjin tertinggi tercatat pada ${topMargin.komoditas} (${(topMargin.marginPct || 0).toFixed(1)}%), sedangkan marjin terendah pada ${lowestMargin.komoditas} (${(lowestMargin.marginPct || 0).toFixed(1)}%).`,
         timestamp: 'Evaluasi Tataniaga'
       },
       {

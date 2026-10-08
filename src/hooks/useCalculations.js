@@ -19,8 +19,14 @@ import {
   calculateAvgHargaBeli,
   calculateAvgHargaJual,
   calculateMarginRp,
+  calculateMarginKotorRp,
   calculateMarginPct,
+  calculateMarkupPct,
   getMarginClassification,
+  calculateTotalSusut,
+  calculateTingkatSusutPct,
+  calculateTotalStokAkhir,
+  calculateCakupanStok,
   calculatePctLuarDiy,
   calculateDeltaPct,
   calculateMatrixNeracaTab1,
@@ -129,7 +135,7 @@ export function useCalculations() {
     const dominantUnit = detectDominantUnit(currRows);
 
     const getMetricsObject = (rows, numPeriode = 1) => {
-      // Jika multi-periode, gunakan rata-rata per minggu
+      // Jika multi-periode, gunakan rata-rata per minggu untuk variabel aliran (flow)
       const volMasuk  = numPeriode > 1
         ? calculateVolumePerMinggu(rows, numPeriode, 'vol_masuk_ton')
         : calculateVolumeMasuk(rows);
@@ -137,23 +143,43 @@ export function useCalculations() {
         ? calculateVolumePerMinggu(rows, numPeriode, 'vol_keluar_ton')
         : calculateVolumeKeluar(rows);
 
-      const neracaBersih  = calculateNeracaBersih(volMasuk, volKeluar);
-      const statusNeraca  = calculateStatusNeraca(neracaBersih);
+      // Total Susut & Tingkat Susut
+      const totalSusut = calculateTotalSusut(rows);
+      const avgSusutPerMinggu = numPeriode > 1 ? Number((totalSusut / numPeriode).toFixed(2)) : totalSusut;
+      const tingkatSusutPct = calculateTingkatSusutPct(avgSusutPerMinggu, volMasuk);
+
+      // Neraca Bersih = Masuk - Keluar - Susut
+      const neracaBersih  = calculateNeracaBersih(volMasuk, volKeluar, avgSusutPerMinggu);
+      const statusNeraca  = calculateStatusNeraca(neracaBersih, volMasuk);
+
+      // Stok Akhir (Multi-minggu: posisi minggu terakhir)
+      const stokAkhir     = calculateTotalStokAkhir(rows);
+      const cakupanStok   = calculateCakupanStok(stokAkhir, volKeluar);
+
+      // Harga VWAP
       const avgHargaBeli  = calculateAvgHargaBeli(rows);
       const avgHargaJual  = calculateAvgHargaJual(rows);
-      const marginRp      = calculateMarginRp(avgHargaJual, avgHargaBeli);
-      const marginPct     = calculateMarginPct(marginRp, avgHargaBeli);
+
+      // Marjin Kotor Tataniaga per Laporan (Tertimbang Volume)
+      const marginRp      = calculateMarginKotorRp(rows) || calculateMarginRp(avgHargaJual, avgHargaBeli);
+      const marginPct     = calculateMarginPct(marginRp, avgHargaJual);
+      const markupPct     = calculateMarkupPct(marginRp, avgHargaBeli);
       const marginLabel   = getMarginClassification(marginPct);
 
       return {
         volMasuk,
         volKeluar,
+        totalSusut: avgSusutPerMinggu,
+        tingkatSusutPct,
         neracaBersih,
         statusNeraca,
+        stokAkhir,
+        cakupanStok,
         avgHargaBeli,
         avgHargaJual,
         marginRp,
         marginPct,
+        markupPct,
         marginLabel,
         countRecords: rows.length,
         isMultiPeriode: numPeriode > 1,
@@ -164,18 +190,14 @@ export function useCalculations() {
     const currentMetrics = getMetricsObject(currRows, jumlahPeriode);
     const prevMetrics    = getMetricsObject(prevRows, 1);
 
-    // AUDIT NOTE (W-2): Saat multi-periode, currentMetrics = rata-rata per minggu,
-    // sementara prevMetrics = nilai periode tunggal sebelum periode terakhir yang dipilih.
-    // Delta ini TIDAK apple-to-apple dalam mode multi-periode.
-    // Field `isMultiPeriodeDelta` ditambahkan agar UI dapat menampilkan disclaimer.
     const deltas = {
       volMasukDelta:       calculateDeltaPct(currentMetrics.volMasuk, prevMetrics.volMasuk),
       volKeluarDelta:      calculateDeltaPct(currentMetrics.volKeluar, prevMetrics.volKeluar),
       neracaDelta:         Number((currentMetrics.neracaBersih - prevMetrics.neracaBersih).toFixed(2)),
       hargaJualDelta:      calculateDeltaPct(currentMetrics.avgHargaJual, prevMetrics.avgHargaJual),
       hargaBeliDelta:      calculateDeltaPct(currentMetrics.avgHargaBeli, prevMetrics.avgHargaBeli),
-      marginDelta:         Number((currentMetrics.marginPct - prevMetrics.marginPct).toFixed(1)),
-      isMultiPeriodeDelta: isMultiPeriode, // true = delta harus dibaca sebagai 'avg vs single'
+      marginDelta:         Number((currentMetrics.marginPct - prevMetrics.marginPct).toFixed(1)), // Dalam poin persentase (p.p.)
+      isMultiPeriodeDelta: isMultiPeriode,
     };
 
     // ─────────────────────────────────────────────────────────────────
@@ -196,12 +218,18 @@ export function useCalculations() {
     // Ketergantungan Eksternal
     const pasokanStats = calculatePctLuarDiy(filteredArusMasuk);
 
-    // Saluran Keluar (Lokal vs Re-ekspor)
-    const totalKeluarFlow    = filteredArusKeluar.reduce((a, b) => a + (Number(b.volume_ton) || 0), 0) || 1;
-    const volReeksporKeluar  = filteredArusKeluar.filter(r => r.keluar_diy).reduce((a, b) => a + (Number(b.volume_ton) || 0), 0);
-    const volLokalKeluar     = totalKeluarFlow - volReeksporKeluar;
-    const pctReekspor        = Number(((volReeksporKeluar / totalKeluarFlow) * 100).toFixed(1));
-    const pctLokalKeluar     = Number(((volLokalKeluar / totalKeluarFlow) * 100).toFixed(1));
+    // Saluran Keluar: Pengiriman Antardaerah (ke Luar DIY) vs Tujuan Dalam DIY
+    const totalKeluarFlow        = filteredArusKeluar.reduce((a, b) => a + (Number(b.volume_ton) || 0), 0) || 1;
+    const volPengirimanLuarDiy   = filteredArusKeluar.filter(r => r.keluar_diy).reduce((a, b) => a + (Number(b.volume_ton) || 0), 0);
+    const volTujuanDalamDiy      = totalKeluarFlow - volPengirimanLuarDiy;
+    const pctPengirimanLuarDiy   = Number(((volPengirimanLuarDiy / totalKeluarFlow) * 100).toFixed(1));
+    const pctTujuanDalamDiy      = Number(((volTujuanDalamDiy / totalKeluarFlow) * 100).toFixed(1));
+
+    // Aliases for backward compatibility
+    const pctReekspor        = pctPengirimanLuarDiy;
+    const pctLokalKeluar     = pctTujuanDalamDiy;
+    const volReeksporKeluar  = volPengirimanLuarDiy;
+    const volLokalKeluar     = volTujuanDalamDiy;
 
     // Top 5 Sumber Pasokan
     const originMap = {};
@@ -277,7 +305,7 @@ export function useCalculations() {
     const tab4CommodityEvolution  = calculateTab4CommodityEvolution(rawRingkasan);
 
     // Tab 5: Quality & Cleaning — now passes rawRingkasan for real-time computation
-    const { qualityCounts, summaryTable: qualitySummaryTable } = calculateQualityMetrics(rawRingkasan, rawQualityIssues);
+    const { qualityCounts, qualitySummaryTable } = calculateQualityMetrics(rawRingkasan, rawQualityIssues);
     const qualityByRegion    = calculateQualityByRegion(rawRingkasan);
     const qualityByCommodity = calculateQualityByCommodity(rawRingkasan);
 

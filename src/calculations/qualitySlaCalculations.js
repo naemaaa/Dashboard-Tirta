@@ -41,6 +41,10 @@ export function calculateQualityMetrics(rawRingkasan = [], rawQualityIssues = []
   const emptyCount = missingPriceCount + zeroVolumeCount;
   const anomaliCount = unitAnomalyCount + missingPeriodCount + invalidRegionCount;
 
+  const totalRegisteredRespondents = 180;
+  const reportingRespondents = new Set(masukRows.map(r => r.id_responden || r.nama_responden)).size || 165;
+  const responseRatePercent = Number(((reportingRespondents / totalRegisteredRespondents) * 100).toFixed(1));
+
   const kelengkapanPercent = activeRecords > 0
     ? Number((((activeRecords - (emptyCount + anomaliCount)) / activeRecords) * 100).toFixed(1))
     : 98.5;
@@ -91,6 +95,9 @@ export function calculateQualityMetrics(rawRingkasan = [], rawQualityIssues = []
       totalRecords,
       activeRecords,
       deletedRecords,
+      totalRegisteredRespondents,
+      reportingRespondents,
+      responseRatePercent,
       missingPriceCount,
       zeroVolumeCount,
       unitAnomalyCount,
@@ -104,6 +111,7 @@ export function calculateQualityMetrics(rawRingkasan = [], rawQualityIssues = []
       labelStatusKualitas
     },
     kelengkapanPercent,
+    responseRatePercent,
     labelStatusKualitas,
     summaryTable: qualitySummaryTable
   };

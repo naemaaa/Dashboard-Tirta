@@ -45,7 +45,8 @@ export function Tab4TrenAntarwaktu() {
     jumlahPeriode,
   } = calculations || {};
 
-  const unitLabel = dominantUnit === 'Mixed' ? 'Ton / Liter' : (dominantUnit || 'Ton');
+  const isLiter = dominantUnit === 'Liter';
+  const priceUnitTitle = isLiter ? 'Rp/liter' : 'Rp/kg';
 
   // Palette 15 komoditas multi-series (§2.5)
   const commColors = [
@@ -204,7 +205,7 @@ export function Tab4TrenAntarwaktu() {
                 <h3 className="text-xs font-bold text-[#101828] uppercase tracking-wider">
                   Trend Harga Antar Waktu
                 </h3>
-                <span className="text-[10px] text-[#667085] bg-[#F2F4F7] px-2 py-0.5 rounded-full font-medium">Rp/kg</span>
+                <span className="text-[10px] text-[#667085] bg-[#F2F4F7] px-2 py-0.5 rounded-full font-medium">{priceUnitTitle}</span>
               </div>
               <div className="h-48 mt-1">
                 <ResponsiveContainer width="100%" height="100%">

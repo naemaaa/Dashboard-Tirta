@@ -201,38 +201,42 @@ export function GlobalFilterBar({ showBadge = true, title = null, subtitle = nul
         </div>
 
         {/* Right Badge: Selisih Volume & Reset Action */}
-        {showBadge && (
-          <div className="lg:col-span-3 clean-card p-3.5 flex items-center justify-between gap-3 bg-white">
-            <div className="flex items-center gap-3 min-w-0">
-              <div className={`w-10 h-10 rounded-full flex items-center justify-center shrink-0 ${
-                currentMetrics.neracaBersih >= 0 
-                  ? 'bg-[rgba(18,183,106,0.12)] text-[#12B76A]' 
-                  : 'bg-[rgba(240,68,56,0.12)] text-[#F04438]'
-              }`}>
-                <Scale className="w-5 h-5" />
-              </div>
-              <div className="min-w-0">
-                <span className="block text-[10px] uppercase tracking-wider font-semibold text-[#667085] whitespace-nowrap">
-                  Selisih Volume
-                </span>
-                <span className={`text-base font-bold truncate block tabular-nums ${
-                  currentMetrics.neracaBersih >= 0 ? 'text-[#12B76A]' : 'text-[#F04438]'
+        {showBadge && (() => {
+          const neracaVal = currentMetrics?.neracaBersih ?? 0;
+          const isPos = neracaVal >= 0;
+          return (
+            <div className="lg:col-span-3 clean-card p-3.5 flex items-center justify-between gap-3 bg-white">
+              <div className="flex items-center gap-3 min-w-0">
+                <div className={`w-10 h-10 rounded-full flex items-center justify-center shrink-0 ${
+                  isPos 
+                    ? 'bg-[rgba(18,183,106,0.12)] text-[#12B76A]' 
+                    : 'bg-[rgba(240,68,56,0.12)] text-[#F04438]'
                 }`}>
-                  {currentMetrics.neracaBersih > 0 ? `+${currentMetrics.neracaBersih}` : currentMetrics.neracaBersih} {unitLabel}
-                </span>
+                  <Scale className="w-5 h-5" />
+                </div>
+                <div className="min-w-0">
+                  <span className="block text-[10px] uppercase tracking-wider font-semibold text-[#667085] whitespace-nowrap">
+                    Selisih Volume
+                  </span>
+                  <span className={`text-base font-bold truncate block tabular-nums ${
+                    isPos ? 'text-[#12B76A]' : 'text-[#F04438]'
+                  }`}>
+                    {neracaVal > 0 ? `+${neracaVal}` : neracaVal} {unitLabel}
+                  </span>
+                </div>
               </div>
+              
+              {/* Quick Reset Button */}
+              <button
+                onClick={handleReset}
+                title="Reset semua filter ke default"
+                className="p-2 rounded-full text-[#667085] hover:text-[#0D3E77] hover:bg-[#F2F4F7] transition-all cursor-pointer shrink-0"
+              >
+                <RotateCcw className={`w-4 h-4 ${isResetting ? 'animate-spin text-[#1E74C7]' : ''}`} />
+              </button>
             </div>
-            
-            {/* Quick Reset Button */}
-            <button
-              onClick={handleReset}
-              title="Reset semua filter ke default"
-              className="p-2 rounded-full text-[#667085] hover:text-[#0D3E77] hover:bg-[#F2F4F7] transition-all cursor-pointer shrink-0"
-            >
-              <RotateCcw className={`w-4 h-4 ${isResetting ? 'animate-spin text-[#1E74C7]' : ''}`} />
-            </button>
-          </div>
-        )}
+          );
+        })()}
 
       </div>
 

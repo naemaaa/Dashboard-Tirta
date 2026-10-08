@@ -101,31 +101,37 @@ export function calculateVolumeProduksi(rows = []) {
 }
 
 /**
- * 2.1 Neraca Bersih (Ton)
- * DAX: [Total_Vol_Masuk_Ton] - [Total_Vol_Keluar_Ton]
+ * 2.1 Neraca Bersih (Ton/Liter)
+ * REVISI EKONOM: Masuk − Keluar − Susut
  * Positif = Surplus pasokan, Negatif = Defisit pasokan
  */
-export function calculateNeracaBersih(volMasuk, volKeluar) {
-  return Number(((volMasuk || 0) - (volKeluar || 0)).toFixed(2));
+export function calculateNeracaBersih(volMasuk = 0, volKeluar = 0, totalSusut = 0) {
+  return Number(((volMasuk || 0) - (volKeluar || 0) - (totalSusut || 0)).toFixed(2));
 }
 
 /**
- * 2.2 Status Neraca (Kondisional)
- * DAX: IF([Neraca_Bersih] > 0.1, "SURPLUS", IF([Neraca_Bersih] < -0.1, "DEFISIT", "SEIMBANG"))
- * Threshold ±0.1 ton untuk menghindari false positive pembulatan floating point.
- * AUDIT NOTE: Threshold 0.1 Ton dipertahankan (PRD menggunakan nilai berbeda 0.01, namun 0.1 lebih
- * aman untuk menghindari false positive akibat pembulatan desimal pada data grosir mingguan).
+ * 2.2 Status Neraca (Kondisional Relatif)
+ * REVISI EKONOM: Ambang relatif ±5% dari Volume Masuk (bukan ±0,1 ton kaku).
+ * > +5% Vol Masuk = SURPLUS
+ * < -5% Vol Masuk = DEFISIT
+ * Antara -5% s.d. +5% = SEIMBANG
  */
-export function calculateStatusNeraca(neracaBersih) {
-  if (neracaBersih > 0.1) return 'SURPLUS';
-  if (neracaBersih < -0.1) return 'DEFISIT';
+export function calculateStatusNeraca(neracaBersih = 0, volMasuk = 0) {
+  if (!volMasuk || volMasuk <= 0) {
+    if (neracaBersih > 0.1) return 'SURPLUS';
+    if (neracaBersih < -0.1) return 'DEFISIT';
+    return 'SEIMBANG';
+  }
+  const pct = (neracaBersih / volMasuk) * 100;
+  if (pct > 5) return 'SURPLUS';
+  if (pct < -5) return 'DEFISIT';
   return 'SEIMBANG';
 }
 
 /**
  * 2.3 Rasio Masuk vs Keluar
  * DAX: DIVIDE([Total_Vol_Masuk_Ton], [Total_Vol_Keluar_Ton], 0)
- * Nilai > 1 artinya masuk lebih banyak dari keluar (surplus).
+ * Nilai > 1 artinya masuk lebih banyak dari keluar.
  */
 export function calculateRasioMasukKeluar(volMasuk, volKeluar) {
   if (!volKeluar || volKeluar === 0) return 0;
@@ -133,22 +139,26 @@ export function calculateRasioMasukKeluar(volMasuk, volKeluar) {
 }
 
 /**
+ * 2.4 Cakupan Stok (Minggu)
+ * REVISI EKONOM: Ketahanan Stok Akhir dibagi rata-rata pasokan keluar per minggu (handling pembagian 0)
+ */
+export function calculateCakupanStok(stokAkhir = 0, avgVolKeluarPerMinggu = 0) {
+  if (!avgVolKeluarPerMinggu || avgVolKeluarPerMinggu <= 0) return 0;
+  return Number((stokAkhir / avgVolKeluarPerMinggu).toFixed(1));
+}
+
+/**
  * 3.1 Rerata Harga Beli TERTIMBANG VOLUME (VWAP) (Rp/kg)
- * DAX: SUMX(FILTER(..., harga_beli > 0 AND volume > 0), harga_beli * volume) / SUMX(..., volume)
- * Sesuai PRD: harga rata-rata tertimbang volume, bukan simple average responden.
- *
- * AUDIT FIX (BUG-3): Dihapus fallback || 1 pada getRowVolume.
- * Filter volume > 0 ditambahkan agar baris tanpa transaksi nyata tidak mendistorsi VWAP.
+ * SUMX(FILTER(..., harga_beli > 0 AND volume > 1), harga_beli * volume) / SUMX(..., volume)
  */
 export function calculateAvgHargaBeli(rows = []) {
   if (!rows || rows.length === 0) return 0;
   const validRows = rows.filter(
     r => r.jenis_aliran === 'vol_masuk_ton' &&
          Number(r.harga_beli) > 0 &&
-         getRowVolume(r) > 1  // FIX: volume > 1 to exclude dummy value '1' used for closed shops
+         getRowVolume(r) > 1  // FIX: exclude closed shops dummy volume
   );
   if (validRows.length === 0) return 0;
-  // Volume-Weighted Average Price (VWAP) — sesuai PRD formula
   const sumWeightedPrice = validRows.reduce((acc, r) => acc + Number(r.harga_beli) * getRowVolume(r), 0);
   const sumVolume        = validRows.reduce((acc, r) => acc + getRowVolume(r), 0);
   return sumVolume > 0 ? Math.round(sumWeightedPrice / sumVolume) : 0;
@@ -156,50 +166,85 @@ export function calculateAvgHargaBeli(rows = []) {
 
 /**
  * 3.2 Rerata Harga Jual TERTIMBANG VOLUME (VWAP) (Rp/kg)
- * DAX: SUMX(FILTER(..., harga_jual > 0 AND volume > 1), harga_jual * volume) / SUMX(..., volume)
- *
- * AUDIT FIX (BUG-3): Dihapus fallback || 1 pada getRowVolume.
  */
 export function calculateAvgHargaJual(rows = []) {
   if (!rows || rows.length === 0) return 0;
   const validRows = rows.filter(
     r => r.jenis_aliran === 'vol_masuk_ton' &&
          Number(r.harga_jual) > 0 &&
-         getRowVolume(r) > 1  // FIX: volume > 1 to exclude dummy value '1'
+         getRowVolume(r) > 1  // FIX: exclude closed shops dummy volume
   );
   if (validRows.length === 0) return 0;
-  // Volume-Weighted Average Price (VWAP)
   const sumWeightedPrice = validRows.reduce((acc, r) => acc + Number(r.harga_jual) * getRowVolume(r), 0);
   const sumVolume        = validRows.reduce((acc, r) => acc + getRowVolume(r), 0);
   return sumVolume > 0 ? Math.round(sumWeightedPrice / sumVolume) : 0;
 }
 
 /**
- * 3.3 Nominal Marjin Perdagangan (Rp/kg)
- * DAX: [Harga_Rata_Jual] - [Harga_Rata_Beli]
+ * 3.3 Nominal Marjin Kotor Tataniaga (Rp/kg)
+ * REVISI EKONOM: Dihitung per laporan lalu tertimbang volume (bukan selisih agregat VWAP).
  */
+export function calculateMarginKotorRp(rows = []) {
+  if (!rows || rows.length === 0) return 0;
+  const validRows = rows.filter(
+    r => r.jenis_aliran === 'vol_masuk_ton' &&
+         Number(r.harga_jual) > 0 &&
+         Number(r.harga_beli) > 0 &&
+         getRowVolume(r) > 1
+  );
+  if (validRows.length === 0) return 0;
+  const sumWeightedMargin = validRows.reduce(
+    (acc, r) => acc + (Number(r.harga_jual) - Number(r.harga_beli)) * getRowVolume(r),
+    0
+  );
+  const sumVolume = validRows.reduce((acc, r) => acc + getRowVolume(r), 0);
+  return sumVolume > 0 ? Math.round(sumWeightedMargin / sumVolume) : 0;
+}
+
+// Backwards compatibility alias for calculateMarginRp
 export function calculateMarginRp(avgHargaJual, avgHargaBeli) {
   return Math.round((avgHargaJual || 0) - (avgHargaBeli || 0));
 }
 
 /**
- * 3.4 Persentase Marjin (%)
- * DAX: DIVIDE([Margin_Harga], [Harga_Rata_Beli], 0) * 100
+ * 3.4 Persentase Margin Tataniaga (% dari Harga Jual) vs Markup (% dari Modal Beli)
+ * REVISI EKONOM:
+ * - Margin % = (Marjin Kotor / Harga Jual) * 100
+ * - Markup % = (Marjin Kotor / Harga Beli) * 100
  */
-export function calculateMarginPct(marginRp, avgHargaBeli) {
+export function calculateMarginPct(marginRp, avgHargaJual) {
+  if (!avgHargaJual || avgHargaJual <= 0) return 0;
+  return Number(((marginRp / avgHargaJual) * 100).toFixed(1));
+}
+
+export function calculateMarkupPct(marginRp, avgHargaBeli) {
   if (!avgHargaBeli || avgHargaBeli <= 0) return 0;
   return Number(((marginRp / avgHargaBeli) * 100).toFixed(1));
 }
 
 /**
- * 3.5 Label Status Marjin
- * DAX: IF([Margin_Pct] > 5, "Wajar", IF([Margin_Pct] > 1, "Tipis", IF([Margin_Pct] > 0, "Sangat Tipis", "Negatif")))
+ * 3.5 Klasifikasi Status Marjin Kotor Tataniaga
+ * REVISI EKONOM:
+ * - Rugi / Negatif: < 0%
+ * - Sangat Tipis: 0% - 1%
+ * - Tipis: 1.01% - 3%
+ * - Normal: 3.01% - 7% (ganti label "Wajar")
+ * - Tinggi: > 7%
  */
 export function getMarginClassification(marginPct) {
-  if (marginPct > 5) return 'Wajar';
-  if (marginPct > 1) return 'Tipis';
-  if (marginPct > 0) return 'Sangat Tipis';
-  return 'Negatif';
+  if (marginPct < 0) return 'Rugi / Negatif';
+  if (marginPct <= 1) return 'Sangat Tipis';
+  if (marginPct <= 3) return 'Tipis';
+  if (marginPct <= 7) return 'Normal';
+  return 'Tinggi';
+}
+
+/**
+ * 4.3 Tingkat Susut (%) = (Total Susut / Total Vol Masuk) * 100
+ */
+export function calculateTingkatSusutPct(totalSusut = 0, volMasuk = 0) {
+  if (!volMasuk || volMasuk <= 0) return 0;
+  return Number(((totalSusut / volMasuk) * 100).toFixed(1));
 }
 
 /**
@@ -237,6 +282,8 @@ export function calculateTotalSusut(rows = []) {
     }, 0);
   return Number(total.toFixed(2));
 }
+
+
 
 /**
  * 5.1 Jumlah Responden Unik Melaporkan

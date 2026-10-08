@@ -25,7 +25,40 @@ import {
   TrendingDown
 } from 'lucide-react';
 
+class Tab1ErrorBoundary extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = { hasError: false, error: null };
+  }
+  static getDerivedStateFromError(error) {
+    return { hasError: true, error };
+  }
+  componentDidCatch(error, errorInfo) {
+    console.error("Tab1 error:", error, errorInfo);
+  }
+  render() {
+    if (this.state.hasError) {
+      return (
+        <div className="p-6 bg-red-50 border border-red-200 rounded-xl text-red-700 font-mono text-xs">
+          <h3 className="font-bold text-sm mb-2">Error Rendering Tab 1:</h3>
+          <pre>{this.state.error?.toString()}</pre>
+          <pre className="mt-2 text-[10px] text-red-500">{this.state.error?.stack}</pre>
+        </div>
+      );
+    }
+    return this.props.children;
+  }
+}
+
 export function Tab1RingkasanUtama() {
+  return (
+    <Tab1ErrorBoundary>
+      <Tab1RingkasanUtamaInner />
+    </Tab1ErrorBoundary>
+  );
+}
+
+function Tab1RingkasanUtamaInner() {
   const calculations = useCalculations();
 
   const {
@@ -48,14 +81,16 @@ export function Tab1RingkasanUtama() {
   const multiPerLabel = isMultiPeriode ? `Rata-rata/minggu (${jumlahPeriode} periode)` : null;
 
   // Donut data with BI Design System palette (§2.5)
+  const volIn = currentMetrics?.volMasuk || 0;
+  const volOut = currentMetrics?.volKeluar || 0;
   const pasokanDonut = [
-    { name: 'Luar DIY', value: Number((currentMetrics.volMasuk * (pctLuarDiy / 100)).toFixed(2)), color: '#1E74C7' },
-    { name: 'Dalam DIY (Internal)', value: Number((currentMetrics.volMasuk * (pctLokalMasuk / 100)).toFixed(2)), color: '#7DB4E8' },
+    { name: 'Luar DIY', value: Number((volIn * ((pctLuarDiy || 0) / 100)).toFixed(2)), color: '#1E74C7' },
+    { name: 'Dalam DIY (Internal)', value: Number((volIn * ((pctLokalMasuk || 0) / 100)).toFixed(2)), color: '#7DB4E8' },
   ];
 
   const tujuanDonut = [
-    { name: 'Dalam DIY (Internal)', value: Number((currentMetrics.volKeluar * (pctLokalKeluar / 100)).toFixed(2)), color: '#17B6A7' },
-    { name: 'Luar DIY', value: Number((currentMetrics.volKeluar * (pctReekspor / 100)).toFixed(2)), color: '#0A2E5C' },
+    { name: 'Dalam DIY (Internal)', value: Number((volOut * ((pctLokalKeluar || 0) / 100)).toFixed(2)), color: '#17B6A7' },
+    { name: 'Luar DIY', value: Number((volOut * ((pctReekspor || 0) / 100)).toFixed(2)), color: '#0A2E5C' },
   ];
 
   return (
@@ -217,7 +252,7 @@ export function Tab1RingkasanUtama() {
                         {row.nama_komoditas.replace(' (Ton)', '').replace(' (Liter)', '')}
                       </td>
                       {['Kab. Bantul', 'Kab. Gunungkidul', 'Kota Yogyakarta', 'Kab. Kulon Progo', 'Kab. Sleman'].map(w => {
-                        const val = row.wilayah[w] || 0;
+                        const val = row.wilayah?.[w] || 0;
                         const isNeg = val < -0.01;
                         return (
                           <td key={w} className={`px-2 py-1 text-right font-mono ${isNeg ? 'text-[#F04438] bg-[#FEF3F2] font-semibold' : val > 0.01 ? 'text-[#12B76A] font-semibold' : 'text-[#98A2B3]'}`}>
@@ -334,7 +369,7 @@ export function Tab1RingkasanUtama() {
             </div>
 
             <div className="space-y-2.5 text-xs">
-              {top5Origins.map((orig, idx) => (
+              {(top5Origins || []).map((orig, idx) => (
                 <div key={orig.name} className="flex items-center gap-3">
                   <span className="w-5 text-[11px] font-bold text-[#667085]">{idx + 1}.</span>
                   <span className="w-40 text-[11.5px] font-medium text-[#101828] truncate shrink-0" title={orig.name}>{orig.name}</span>
@@ -367,7 +402,7 @@ export function Tab1RingkasanUtama() {
             </div>
 
             <div className="space-y-2.5 text-xs">
-              {top5Destinations.map((dest, idx) => (
+              {(top5Destinations || []).map((dest, idx) => (
                 <div key={dest.name} className="flex items-center gap-3">
                   <span className="w-5 text-[11px] font-bold text-[#667085]">{idx + 1}.</span>
                   <span className="w-40 text-[11.5px] font-medium text-[#101828] truncate shrink-0" title={dest.name}>{dest.name}</span>
