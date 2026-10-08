@@ -18,14 +18,56 @@ export const GEO_NODES = {
   'Kab. Kulon Progo': { id: '3401', name: 'Kab. Kulon Progo', lat: -7.828889, lng: 110.158056, type: 'diy_regency', label: 'Kulon Progo' },
   'Kab. Gunungkidul': { id: '3403', name: 'Kab. Gunungkidul', lat: -7.962222, lng: 110.603333, type: 'diy_regency', label: 'Gunungkidul' },
 
-  // Sentra Produksi & Pemasok Luar DIY
+  // Sentra Produksi & Pemasok Luar DIY (Jawa Tengah & Jawa Timur)
   'Kab. Brebes (Jateng)': { id: 'EXT_BREBES', name: 'Kab. Brebes (Jateng)', lat: -6.9700, lng: 109.0400, type: 'external_sentra', sentra: 'Bawang Merah', label: 'Brebes' },
   'Kab. Blitar (Jatim)': { id: 'EXT_BLITAR', name: 'Kab. Blitar (Jatim)', lat: -8.0983, lng: 112.1681, type: 'external_sentra', sentra: 'Telur & Unggas', label: 'Blitar' },
   'Klaten (Jateng)': { id: 'EXT_KLATEN', name: 'Klaten (Jateng)', lat: -7.7058, lng: 110.6067, type: 'external_sentra', sentra: 'Beras & Pangan', label: 'Klaten' },
   'Solo/Sukoharjo (Jateng)': { id: 'EXT_SOLO', name: 'Solo/Sukoharjo (Jateng)', lat: -7.5755, lng: 110.8243, type: 'external_sentra', sentra: 'Grosir & Pedagang Besar', label: 'Solo' },
   'Magelang (Jateng)': { id: 'EXT_MAGELANG', name: 'Magelang (Jateng)', lat: -7.4705, lng: 110.2178, type: 'external_sentra', sentra: 'Hortikultura & Cabai', label: 'Magelang' },
-  'Purworejo (Jateng)': { id: 'EXT_PURWOREJO', name: 'Purworejo (Jateng)', lat: -7.7126, lng: 110.0089, type: 'external_sentra', sentra: 'Beras Sentra Kulon', label: 'Purworejo' }
+  'Purworejo (Jateng)': { id: 'EXT_PURWOREJO', name: 'Purworejo (Jateng)', lat: -7.7126, lng: 110.0089, type: 'external_sentra', sentra: 'Beras Sentra Kulon', label: 'Purworejo' },
+  
+  // Sentra Baru: Surabaya, Sidoarjo, Demak, Sragen, Semarang, Banyuwangi, Kediri, Nganjuk
+  'Surabaya (Jatim)': { id: 'EXT_SURABAYA', name: 'Surabaya (Jatim)', lat: -7.2575, lng: 112.7521, type: 'external_sentra', sentra: 'Distributor Impor & Minyak Goreng', label: 'Surabaya' },
+  'Sidoarjo (Jatim)': { id: 'EXT_SIDOARJO', name: 'Sidoarjo (Jatim)', lat: -7.4478, lng: 112.7183, type: 'external_sentra', sentra: 'Industri Pengolahan & Gula', label: 'Sidoarjo' },
+  'Demak (Jateng)': { id: 'EXT_DEMAK', name: 'Demak (Jateng)', lat: -6.8942, lng: 110.6386, type: 'external_sentra', sentra: 'Sentra Padi & Bawang', label: 'Demak' },
+  'Sragen (Jateng)': { id: 'EXT_SRAGEN', name: 'Sragen (Jateng)', lat: -7.4272, lng: 111.0203, type: 'external_sentra', sentra: 'Sentra Beras Utama', label: 'Sragen' },
+  'Semarang (Jateng)': { id: 'EXT_SEMARANG', name: 'Semarang (Jateng)', lat: -6.9667, lng: 110.4167, type: 'external_sentra', sentra: 'Hub Logistik Pelabuhan', label: 'Semarang' },
+  'Banyuwangi (Jatim)': { id: 'EXT_BANYUWANGI', name: 'Banyuwangi (Jatim)', lat: -8.2192, lng: 114.3691, type: 'external_sentra', sentra: 'Sentra Cabai & Sayuran', label: 'Banyuwangi' },
+  'Nganjuk (Jatim)': { id: 'EXT_NGANJUK', name: 'Nganjuk (Jatim)', lat: -7.6042, lng: 111.9025, type: 'external_sentra', sentra: 'Sentra Bawang Merah', label: 'Nganjuk' },
+  'Kediri (Jatim)': { id: 'EXT_KEDIRI', name: 'Kediri (Jatim)', lat: -7.8480, lng: 112.0178, type: 'external_sentra', sentra: 'Pabrik Gula & Unggas', label: 'Kediri' },
+  'Luar DIY Lainnya': { id: 'EXT_LAINNYA', name: 'Luar DIY Lainnya', lat: -6.8000, lng: 110.0000, type: 'external_sentra', sentra: 'Wilayah Sentra Asal/Tujuan Lainnya', label: 'Luar DIY' }
 };
+
+/**
+ * Helper to match any raw region string (e.g., 'Surabaya', 'Sidoarjo', 'Kota Surabaya', etc.)
+ * to an existing node in GEO_NODES with fuzzy matching.
+ */
+export function findGeoNode(rawName) {
+  if (!rawName) return GEO_NODES['Luar DIY Lainnya'];
+  if (GEO_NODES[rawName]) return { ...GEO_NODES[rawName], key: rawName };
+
+  const clean = rawName.toLowerCase()
+    .replace(/^(kab\.|kota)\s*/i, '')
+    .replace(/\s*\([^)]*\)/g, '')
+    .trim();
+
+  for (const [key, node] of Object.entries(GEO_NODES)) {
+    const keyClean = key.toLowerCase()
+      .replace(/^(kab\.|kota)\s*/i, '')
+      .replace(/\s*\([^)]*\)/g, '')
+      .trim();
+    if (keyClean === clean || keyClean.includes(clean) || clean.includes(keyClean)) {
+      return { ...node, key };
+    }
+  }
+
+  return {
+    ...GEO_NODES['Luar DIY Lainnya'],
+    key: rawName,
+    name: rawName,
+    label: rawName
+  };
+}
 
 export const REF_KOMODITAS = [
   { id_komoditas: 'KOM_01', nama_komoditas: 'Beras Medium I', nama_singkat: 'Beras Medium I', kelompok: 'Beras & Padi-padian', satuan_dasar: 'Ton', target_harga: 13500 },

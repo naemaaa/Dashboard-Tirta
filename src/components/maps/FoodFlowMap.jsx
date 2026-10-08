@@ -9,7 +9,7 @@ import {
   calculateGeospatialFlows,
   calculateRespondentLocations
 } from '../../calculations';
-import { GEO_NODES } from '../../data/seedData';
+import { GEO_NODES, findGeoNode } from '../../data/seedData';
 import {
   MapPin,
   ArrowRight,
@@ -203,11 +203,14 @@ export function FoodFlowMap({
 
     const maxVol = routes.length > 0 ? Math.max(...routes.map(r => r.volume)) : 1;
 
+    const isLiter = selectedKomoditas && selectedKomoditas.toLowerCase().includes('liter');
+    const flowUnit = isLiter ? 'Liter' : 'Ton';
+
     if (mapMode === 'flow') {
       // 2A. Render Flow Arcs
       routes.forEach((route, idx) => {
-        const fromNode = GEO_NODES[route.from] || GEO_NODES['Luar DIY Lainnya'];
-        const toNode = GEO_NODES[route.to] || GEO_NODES['Kab. Sleman'];
+        const fromNode = findGeoNode(route.from);
+        const toNode = findGeoNode(route.to);
 
         const points = generateCurvedPoints([fromNode.lat, fromNode.lng], [toNode.lat, toNode.lng], (idx % 2 === 0 ? 0.18 : -0.14));
         const strokeWidth = Math.max(3, Math.min(9, (route.volume / (maxVol || 1)) * 9));
@@ -241,8 +244,8 @@ export function FoodFlowMap({
             </div>
             <div style="border-top: 1px solid #e2e8f0; padding-top: 6px; margin-top: 4px; line-height: 1.5;">
               <div><strong>Komoditas:</strong> ${route.commodity}</div>
-              <div><strong>Volume:</strong> ${route.volume.toLocaleString('id-ID')} Ton</div>
-              <div><strong>Pelaku:</strong> ${route.partnerType}</div>
+              <div><strong>Volume:</strong> ${route.volume.toLocaleString('id-ID')} ${flowUnit}</div>
+              <div><strong>Pelaku / Mitra:</strong> ${route.partnerType}</div>
             </div>
           </div>
         `;
@@ -582,7 +585,7 @@ export function FoodFlowMap({
             <Boxes className="w-4 h-4 text-[#0D3E77]" />
             <h4 className="text-xs font-bold text-[#101828] uppercase tracking-wider">
               {mapMode === 'flow'
-                ? `Rute Aliran Terbesar — Total: ${totalFlowVolume.toLocaleString('id-ID')} Ton (${routes.length} Rute)`
+                ? `Rute Aliran Terbesar — Total: ${totalFlowVolume.toLocaleString('id-ID')} ${(selectedKomoditas && selectedKomoditas.toLowerCase().includes('liter')) ? 'Liter' : 'Ton'} (${routes.length} Rute)`
                 : `Daftar Fasilitas Responden Terdaftar (${respondentLocations.length} Fasilitas)`
               }
             </h4>
@@ -596,6 +599,8 @@ export function FoodFlowMap({
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3">
             {routes.slice(0, 4).map((r, i) => {
               const pct = totalFlowVolume > 0 ? ((r.volume / totalFlowVolume) * 100).toFixed(1) : 0;
+              const isLiterRoute = selectedKomoditas && selectedKomoditas.toLowerCase().includes('liter');
+              const cardUnit = isLiterRoute ? 'Liter' : 'Ton';
               return (
                 <div
                   key={r.id}
@@ -610,7 +615,7 @@ export function FoodFlowMap({
                     <span className={`font-bold px-2 py-0.5 rounded-full text-[10px] ${r.type === 'inflow' ? 'bg-[#ECFDF3] text-[#027A48]' : 'bg-[#DCEAFA] text-[#0D3E77]'}`}>
                       #{i + 1} {r.type === 'inflow' ? 'Masuk' : 'Keluar'}
                     </span>
-                    <span className="font-bold font-mono text-[#101828]">{r.volume.toLocaleString('id-ID')} Ton</span>
+                    <span className="font-bold font-mono text-[#101828]">{r.volume.toLocaleString('id-ID')} {cardUnit}</span>
                   </div>
                   <div className="flex items-center gap-1.5 text-xs font-semibold text-[#101828] truncate">
                     <span className="truncate">{r.from}</span>

@@ -13,7 +13,7 @@
  *   Node tidak dikenal kini di-skip (bukan di-assign ke Sleman).
  */
 
-import { REF_KOMODITAS, REF_WILAYAH, GEO_NODES } from '../data/seedData.js';
+import { REF_KOMODITAS, REF_WILAYAH, GEO_NODES, findGeoNode } from '../data/seedData.js';
 import {
   getRowVolume,
   matchKomoditasUnified,
@@ -212,21 +212,19 @@ export function calculateGeospatialFlows(
 
       const fromName = row.daerah_asal || 'Luar DIY Lainnya';
       const toName = row.kab_kota || 'Kab. Sleman';
-      const vol = Number(row.volume_ton) || 0;
+      const vol = getRowVolume(row);
       if (vol <= 0) return;
 
-      // FIX (BUG-2): Skip jika node tidak ditemukan di GEO_NODES (jangan fallback ke Sleman)
-      const fromNode = GEO_NODES[fromName];
-      const toNode = GEO_NODES[toName];
-      if (!fromNode || !toNode) return; // Skip unknown nodes
+      const fromNode = findGeoNode(fromName);
+      const toNode = findGeoNode(toName);
 
-      const key = `${fromName}|${toName}|inflow`;
+      const key = `${fromNode.name || fromName}|${toNode.name || toName}|inflow`;
       if (!routesMap.has(key)) {
         routesMap.set(key, {
           id: key,
           type: 'inflow',
-          from: fromName,
-          to: toName,
+          from: fromNode.name || fromName,
+          to: toNode.name || toName,
           fromCoords: [fromNode.lng, fromNode.lat],
           toCoords: [toNode.lng, toNode.lat],
           fromLabel: fromNode.label || fromName,
@@ -234,7 +232,7 @@ export function calculateGeospatialFlows(
           volume: 0,
           commodity: row.komoditas,
           isExternal: Boolean(row.luar_diy),
-          partnerType: row.jenis_pemasok || 'Pemasok Pangan'
+          partnerType: row.jenis_pemasok || row.nama_responden || row.tipe_responden || 'Pemasok Pangan'
         });
       }
       routesMap.get(key).volume += vol;
@@ -249,21 +247,19 @@ export function calculateGeospatialFlows(
 
       const fromName = row.kab_kota || 'Kab. Sleman';
       const toName = row.daerah_tujuan || 'Lainnya (DIY)';
-      const vol = Number(row.volume_ton) || 0;
+      const vol = getRowVolume(row);
       if (vol <= 0) return;
 
-      // FIX (BUG-2): Skip jika node tidak ditemukan di GEO_NODES (jangan fallback ke node acak)
-      const fromNode = GEO_NODES[fromName];
-      const toNode = GEO_NODES[toName];
-      if (!fromNode || !toNode) return; // Skip unknown nodes
+      const fromNode = findGeoNode(fromName);
+      const toNode = findGeoNode(toName);
 
-      const key = `${fromName}|${toName}|outflow`;
+      const key = `${fromNode.name || fromName}|${toNode.name || toName}|outflow`;
       if (!routesMap.has(key)) {
         routesMap.set(key, {
           id: key,
           type: 'outflow',
-          from: fromName,
-          to: toName,
+          from: fromNode.name || fromName,
+          to: toNode.name || toName,
           fromCoords: [fromNode.lng, fromNode.lat],
           toCoords: [toNode.lng, toNode.lat],
           fromLabel: fromNode.label || fromName,
@@ -271,7 +267,7 @@ export function calculateGeospatialFlows(
           volume: 0,
           commodity: row.komoditas,
           isExternal: Boolean(row.luar_diy || row.keluar_diy),
-          partnerType: row.jenis_pembeli || 'Distribusi Pangan'
+          partnerType: row.jenis_pembeli || row.nama_responden || row.tipe_responden || 'Distribusi Pangan'
         });
       }
       routesMap.get(key).volume += vol;
