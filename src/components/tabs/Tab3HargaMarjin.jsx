@@ -23,7 +23,50 @@ import {
 } from 'recharts';
 import { TrendingUp, TrendingDown, DollarSign, Percent, ShieldCheck } from 'lucide-react';
 
+class Tab3ErrorBoundary extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = { hasError: false, error: null };
+  }
+
+  static getDerivedStateFromError(error) {
+    return { hasError: true, error };
+  }
+
+  componentDidCatch(error, errorInfo) {
+    console.error("Tab3 Component Error:", error, errorInfo);
+  }
+
+  render() {
+    if (this.state.hasError) {
+      return (
+        <div className="p-6 bg-rose-50 border border-rose-200 rounded-2xl text-rose-800 space-y-3">
+          <h3 className="text-base font-bold">Terjadi Kesalahan pada Render Tab 3 (Harga & Marjin)</h3>
+          <p className="text-xs font-mono bg-white p-3 rounded-lg border border-rose-200 overflow-x-auto">
+            {this.state.error?.toString()}
+          </p>
+          <button
+            onClick={() => this.setState({ hasError: false, error: null })}
+            className="px-4 py-2 bg-rose-600 text-white font-semibold text-xs rounded-xl hover:bg-rose-700 transition-colors"
+          >
+            Coba Muat Ulang Tab
+          </button>
+        </div>
+      );
+    }
+    return this.props.children;
+  }
+}
+
 export function Tab3HargaMarjin() {
+  return (
+    <Tab3ErrorBoundary>
+      <Tab3HargaMarjinContent />
+    </Tab3ErrorBoundary>
+  );
+}
+
+function Tab3HargaMarjinContent() {
   const calculations = useCalculations();
   const {
     selectedKomoditas = 'Beras Medium I',
@@ -43,6 +86,7 @@ export function Tab3HargaMarjin() {
     tab3RegionPrices = [],
     maxRegionPrice = 0,
     minRegionPrice = 0,
+    dominantUnit = 'Ton'
   } = calculations || {};
 
   const isLiter = dominantUnit === 'Liter' || (selectedKomoditas && (selectedKomoditas.includes('Liter') || selectedKomoditas.includes('liter')));
