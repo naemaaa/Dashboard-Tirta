@@ -281,32 +281,63 @@ export function calculateGeospatialFlows(
 
   const totalFlowVolume = routes.reduce((s, r) => s + r.volume, 0);
 
-  // Aggregate Node Volumes
-  const nodeStats = {};
-  Object.keys(GEO_NODES).forEach(nodeName => {
-    nodeStats[nodeName] = {
-      ...GEO_NODES[nodeName],
+  // Aggregate Node Volumes dynamically for all origin & destination endpoints
+  const nodeStatsMap = new Map();
+
+  // Pre-seed with base GEO_NODES
+  Object.entries(GEO_NODES).forEach(([key, node]) => {
+    const nodeName = node.name || key;
+    nodeStatsMap.set(nodeName, {
+      ...node,
+      name: nodeName,
       totalIn: 0,
       totalOut: 0,
       activeRoutes: 0
-    };
+    });
   });
 
   routes.forEach(r => {
-    if (nodeStats[r.from]) {
-      nodeStats[r.from].totalOut += r.volume;
-      nodeStats[r.from].activeRoutes += 1;
+    const fromNode = findGeoNode(r.from);
+    const toNode = findGeoNode(r.to);
+
+    const fromKey = fromNode.name || r.from;
+    const toKey = toNode.name || r.to;
+
+    if (!nodeStatsMap.has(fromKey)) {
+      nodeStatsMap.set(fromKey, {
+        ...fromNode,
+        name: fromKey,
+        totalIn: 0,
+        totalOut: 0,
+        activeRoutes: 0
+      });
     }
-    if (nodeStats[r.to]) {
-      nodeStats[r.to].totalIn += r.volume;
-      nodeStats[r.to].activeRoutes += 1;
+    const fromStat = nodeStatsMap.get(fromKey);
+    fromStat.totalOut += r.volume;
+    fromStat.activeRoutes += 1;
+
+    if (!nodeStatsMap.has(toKey)) {
+      nodeStatsMap.set(toKey, {
+        ...toNode,
+        name: toKey,
+        totalIn: 0,
+        totalOut: 0,
+        activeRoutes: 0
+      });
     }
+    const toStat = nodeStatsMap.get(toKey);
+    toStat.totalIn += r.volume;
+    toStat.activeRoutes += 1;
   });
+
+  const nodeStats = Array.from(nodeStatsMap.values()).filter(
+    n => n.totalIn > 0 || n.totalOut > 0 || (n.type && n.type.startsWith('diy'))
+  );
 
   return {
     routes,
     totalFlowVolume: Number(totalFlowVolume.toFixed(2)),
-    nodeStats: Object.values(nodeStats).filter(n => n.totalIn > 0 || n.totalOut > 0 || n.type.startsWith('diy'))
+    nodeStats
   };
 }
 

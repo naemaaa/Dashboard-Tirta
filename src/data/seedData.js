@@ -11,63 +11,112 @@ export const REF_WILAYAH = [
 
 // Complete Geospatial Reference Coordinates (DIY + Sentra Luar DIY)
 export const GEO_NODES = {
-  // Wilayah Internal DIY
+  // Wilayah Internal DIY (dengan alias nama lengkap & singkat)
   'Kota Yogyakarta': { id: '3471', name: 'Kota Yogyakarta', lat: -7.797068, lng: 110.370529, type: 'diy_hub', label: 'Kota Yogyakarta' },
+  'Yogyakarta': { id: '3471', name: 'Kota Yogyakarta', lat: -7.797068, lng: 110.370529, type: 'diy_hub', label: 'Kota Yogyakarta' },
   'Kab. Sleman': { id: '3404', name: 'Kab. Sleman', lat: -7.716389, lng: 110.355556, type: 'diy_regency', label: 'Sleman' },
+  'Sleman': { id: '3404', name: 'Kab. Sleman', lat: -7.716389, lng: 110.355556, type: 'diy_regency', label: 'Sleman' },
   'Kab. Bantul': { id: '3402', name: 'Kab. Bantul', lat: -7.893889, lng: 110.334167, type: 'diy_regency', label: 'Bantul' },
+  'Bantul': { id: '3402', name: 'Kab. Bantul', lat: -7.893889, lng: 110.334167, type: 'diy_regency', label: 'Bantul' },
   'Kab. Kulon Progo': { id: '3401', name: 'Kab. Kulon Progo', lat: -7.828889, lng: 110.158056, type: 'diy_regency', label: 'Kulon Progo' },
+  'Kulon Progo': { id: '3401', name: 'Kab. Kulon Progo', lat: -7.828889, lng: 110.158056, type: 'diy_regency', label: 'Kulon Progo' },
   'Kab. Gunungkidul': { id: '3403', name: 'Kab. Gunungkidul', lat: -7.962222, lng: 110.603333, type: 'diy_regency', label: 'Gunungkidul' },
+  'Gunungkidul': { id: '3403', name: 'Kab. Gunungkidul', lat: -7.962222, lng: 110.603333, type: 'diy_regency', label: 'Gunungkidul' },
 
-  // Sentra Produksi & Pemasok Luar DIY (Jawa Tengah & Jawa Timur)
+  // Sentra Produksi & Pemasok Luar DIY
+  'Brebes': { id: 'EXT_BREBES', name: 'Kab. Brebes (Jateng)', lat: -6.9700, lng: 109.0400, type: 'external_sentra', sentra: 'Bawang Merah', label: 'Brebes' },
   'Kab. Brebes (Jateng)': { id: 'EXT_BREBES', name: 'Kab. Brebes (Jateng)', lat: -6.9700, lng: 109.0400, type: 'external_sentra', sentra: 'Bawang Merah', label: 'Brebes' },
+  'Blitar': { id: 'EXT_BLITAR', name: 'Kab. Blitar (Jatim)', lat: -8.0983, lng: 112.1681, type: 'external_sentra', sentra: 'Telur & Unggas', label: 'Blitar' },
   'Kab. Blitar (Jatim)': { id: 'EXT_BLITAR', name: 'Kab. Blitar (Jatim)', lat: -8.0983, lng: 112.1681, type: 'external_sentra', sentra: 'Telur & Unggas', label: 'Blitar' },
+  'Klaten': { id: 'EXT_KLATEN', name: 'Klaten (Jateng)', lat: -7.7058, lng: 110.6067, type: 'external_sentra', sentra: 'Beras & Pangan', label: 'Klaten' },
   'Klaten (Jateng)': { id: 'EXT_KLATEN', name: 'Klaten (Jateng)', lat: -7.7058, lng: 110.6067, type: 'external_sentra', sentra: 'Beras & Pangan', label: 'Klaten' },
+  'Solo': { id: 'EXT_SOLO', name: 'Solo/Sukoharjo (Jateng)', lat: -7.5755, lng: 110.8243, type: 'external_sentra', sentra: 'Grosir & Pedagang Besar', label: 'Solo' },
   'Solo/Sukoharjo (Jateng)': { id: 'EXT_SOLO', name: 'Solo/Sukoharjo (Jateng)', lat: -7.5755, lng: 110.8243, type: 'external_sentra', sentra: 'Grosir & Pedagang Besar', label: 'Solo' },
+  'Magelang': { id: 'EXT_MAGELANG', name: 'Magelang (Jateng)', lat: -7.4705, lng: 110.2178, type: 'external_sentra', sentra: 'Hortikultura & Cabai', label: 'Magelang' },
   'Magelang (Jateng)': { id: 'EXT_MAGELANG', name: 'Magelang (Jateng)', lat: -7.4705, lng: 110.2178, type: 'external_sentra', sentra: 'Hortikultura & Cabai', label: 'Magelang' },
+  'Purworejo': { id: 'EXT_PURWOREJO', name: 'Purworejo (Jateng)', lat: -7.7126, lng: 110.0089, type: 'external_sentra', sentra: 'Beras Sentra Kulon', label: 'Purworejo' },
   'Purworejo (Jateng)': { id: 'EXT_PURWOREJO', name: 'Purworejo (Jateng)', lat: -7.7126, lng: 110.0089, type: 'external_sentra', sentra: 'Beras Sentra Kulon', label: 'Purworejo' },
   
-  // Sentra Baru: Surabaya, Sidoarjo, Demak, Sragen, Semarang, Banyuwangi, Kediri, Nganjuk
+  // Sentra Baru dari Master Excel / Database
+  'Surabaya': { id: 'EXT_SURABAYA', name: 'Surabaya (Jatim)', lat: -7.2575, lng: 112.7521, type: 'external_sentra', sentra: 'Distributor Impor & Minyak Goreng', label: 'Surabaya' },
   'Surabaya (Jatim)': { id: 'EXT_SURABAYA', name: 'Surabaya (Jatim)', lat: -7.2575, lng: 112.7521, type: 'external_sentra', sentra: 'Distributor Impor & Minyak Goreng', label: 'Surabaya' },
+  'Sidoarjo': { id: 'EXT_SIDOARJO', name: 'Sidoarjo (Jatim)', lat: -7.4478, lng: 112.7183, type: 'external_sentra', sentra: 'Industri Pengolahan & Gula', label: 'Sidoarjo' },
   'Sidoarjo (Jatim)': { id: 'EXT_SIDOARJO', name: 'Sidoarjo (Jatim)', lat: -7.4478, lng: 112.7183, type: 'external_sentra', sentra: 'Industri Pengolahan & Gula', label: 'Sidoarjo' },
+  'Bima, NTB': { id: 'EXT_BIMA', name: 'Bima, NTB', lat: -8.4538, lng: 118.7241, type: 'external_sentra', sentra: 'Sentra Bawang Merah NTB', label: 'Bima, NTB' },
+  'Bima': { id: 'EXT_BIMA', name: 'Bima, NTB', lat: -8.4538, lng: 118.7241, type: 'external_sentra', sentra: 'Sentra Bawang Merah NTB', label: 'Bima, NTB' },
+  'Boyolali': { id: 'EXT_BOYOLALI', name: 'Boyolali (Jateng)', lat: -7.5317, lng: 110.5961, type: 'external_sentra', sentra: 'Susu & Peternakan Sapi', label: 'Boyolali' },
+  'Boyolali (Jateng)': { id: 'EXT_BOYOLALI', name: 'Boyolali (Jateng)', lat: -7.5317, lng: 110.5961, type: 'external_sentra', sentra: 'Susu & Peternakan Sapi', label: 'Boyolali' },
+  'China': { id: 'EXT_CHINA', name: 'China (Impor)', lat: 31.2304, lng: 121.4737, type: 'external_sentra', sentra: 'Negara Asal Impor Bawang Putih', label: 'China' },
+  'Garut, Jawa Barat': { id: 'EXT_GARUT', name: 'Garut, Jawa Barat', lat: -7.2278, lng: 107.9086, type: 'external_sentra', sentra: 'Hortikultura & Cabai Jabar', label: 'Garut, Jabar' },
+  'Garut': { id: 'EXT_GARUT', name: 'Garut, Jawa Barat', lat: -7.2278, lng: 107.9086, type: 'external_sentra', sentra: 'Hortikultura & Cabai Jabar', label: 'Garut, Jabar' },
+  'Demak': { id: 'EXT_DEMAK', name: 'Demak (Jateng)', lat: -6.8942, lng: 110.6386, type: 'external_sentra', sentra: 'Sentra Padi & Bawang', label: 'Demak' },
   'Demak (Jateng)': { id: 'EXT_DEMAK', name: 'Demak (Jateng)', lat: -6.8942, lng: 110.6386, type: 'external_sentra', sentra: 'Sentra Padi & Bawang', label: 'Demak' },
+  'Sragen': { id: 'EXT_SRAGEN', name: 'Sragen (Jateng)', lat: -7.4272, lng: 111.0203, type: 'external_sentra', sentra: 'Sentra Beras Utama', label: 'Sragen' },
   'Sragen (Jateng)': { id: 'EXT_SRAGEN', name: 'Sragen (Jateng)', lat: -7.4272, lng: 111.0203, type: 'external_sentra', sentra: 'Sentra Beras Utama', label: 'Sragen' },
+  'Semarang': { id: 'EXT_SEMARANG', name: 'Semarang (Jateng)', lat: -6.9667, lng: 110.4167, type: 'external_sentra', sentra: 'Hub Logistik Pelabuhan', label: 'Semarang' },
   'Semarang (Jateng)': { id: 'EXT_SEMARANG', name: 'Semarang (Jateng)', lat: -6.9667, lng: 110.4167, type: 'external_sentra', sentra: 'Hub Logistik Pelabuhan', label: 'Semarang' },
+  'Banyuwangi': { id: 'EXT_BANYUWANGI', name: 'Banyuwangi (Jatim)', lat: -8.2192, lng: 114.3691, type: 'external_sentra', sentra: 'Sentra Cabai & Sayuran', label: 'Banyuwangi' },
   'Banyuwangi (Jatim)': { id: 'EXT_BANYUWANGI', name: 'Banyuwangi (Jatim)', lat: -8.2192, lng: 114.3691, type: 'external_sentra', sentra: 'Sentra Cabai & Sayuran', label: 'Banyuwangi' },
+  'Nganjuk': { id: 'EXT_NGANJUK', name: 'Nganjuk (Jatim)', lat: -7.6042, lng: 111.9025, type: 'external_sentra', sentra: 'Sentra Bawang Merah', label: 'Nganjuk' },
   'Nganjuk (Jatim)': { id: 'EXT_NGANJUK', name: 'Nganjuk (Jatim)', lat: -7.6042, lng: 111.9025, type: 'external_sentra', sentra: 'Sentra Bawang Merah', label: 'Nganjuk' },
+  'Kediri': { id: 'EXT_KEDIRI', name: 'Kediri (Jatim)', lat: -7.8480, lng: 112.0178, type: 'external_sentra', sentra: 'Pabrik Gula & Unggas', label: 'Kediri' },
   'Kediri (Jatim)': { id: 'EXT_KEDIRI', name: 'Kediri (Jatim)', lat: -7.8480, lng: 112.0178, type: 'external_sentra', sentra: 'Pabrik Gula & Unggas', label: 'Kediri' },
+  'Jakarta': { id: 'EXT_JAKARTA', name: 'DKI Jakarta', lat: -6.2088, lng: 106.8456, type: 'external_sentra', sentra: 'Pasar Induk Cipinang & Impor', label: 'Jakarta' },
   'DKI Jakarta': { id: 'EXT_JAKARTA', name: 'DKI Jakarta', lat: -6.2088, lng: 106.8456, type: 'external_sentra', sentra: 'Pasar Induk Cipinang & Impor', label: 'Jakarta' },
   'Luar DIY Lainnya': { id: 'EXT_LAINNYA', name: 'Luar DIY Lainnya', lat: -6.8000, lng: 110.0000, type: 'external_sentra', sentra: 'Wilayah Sentra Asal/Tujuan Lainnya', label: 'Luar DIY' }
 };
 
 /**
- * Helper to match any raw region string (e.g., 'Surabaya', 'Sidoarjo', 'Kota Surabaya', etc.)
- * to an existing node in GEO_NODES with fuzzy matching.
+ * Helper to match any raw region string (e.g., 'Bima, NTB', 'Boyolali', 'China', 'Garut, Jawa Barat', 'Sidoarjo', 'Surabaya', etc.)
+ * to an existing node in GEO_NODES with intelligent fuzzy matching and dynamic fallback positioning.
  */
 export function findGeoNode(rawName) {
   if (!rawName) return GEO_NODES['Luar DIY Lainnya'];
-  if (GEO_NODES[rawName]) return { ...GEO_NODES[rawName], key: rawName };
 
-  const clean = rawName.toLowerCase()
-    .replace(/^(kab\.|kota)\s*/i, '')
-    .replace(/\s*\([^)]*\)/g, '')
-    .trim();
+  const trimmed = String(rawName).trim();
+  if (GEO_NODES[trimmed]) return { ...GEO_NODES[trimmed], key: trimmed };
 
-  for (const [key, node] of Object.entries(GEO_NODES)) {
-    const keyClean = key.toLowerCase()
-      .replace(/^(kab\.|kota)\s*/i, '')
+  const getCore = (str) => {
+    return String(str).toLowerCase()
+      .replace(/^(kab\.|kota|prov\.|provinsi)\s*/i, '')
       .replace(/\s*\([^)]*\)/g, '')
+      .replace(/,.*$/g, '')
       .trim();
-    if (keyClean === clean || keyClean.includes(clean) || clean.includes(keyClean)) {
+  };
+
+  const cleanRaw = getCore(trimmed);
+
+  // Match core string against GEO_NODES keys and labels
+  for (const [key, node] of Object.entries(GEO_NODES)) {
+    const keyCore = getCore(key);
+    const labelCore = getCore(node.label || node.name || '');
+    if (keyCore === cleanRaw || labelCore === cleanRaw || (cleanRaw.length >= 4 && (keyCore.includes(cleanRaw) || cleanRaw.includes(keyCore)))) {
       return { ...node, key };
     }
   }
 
-  return {
-    ...GEO_NODES['Luar DIY Lainnya'],
-    key: rawName,
-    name: rawName,
-    label: rawName
+  // Dynamic Fallback Generator for any unmapped region from Excel upload/database
+  // Uses string hashing to create a deterministic lat/lng node near Java region (-7.0, 110.5)
+  let hash = 0;
+  for (let i = 0; i < trimmed.length; i++) {
+    hash = trimmed.charCodeAt(i) + ((hash << 5) - hash);
+  }
+  const latOffset = ((Math.abs(hash) % 250) / 100) - 1.25; // -1.25 to +1.25
+  const lngOffset = ((Math.abs(hash >> 3) % 500) / 100) - 2.50; // -2.50 to +2.50
+
+  const dynamicNode = {
+    id: `EXT_DYN_${Math.abs(hash)}`,
+    name: trimmed,
+    lat: Number((-7.10 + latOffset).toFixed(4)),
+    lng: Number((110.50 + lngOffset).toFixed(4)),
+    type: 'external_sentra',
+    sentra: trimmed,
+    label: trimmed,
+    key: trimmed
   };
+
+  GEO_NODES[trimmed] = dynamicNode;
+  return dynamicNode;
 }
 
 export const REF_KOMODITAS = [
@@ -323,51 +372,52 @@ export function generateMasterDataset() {
         let extOrigins = [];
         if (['KOM_01', 'KOM_02', 'KOM_03', 'KOM_04', 'KOM_05', 'KOM_06'].includes(kom.id_komoditas)) {
           extOrigins = [
-            { nama: 'Klaten (Jateng)', share: 0.45, jenis: 'PB Beras Delanggu Klaten' },
+            { nama: 'Klaten (Jateng)', share: 0.40, jenis: 'PB Beras Delanggu Klaten' },
             { nama: 'Sragen (Jateng)', share: 0.35, jenis: 'Sentra Penggilingan Sragen' },
-            { nama: 'Purworejo (Jateng)', share: 0.20, jenis: 'Pemasok Beras Purworejo' }
+            { nama: 'Purworejo (Jateng)', share: 0.25, jenis: 'Pemasok Beras Purworejo' }
           ];
-        } else if (kom.id_komoditas === 'KOM_07') {
+        } else if (kom.id_komoditas === 'KOM_07') { // Bawang Merah
           extOrigins = [
-            { nama: 'Kab. Brebes (Jateng)', share: 0.50, jenis: 'Sentra Bawang Brebes' },
-            { nama: 'Nganjuk (Jatim)', share: 0.30, jenis: 'Pemasok Bawang Nganjuk' },
-            { nama: 'Demak (Jateng)', share: 0.20, jenis: 'Sentra Bawang Demak' }
+            { nama: 'Kab. Brebes (Jateng)', share: 0.40, jenis: 'Sentra Bawang Brebes' },
+            { nama: 'Bima, NTB', share: 0.25, jenis: 'Pemasok Bawang Bima NTB' },
+            { nama: 'Nganjuk (Jatim)', share: 0.20, jenis: 'Pemasok Bawang Nganjuk' },
+            { nama: 'Garut, Jawa Barat', share: 0.15, jenis: 'Sentra Bawang Garut Jabar' }
           ];
-        } else if (kom.id_komoditas === 'KOM_08') {
+        } else if (kom.id_komoditas === 'KOM_08') { // Bawang Putih
           extOrigins = [
-            { nama: 'Surabaya (Jatim)', share: 0.55, jenis: 'Importir Pelabuhan Tanjung Perak' },
-            { nama: 'DKI Jakarta', share: 0.30, jenis: 'Pasar Induk Kramat Jati Jakarta' },
-            { nama: 'Semarang (Jateng)', share: 0.15, jenis: 'Grosir Bawang Semarang' }
+            { nama: 'China', share: 0.45, jenis: 'Importir Bawang Putih China' },
+            { nama: 'Surabaya', share: 0.35, jenis: 'Distributor Pelabuhan Surabaya' },
+            { nama: 'DKI Jakarta', share: 0.20, jenis: 'Pasar Induk Kramat Jati Jakarta' }
           ];
-        } else if (['KOM_09', 'KOM_10'].includes(kom.id_komoditas)) {
+        } else if (['KOM_09', 'KOM_10'].includes(kom.id_komoditas)) { // Cabai
           extOrigins = [
-            { nama: 'Magelang (Jateng)', share: 0.50, jenis: 'Petani Cabai Magelang' },
-            { nama: 'Banyuwangi (Jatim)', share: 0.35, jenis: 'Sentra Cabai Banyuwangi' },
-            { nama: 'Kediri (Jatim)', share: 0.15, jenis: 'Gapoktan Cabai Kediri' }
+            { nama: 'Magelang (Jateng)', share: 0.40, jenis: 'Petani Cabai Magelang' },
+            { nama: 'Garut, Jawa Barat', share: 0.30, jenis: 'Sentra Cabai Garut' },
+            { nama: 'Banyuwangi (Jatim)', share: 0.30, jenis: 'Sentra Cabai Banyuwangi' }
           ];
-        } else if (['KOM_11', 'KOM_12', 'KOM_13'].includes(kom.id_komoditas)) {
+        } else if (['KOM_11', 'KOM_12', 'KOM_13'].includes(kom.id_komoditas)) { // Daging & Telur
           extOrigins = [
-            { nama: 'Kab. Blitar (Jatim)', share: 0.60, jenis: 'Koperasi Peternak Blitar' },
-            { nama: 'Kediri (Jatim)', share: 0.25, jenis: 'Peternak Layer Kediri' },
-            { nama: 'Solo/Sukoharjo (Jateng)', share: 0.15, jenis: 'Grosir Unggas Solo' }
+            { nama: 'Kab. Blitar (Jatim)', share: 0.50, jenis: 'Koperasi Peternak Blitar' },
+            { nama: 'Boyolali', share: 0.30, jenis: 'Peternak Sapi & Unggas Boyolali' },
+            { nama: 'Kediri (Jatim)', share: 0.20, jenis: 'Peternak Layer Kediri' }
           ];
-        } else if (['KOM_14', 'KOM_15'].includes(kom.id_komoditas)) {
+        } else if (['KOM_14', 'KOM_15'].includes(kom.id_komoditas)) { // Minyak Goreng
           extOrigins = [
-            { nama: 'Surabaya (Jatim)', share: 0.60, jenis: 'PT Wilmar Nabati / Distributor Surabaya' },
-            { nama: 'Sidoarjo (Jatim)', share: 0.25, jenis: 'Distributor Minyak Sidoarjo' },
+            { nama: 'Surabaya', share: 0.55, jenis: 'PT Wilmar Nabati / Distributor Surabaya' },
+            { nama: 'Sidoarjo', share: 0.30, jenis: 'Distributor Minyak Sidoarjo' },
             { nama: 'DKI Jakarta', share: 0.15, jenis: 'Distributor Nasional Jakarta' }
           ];
-        } else if (kom.id_komoditas === 'KOM_16') {
+        } else if (kom.id_komoditas === 'KOM_16') { // Gula Pasir
           extOrigins = [
-            { nama: 'Sidoarjo (Jatim)', share: 0.50, jenis: 'Pabrik Gula Candi Sidoarjo' },
+            { nama: 'Sidoarjo', share: 0.50, jenis: 'Pabrik Gula Candi Sidoarjo' },
             { nama: 'Kediri (Jatim)', share: 0.30, jenis: 'Distributor Gula Kediri' },
             { nama: 'DKI Jakarta', share: 0.20, jenis: 'Importir Gula Jakarta' }
           ];
         } else {
           extOrigins = [
-            { nama: 'Surabaya (Jatim)', share: 0.50, jenis: 'Distributor Surabaya' },
-            { nama: 'DKI Jakarta', share: 0.30, jenis: 'Pemasok Jakarta' },
-            { nama: 'Solo/Sukoharjo (Jateng)', share: 0.20, jenis: 'Grosir Solo' }
+            { nama: 'Surabaya', share: 0.40, jenis: 'Distributor Surabaya' },
+            { nama: 'Sidoarjo', share: 0.30, jenis: 'Pemasok Sidoarjo' },
+            { nama: 'DKI Jakarta', share: 0.30, jenis: 'Pemasok Jakarta' }
           ];
         }
 

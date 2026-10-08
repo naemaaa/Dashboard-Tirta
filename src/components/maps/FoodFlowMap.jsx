@@ -257,7 +257,7 @@ export function FoodFlowMap({
 
       // 2B. Render Regional Hub Nodes
       nodeStats.forEach((node) => {
-        const isDIY = node.type.startsWith('diy');
+        const isDIY = Boolean(node.type && node.type.startsWith('diy'));
         const isSelected = selectedNodeName === node.name;
         const totalVol = (node.totalIn || 0) + (node.totalOut || 0);
 
