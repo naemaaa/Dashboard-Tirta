@@ -118,51 +118,78 @@ export function FoodFlowMap({
   useEffect(() => {
     if (!mapContainerRef.current) return;
 
+    // Fix: Remove Leaflet internal ID if DOM element was re-mounted
+    if (mapContainerRef.current._leaflet_id) {
+      mapContainerRef.current._leaflet_id = null;
+    }
+
     if (!mapInstanceRef.current) {
-      // Center of D.I. Yogyakarta
-      const map = L.map(mapContainerRef.current, {
-        center: [-7.80, 110.37],
-        zoom: 10,
-        zoomControl: false,
-        attributionControl: false
-      });
+      try {
+        const map = L.map(mapContainerRef.current, {
+          center: [-7.80, 110.37],
+          zoom: 10,
+          zoomControl: false,
+          attributionControl: false
+        });
 
-      L.control.zoom({ position: 'topright' }).addTo(map);
+        L.control.zoom({ position: 'topright' }).addTo(map);
 
-      // Create Layer Groups
-      flowLayerGroupRef.current = L.layerGroup().addTo(map);
-      respondentLayerGroupRef.current = L.layerGroup().addTo(map);
+        // Create Layer Groups
+        flowLayerGroupRef.current = L.layerGroup().addTo(map);
+        respondentLayerGroupRef.current = L.layerGroup().addTo(map);
 
-      mapInstanceRef.current = map;
+        mapInstanceRef.current = map;
+      } catch (err) {
+        console.warn('[FoodFlowMap] Leaflet init error:', err);
+      }
     }
 
     const map = mapInstanceRef.current;
+    if (!map) return;
 
-    // Remove existing tile layers
-    map.eachLayer((layer) => {
-      if (layer instanceof L.TileLayer) {
-        map.removeLayer(layer);
+    try {
+      // Remove existing tile layers
+      map.eachLayer((layer) => {
+        if (layer instanceof L.TileLayer) {
+          map.removeLayer(layer);
+        }
+      });
+
+      const activeTile = TILE_LAYERS[tileStyle] || TILE_LAYERS.esri_street;
+      const tileOptions = {
+        maxZoom: 19,
+        attribution: activeTile.attribution
+      };
+      if (activeTile.subdomains) {
+        tileOptions.subdomains = activeTile.subdomains;
       }
-    });
 
-    const activeTile = TILE_LAYERS[tileStyle] || TILE_LAYERS.esri_street;
-    const tileOptions = {
-      maxZoom: 19,
-      attribution: activeTile.attribution
-    };
-    if (activeTile.subdomains) {
-      tileOptions.subdomains = activeTile.subdomains;
+      L.tileLayer(activeTile.url, tileOptions).addTo(map);
+
+      // Invalidate size to guarantee crisp map tile loading
+      setTimeout(() => {
+        if (mapInstanceRef.current) {
+          try {
+            mapInstanceRef.current.invalidateSize();
+          } catch (e) {
+            // ignore
+          }
+        }
+      }, 200);
+    } catch (err) {
+      console.warn('[FoodFlowMap] Tile layer error:', err);
     }
 
-    L.tileLayer(activeTile.url, tileOptions).addTo(map);
-
-    // Invalidate size to guarantee crisp map tile loading
-    setTimeout(() => {
+    return () => {
       if (mapInstanceRef.current) {
-        mapInstanceRef.current.invalidateSize();
+        try {
+          mapInstanceRef.current.remove();
+        } catch (e) {
+          // ignore
+        }
+        mapInstanceRef.current = null;
       }
-    }, 200);
-
+    };
   }, [tileStyle]);
 
   // Helper to generate curved bezier points for Leaflet polyline

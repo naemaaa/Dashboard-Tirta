@@ -12,6 +12,49 @@ import { Tab8Metadata } from './components/tabs/Tab8Metadata';
 import { DataModal } from './components/common/DataModal';
 import { AlertCircle, Landmark } from 'lucide-react';
 
+class ErrorBoundary extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = { hasError: false, error: null };
+  }
+
+  static getDerivedStateFromError(error) {
+    return { hasError: true, error };
+  }
+
+  componentDidCatch(error, errorInfo) {
+    console.error('[Dashboard Error Boundary]', error, errorInfo);
+  }
+
+  render() {
+    if (this.state.hasError) {
+      return (
+        <div className="p-8 bg-white border border-[#FECDCA] rounded-2xl shadow-sm my-6 text-center space-y-4 max-w-2xl mx-auto">
+          <div className="w-12 h-12 rounded-full bg-[#FEF3F2] text-[#F04438] flex items-center justify-center mx-auto">
+            <AlertCircle className="w-6 h-6" />
+          </div>
+          <div>
+            <h3 className="text-base font-bold text-[#101828]">Terjadi Kesalahan Render pada Komponen</h3>
+            <p className="text-xs text-[#667085] mt-1 font-mono bg-[#F9FAFB] p-3 rounded-lg border border-[#E4E7EC] text-left overflow-auto max-h-32">
+              {this.state.error?.toString()}
+            </p>
+          </div>
+          <button
+            onClick={() => {
+              this.setState({ hasError: false, error: null });
+              window.location.reload();
+            }}
+            className="px-4 py-2 bg-[#0D3E77] text-white text-xs font-semibold rounded-xl hover:bg-[#071D3D] transition-colors cursor-pointer"
+          >
+            Muat Ulang Komponen
+          </button>
+        </div>
+      );
+    }
+    return this.props.children;
+  }
+}
+
 export function App() {
   const { activeTab, loadInitialData, error } = useDashboardStore();
 
@@ -38,14 +81,16 @@ export function App() {
           </div>
         )}
 
-        {/* Page Views with Internal Slicers */}
-        {activeTab === 'tab1' && <Tab1RingkasanUtama />}
-        {activeTab === 'tab2' && <Tab2DetailArus />}
-        {activeTab === 'tab3' && <Tab3HargaMarjin />}
-        {activeTab === 'tab4' && <Tab4TrenAntarwaktu />}
-        {activeTab === 'tab5' && <Tab5PetaArus />}
-        {activeTab === 'tab7' && <Tab7EarlyWarningSystem />}
-        {activeTab === 'tab8' && <Tab8Metadata />}
+        {/* Page Views with Internal Slicers & Error Boundary Protection */}
+        <ErrorBoundary key={activeTab}>
+          {activeTab === 'tab1' && <Tab1RingkasanUtama />}
+          {activeTab === 'tab2' && <Tab2DetailArus />}
+          {activeTab === 'tab3' && <Tab3HargaMarjin />}
+          {activeTab === 'tab4' && <Tab4TrenAntarwaktu />}
+          {activeTab === 'tab5' && <Tab5PetaArus />}
+          {activeTab === 'tab7' && <Tab7EarlyWarningSystem />}
+          {activeTab === 'tab8' && <Tab8Metadata />}
+        </ErrorBoundary>
 
       </main>
 
