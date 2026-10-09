@@ -8,7 +8,7 @@
 
 import { useMemo } from 'react';
 import { useDashboardStore } from '../store/useDashboardStore';
-import { REF_KALENDER } from '../data/seedData.js';
+import { REF_KALENDER, REF_KOMODITAS } from '../data/seedData.js';
 import {
   calculateVolumeMasuk,
   calculateVolumeKeluar,
