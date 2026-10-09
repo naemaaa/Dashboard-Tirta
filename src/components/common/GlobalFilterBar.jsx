@@ -42,11 +42,13 @@ export function GlobalFilterBar({ showBadge = true, title = null, subtitle = nul
   }, []);
 
   // Normalisasi selectedPeriode ke array untuk multi-select display
+  const isSemuaPeriode = !selectedPeriode || selectedPeriode === 'Semua' || (Array.isArray(selectedPeriode) && selectedPeriode.length === 0);
+
   const periodeArray = Array.isArray(selectedPeriode)
-    ? selectedPeriode
+    ? selectedPeriode.filter(p => p !== 'Semua')
     : selectedPeriode && selectedPeriode !== 'Semua' ? [selectedPeriode] : [];
 
-  const periodeLabel = periodeArray.length === 0
+  const periodeLabel = isSemuaPeriode
     ? 'Semua Periode'
     : periodeArray.length === 1
       ? (REF_KALENDER.find(k => k.id_periode === periodeArray[0])?.label_singkat || periodeArray[0])
@@ -105,8 +107,8 @@ export function GlobalFilterBar({ showBadge = true, title = null, subtitle = nul
                 <label className="flex items-center gap-2.5 px-3.5 py-1.5 hover:bg-[#F2F7FD] cursor-pointer">
                   <input
                     type="checkbox"
-                    checked={periodeArray.length === 0}
-                    onChange={() => setSelectedPeriode(REF_KALENDER[REF_KALENDER.length - 1].id_periode)}
+                    checked={isSemuaPeriode}
+                    onChange={() => setSelectedPeriode('Semua')}
                     className="accent-[#1E74C7] rounded"
                   />
                   <span className="text-xs text-[#101828] font-semibold">Semua Periode</span>
@@ -114,7 +116,7 @@ export function GlobalFilterBar({ showBadge = true, title = null, subtitle = nul
                 <div className="border-t border-[#E4E7EC] my-1.5" />
                 {REF_KALENDER.slice().reverse().map(k => {
                   const isAvailable = !availablePeriodeIds || availablePeriodeIds.has(k.id_periode);
-                  const isChecked = periodeArray.includes(k.id_periode);
+                  const isChecked = !isSemuaPeriode && periodeArray.includes(k.id_periode);
                   return (
                     <label
                       key={k.id_periode}

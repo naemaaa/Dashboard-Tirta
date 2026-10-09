@@ -44,6 +44,7 @@ export function FilterPanel() {
                 onChange={(e) => setSelectedPeriode(e.target.value)}
                 className="w-full bg-white border border-slate-200 text-slate-800 text-xs rounded-lg px-2.5 py-1.5 focus:border-slate-400 focus:ring-1 focus:ring-slate-400 outline-none font-medium cursor-pointer shadow-2xs"
               >
+                <option value="Semua">Semua Periode</option>
                 {REF_KALENDER.map((k) => (
                   <option key={k.id_periode} value={k.id_periode}>
                     {k.label_periode}

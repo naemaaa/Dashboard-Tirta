@@ -83,15 +83,21 @@ export const useDashboardStore = create((set, get) => ({
 
   // Toggle periode dalam array (untuk multi-select)
   togglePeriode: (periodeId) => set((state) => {
-    const current = Array.isArray(state.selectedPeriode)
-      ? state.selectedPeriode
-      : [state.selectedPeriode];
+    let current = [];
+    if (Array.isArray(state.selectedPeriode)) {
+      current = state.selectedPeriode.filter(p => p !== 'Semua');
+    } else if (state.selectedPeriode && state.selectedPeriode !== 'Semua') {
+      current = [state.selectedPeriode];
+    }
+
     const idx = current.indexOf(periodeId);
     if (idx >= 0) {
       const next = current.filter(p => p !== periodeId);
-      return { selectedPeriode: next.length === 1 ? next[0] : next.length === 0 ? DEFAULT_PERIODE : next };
+      return { selectedPeriode: next.length === 0 ? 'Semua' : next.length === 1 ? next[0] : next };
+    } else {
+      const next = [...current, periodeId];
+      return { selectedPeriode: next.length === 1 ? next[0] : next };
     }
-    return { selectedPeriode: [...current, periodeId] };
   }),
 
   // ─────────────────────────────────────────────────────────────────
