@@ -95,12 +95,12 @@ export class ExcelService {
   /**
    * Fetch master dataset from static JSON with cache-busting
    */
-  static async fetchMasterDatabase() {
+  static async fetchMasterDatabase(forceSync = false) {
     const timestamp = Date.now();
 
     // 1. Try Live Serverless API Proxy for OneDrive
     try {
-      const apiRes = await this._fetchWithTimeout(`${API_SYNC_ONEDRIVE}?t=${timestamp}`, {
+      const apiRes = await this._fetchWithTimeout(`${API_SYNC_ONEDRIVE}?${forceSync ? 'action=sync&' : ''}t=${timestamp}`, {
         headers: { 'Cache-Control': 'no-cache', 'Pragma': 'no-cache' }
       });
       if (apiRes.ok) {
@@ -223,7 +223,7 @@ export class ExcelService {
    */
   static clearCache() {
     try {
-      ['v1', 'v2', 'v3', 'v4', 'v5', 'v6', 'v7', 'v8'].forEach(v => {
+      ['v1', 'v2', 'v3', 'v4', 'v5', 'v6', 'v7', 'v8', 'v9'].forEach(v => {
         localStorage.removeItem(`dashboard_komoditas_diy_data_${v}`);
       });
       localStorage.removeItem(CACHE_KEY);

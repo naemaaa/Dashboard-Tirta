@@ -154,8 +154,8 @@ function Tab3HargaMarjinContent() {
         <div className="clean-card p-4 bg-white">
           <div className="text-[10px] font-semibold text-[#667085] uppercase tracking-wider mb-1">Dinamika vs Mgg Lalu</div>
           <div className="text-xl sm:text-2xl font-bold text-[#101828] tracking-tight flex items-center gap-1.5 tabular-nums">
-            <span>{deltas.hargaJualDelta >= 0 ? '+' : ''}{formatPercent(deltas.hargaJualDelta, 2)}</span>
-            {deltas.hargaJualDelta >= 0 ? (
+            <span>{deltas.hasPrev ? `${deltas.hargaJualDelta >= 0 ? '+' : ''}${formatPercent(deltas.hargaJualDelta, 2)}` : '–'}</span>
+            {!deltas.hasPrev ? null : deltas.hargaJualDelta >= 0 ? (
               <TrendingUp className="w-4 h-4 text-[#12B76A]" />
             ) : (
               <TrendingDown className="w-4 h-4 text-[#F04438]" />

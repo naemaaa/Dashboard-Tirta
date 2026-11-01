@@ -16,6 +16,19 @@ const DEFAULT_PERIODE    = REF_KALENDER[REF_KALENDER.length - 1].id_periode;
 const DEFAULT_WILAYAH    = 'Semua Wilayah DIY';
 const DEFAULT_KLASTER    = 'semua';
 
+/**
+ * Periode terakhir yang BENAR-BENAR sudah terisi data (volume > 0).
+ * Minggu yang belum ada di database / baru berisi baris kosong tidak dihitung.
+ */
+function pickLatestPeriode(data) {
+  const withVolume = new Set(
+    (data?.laporan_ringkasan || [])
+      .filter(r => !r.is_deleted && (Number(r.volume_ton) > 0 || Number(r.volume_liter) > 0))
+      .map(r => r.id_periode)
+  );
+  return [...(data?.REF_KALENDER || [])].reverse().find(k => withVolume.has(k.id_periode)) || null;
+}
+
 // Session timer reference for respondent unlock auto-expiry
 let _unlockExpiryTimer = null;
 
@@ -121,12 +134,12 @@ export const useDashboardStore = create((set, get) => ({
   },
   setDataModalOpen: (open) => set({ isDataModalOpen: open }),
 
-  resetFilters: () => set({
-    selectedPeriode:   DEFAULT_PERIODE,
+  resetFilters: () => set((state) => ({
+    selectedPeriode:   pickLatestPeriode(state.data)?.id_periode || DEFAULT_PERIODE,
     selectedKomoditas: DEFAULT_KOMODITAS,
     selectedWilayah:   DEFAULT_WILAYAH,
     selectedKlaster:   DEFAULT_KLASTER,
-  }),
+  })),
 
   // ─────────────────────────────────────────────────────────────────
   // Data Loading
@@ -135,7 +148,7 @@ export const useDashboardStore = create((set, get) => ({
     set({ isLoading: true, error: null });
     try {
       const { data, source, timestamp } = await ExcelService.getInitialData();
-      const lastKal = data.REF_KALENDER?.[data.REF_KALENDER.length - 1];
+      const lastKal = pickLatestPeriode(data) || data.REF_KALENDER?.[data.REF_KALENDER.length - 1];
       const latestPeriode = lastKal?.id_periode || DEFAULT_PERIODE;
       set({
         data,
@@ -154,7 +167,7 @@ export const useDashboardStore = create((set, get) => ({
     set({ isLoading: true, error: null });
     try {
       const parsed = await ExcelService.parseExcelBuffer(buffer);
-      const lastKal = parsed.REF_KALENDER?.[parsed.REF_KALENDER.length - 1];
+      const lastKal = pickLatestPeriode(parsed) || parsed.REF_KALENDER?.[parsed.REF_KALENDER.length - 1];
       set({
         data: parsed,
         selectedPeriode: lastKal?.id_periode || get().selectedPeriode,
@@ -173,7 +186,7 @@ export const useDashboardStore = create((set, get) => ({
     try {
       if (url) {
         const parsed = await ExcelService.fetchFromUrl(url);
-        const lastKal = parsed.REF_KALENDER?.[parsed.REF_KALENDER.length - 1];
+        const lastKal = pickLatestPeriode(parsed) || parsed.REF_KALENDER?.[parsed.REF_KALENDER.length - 1];
         set({
           data: parsed,
           selectedPeriode: lastKal?.id_periode || get().selectedPeriode,
@@ -184,10 +197,11 @@ export const useDashboardStore = create((set, get) => ({
         });
       } else {
         ExcelService.clearCache();
-        const { data: fresh, source } = await ExcelService.fetchMasterDatabase();
+        const { data: fresh, source } = await ExcelService.fetchMasterDatabase(true);
+        const freshKal = pickLatestPeriode(fresh) || fresh.REF_KALENDER?.[fresh.REF_KALENDER.length - 1];
         set({
           data: fresh,
-          selectedPeriode: fresh.REF_KALENDER?.[fresh.REF_KALENDER.length - 1]?.id_periode || get().selectedPeriode,
+          selectedPeriode: freshKal?.id_periode || get().selectedPeriode,
           isLoading: false,
           lastSyncTime: new Date().toLocaleString('id-ID', { dateStyle: 'medium', timeStyle: 'short' }) + ' WIB',
           syncSource: source === 'network_master' ? 'Master JSON Live' : 'Database Terkini',

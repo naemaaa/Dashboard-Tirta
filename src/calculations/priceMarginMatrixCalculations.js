@@ -50,7 +50,8 @@ export function calculateTab3PriceMatrix(rawRingkasan = [], selectedPeriode, sel
           matchKlasterUnified(r.tipe_responden, selectedKlaster) &&
           r.jenis_aliran === 'vol_masuk_ton' &&
           Number(r.harga_beli) > 0 &&
-          vol > 1; // FIX: exclude closed shop dummy volume 1
+          Number(r.harga_jual) > 0 &&
+          vol > 0;
       });
 
       // VWAP per wilayah
@@ -75,7 +76,7 @@ export function calculateTab3PriceMatrix(rawRingkasan = [], selectedPeriode, sel
           }, 0) / sumVolJual
         : 0;
       const mar    = hj - hb;
-      const marPct = hb > 0 ? (mar / hb) * 100 : 0;
+      const marPct = hj > 0 ? (mar / hj) * 100 : 0; // Marjin % = marjin ÷ harga jual (sama dengan KPI)
 
       row.wilayahPrices[wil.nama_kab_kota] = {
         hargaBeli: Math.round(hb),
@@ -95,7 +96,8 @@ export function calculateTab3PriceMatrix(rawRingkasan = [], selectedPeriode, sel
         matchKlasterUnified(r.tipe_responden, selectedKlaster) &&
         r.jenis_aliran === 'vol_masuk_ton' &&
         Number(r.harga_beli) > 0 &&
-        vol > 1; // FIX: exclude closed shop dummy volume 1
+        Number(r.harga_jual) > 0 &&
+        vol > 0;
     });
 
     const totalVolAll = allDIYRows.reduce((s, r) => {
@@ -126,7 +128,7 @@ export function calculateTab3PriceMatrix(rawRingkasan = [], selectedPeriode, sel
     }
 
     row.avgMarginRp  = row.avgJualAll - row.avgBeliAll;
-    row.avgMarginPct = row.avgBeliAll > 0 ? Number(((row.avgMarginRp / row.avgBeliAll) * 100).toFixed(1)) : 0;
+    row.avgMarginPct = row.avgJualAll > 0 ? Number(((row.avgMarginRp / row.avgJualAll) * 100).toFixed(1)) : 0;
     row.statusMargin = getMarginClassification(row.avgMarginPct);
     return row;
   });
@@ -189,7 +191,8 @@ export function calculateTab3RegionPrices(rawRingkasan = [], selectedPeriode, se
         r.kab_kota === wil.nama_kab_kota &&
         r.jenis_aliran === 'vol_masuk_ton' &&
         Number(r.harga_beli) > 0 &&
-        vol > 1; // FIX: exclude dummy value 1
+        Number(r.harga_jual) > 0 &&
+        vol > 0;
     });
 
     const sumVol = matches.reduce((s, r) => {

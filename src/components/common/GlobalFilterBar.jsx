@@ -11,6 +11,7 @@ import { ChevronDown, RotateCcw, Scale } from 'lucide-react';
 
 export function GlobalFilterBar({ showBadge = true, title = null, subtitle = null }) {
   const {
+    data,
     selectedPeriode,
     selectedKomoditas,
     selectedWilayah,
@@ -29,6 +30,8 @@ export function GlobalFilterBar({ showBadge = true, title = null, subtitle = nul
   const [periodeDropdownOpen, setPeriodeDropdownOpen] = useState(false);
   const [isResetting, setIsResetting] = useState(false);
   const periodeRef = useRef(null);
+
+  const kalenderList = (data?.REF_KALENDER && data.REF_KALENDER.length > 0) ? data.REF_KALENDER : REF_KALENDER;
 
   // Auto-close dropdown when clicking outside
   useEffect(() => {
@@ -51,7 +54,7 @@ export function GlobalFilterBar({ showBadge = true, title = null, subtitle = nul
   const periodeLabel = isSemuaPeriode
     ? 'Semua Periode'
     : periodeArray.length === 1
-      ? (REF_KALENDER.find(k => k.id_periode === periodeArray[0])?.label_singkat || periodeArray[0])
+      ? (kalenderList.find(k => k.id_periode === periodeArray[0])?.label_singkat || periodeArray[0])
       : `${periodeArray.length} Periode Dipilih`;
 
   const unitLabel = dominantUnit === 'Mixed' ? 'Ton / Liter' : (dominantUnit || 'Ton');
@@ -114,27 +117,25 @@ export function GlobalFilterBar({ showBadge = true, title = null, subtitle = nul
                   <span className="text-xs text-[#101828] font-semibold">Semua Periode</span>
                 </label>
                 <div className="border-t border-[#E4E7EC] my-1.5" />
-                {REF_KALENDER.slice().reverse().map(k => {
-                  const isAvailable = !availablePeriodeIds || availablePeriodeIds.has(k.id_periode);
-                  const isChecked = !isSemuaPeriode && periodeArray.includes(k.id_periode);
-                  return (
-                    <label
-                      key={k.id_periode}
-                      className={`flex items-center gap-2.5 px-3.5 py-1.5 cursor-pointer transition-colors ${
-                        isAvailable ? 'hover:bg-[#F2F7FD]' : 'opacity-40 cursor-not-allowed'
-                      }`}
-                    >
-                      <input
-                        type="checkbox"
-                        checked={isChecked}
-                        disabled={!isAvailable}
-                        onChange={() => isAvailable && togglePeriode(k.id_periode)}
-                        className="accent-[#1E74C7] rounded"
-                      />
-                      <span className="text-xs text-[#344054]">{k.label_periode}</span>
-                    </label>
-                  );
-                })}
+                {kalenderList.slice().reverse()
+                  .filter(k => !availablePeriodeIds || availablePeriodeIds.size === 0 || availablePeriodeIds.has(k.id_periode))
+                  .map(k => {
+                    const isChecked = !isSemuaPeriode && periodeArray.includes(k.id_periode);
+                    return (
+                      <label
+                        key={k.id_periode}
+                        className="flex items-center gap-2.5 px-3.5 py-1.5 cursor-pointer transition-colors hover:bg-[#F2F7FD]"
+                      >
+                        <input
+                          type="checkbox"
+                          checked={isChecked}
+                          onChange={() => togglePeriode(k.id_periode)}
+                          className="accent-[#1E74C7] rounded"
+                        />
+                        <span className="text-xs text-[#344054]">{k.label_periode}</span>
+                      </label>
+                    );
+                  })}
               </div>
             )}
           </div>

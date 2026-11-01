@@ -136,7 +136,7 @@ function Tab4TrenAntarwaktuContent() {
             <div>
               <div className="text-[10px] font-semibold text-[#667085] uppercase tracking-wider">Perubahan Masuk</div>
               <div className="text-base sm:text-lg font-bold text-[#101828] tabular-nums">
-                {deltas.volMasukDelta >= 0 ? '+' : ''}{formatPercent(deltas.volMasukDelta, 2)}
+                {deltas.hasPrev ? `${deltas.volMasukDelta >= 0 ? '+' : ''}${formatPercent(deltas.volMasukDelta, 2)}` : '–'}
               </div>
             </div>
           </div>
@@ -148,7 +148,7 @@ function Tab4TrenAntarwaktuContent() {
             <div>
               <div className="text-[10px] font-semibold text-[#667085] uppercase tracking-wider">Perubahan Keluar</div>
               <div className="text-base sm:text-lg font-bold text-[#101828] tabular-nums">
-                {deltas.volKeluarDelta >= 0 ? '+' : ''}{formatPercent(deltas.volKeluarDelta, 2)}
+                {deltas.hasPrev ? `${deltas.volKeluarDelta >= 0 ? '+' : ''}${formatPercent(deltas.volKeluarDelta, 2)}` : '–'}
               </div>
             </div>
           </div>
@@ -162,7 +162,7 @@ function Tab4TrenAntarwaktuContent() {
             <div>
               <div className="text-[10px] font-semibold text-[#667085] uppercase tracking-wider">Perubahan Selisih</div>
               <div className={`text-base sm:text-lg font-bold tabular-nums ${deltas.neracaDelta >= 0 ? 'text-[#12B76A]' : 'text-[#F04438]'}`}>
-                {deltas.neracaDelta >= 0 ? '+' : ''}{formatDecimal(deltas.neracaDelta, 2)} <span className="text-xs font-normal text-[#667085]">{unitLabel}</span>
+                {deltas.hasPrev ? `${deltas.neracaDelta >= 0 ? '+' : ''}${formatDecimal(deltas.neracaDelta, 2)}` : '–'} <span className="text-xs font-normal text-[#667085]">{unitLabel}</span>
               </div>
             </div>
           </div>
@@ -174,7 +174,7 @@ function Tab4TrenAntarwaktuContent() {
             <div>
               <div className="text-[10px] font-semibold text-[#667085] uppercase tracking-wider">Perubahan Harga</div>
               <div className="text-base sm:text-lg font-bold text-[#101828] tabular-nums">
-                {deltas.hargaJualDelta >= 0 ? '+' : ''}{formatPercent(deltas.hargaJualDelta, 2)}
+                {deltas.hasPrev ? `${deltas.hargaJualDelta >= 0 ? '+' : ''}${formatPercent(deltas.hargaJualDelta, 2)}` : '–'}
               </div>
             </div>
           </div>
@@ -186,7 +186,7 @@ function Tab4TrenAntarwaktuContent() {
             <div>
               <div className="text-[10px] font-semibold text-[#667085] uppercase tracking-wider">Perubahan Margin</div>
               <div className="text-base sm:text-lg font-bold text-[#101828] tabular-nums">
-                {deltas.marginDelta !== 0 ? `${deltas.marginDelta >= 0 ? '+' : ''}${formatPercent(deltas.marginDelta, 2)}` : '-'}
+                {deltas.hasPrev && deltas.marginDelta !== 0 ? `${deltas.marginDelta >= 0 ? '+' : ''}${formatPercent(deltas.marginDelta, 2)}` : '-'}
               </div>
             </div>
           </div>

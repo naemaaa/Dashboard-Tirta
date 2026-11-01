@@ -74,7 +74,10 @@ export function useCalculations() {
     // 1. Periode Context
     //    selectedPeriode bisa string tunggal atau string[] (multi-select)
     // ─────────────────────────────────────────────────────────────────
-    const sortedKalender = [...REF_KALENDER].sort((a, b) => new Date(a.tgl_mulai) - new Date(b.tgl_mulai));
+    const pidsWithData = new Set(rawRingkasan.filter(r => !r.is_deleted && (r.volume_ton > 0 || r.volume_liter > 0)).map(r => r.id_periode));
+    const sortedKalender = [...REF_KALENDER]
+      .filter(k => pidsWithData.has(k.id_periode))
+      .sort((a, b) => new Date(a.tgl_mulai) - new Date(b.tgl_mulai));
 
     // Normalisasi selectedPeriode ke array
     const periodeArray = Array.isArray(selectedPeriode)
@@ -83,8 +86,9 @@ export function useCalculations() {
         ? [selectedPeriode]
         : [];
 
-    const isMultiPeriode = periodeArray.length > 1;
-    const jumlahPeriode  = periodeArray.length || 1;
+    // "Semua periode" (array kosong) = semua minggu yang ada datanya → tetap dirata-rata per minggu
+    const isMultiPeriode = periodeArray.length > 1 || (periodeArray.length === 0 && sortedKalender.length > 1);
+    const jumlahPeriode  = periodeArray.length || sortedKalender.length || 1;
 
     // Periode sebelumnya (untuk delta WoW) — menggunakan periode terakhir yang dipilih
     const lastSelectedPeriode = periodeArray[periodeArray.length - 1] || selectedPeriode;
@@ -154,7 +158,9 @@ export function useCalculations() {
       const statusNeraca  = calculateStatusNeraca(neracaBersih, volMasuk);
 
       // Stok Akhir (Multi-minggu: posisi minggu terakhir)
-      const stokAkhir     = calculateTotalStokAkhir(rows);
+      // Stok adalah posisi (stock), bukan aliran → ambil minggu terakhir saja, jangan dijumlah antar minggu
+      const latestPid     = rows.reduce((max, r) => (!max || r.id_periode > max ? r.id_periode : max), null);
+      const stokAkhir     = calculateTotalStokAkhir(numPeriode > 1 ? rows.filter(r => r.id_periode === latestPid) : rows);
       const cakupanStok   = calculateCakupanStok(stokAkhir, volKeluar);
 
       // Harga VWAP
@@ -199,6 +205,8 @@ export function useCalculations() {
       hargaBeliDelta:      calculateDeltaPct(currentMetrics.avgHargaBeli, prevMetrics.avgHargaBeli),
       marginDelta:         Number((currentMetrics.marginPct - prevMetrics.marginPct).toFixed(1)), // Dalam poin persentase (p.p.)
       isMultiPeriodeDelta: isMultiPeriode,
+      // false = tidak ada minggu pembanding → UI menampilkan "–", bukan 0%
+      hasPrev:             prevRows.length > 0 && prevMetrics.volMasuk > 0,
     };
 
     // ─────────────────────────────────────────────────────────────────
@@ -221,11 +229,13 @@ export function useCalculations() {
     const pctLuarDiy   = typeof pasokanStats === 'number' ? pasokanStats : (pasokanStats?.pctLuarDiy || 0);
 
     // Saluran Keluar: Pengiriman Antardaerah (ke Luar DIY) vs Tujuan Dalam DIY
-    const totalKeluarFlow        = filteredArusKeluar.reduce((a, b) => a + (Number(b.volume_ton) || 0), 0) || 1;
-    const volPengirimanLuarDiy   = filteredArusKeluar.filter(r => r.keluar_diy).reduce((a, b) => a + (Number(b.volume_ton) || 0), 0);
+    // Unit-aware: minyak goreng tersimpan di volume_liter (arus_keluar tidak membawa satuan_dasar)
+    const flowVol = (r) => Number(r.volume_ton) || Number(r.volume_liter) || 0;
+    const totalKeluarFlow        = filteredArusKeluar.reduce((a, b) => a + flowVol(b), 0);
+    const volPengirimanLuarDiy   = filteredArusKeluar.filter(r => r.keluar_diy).reduce((a, b) => a + flowVol(b), 0);
     const volTujuanDalamDiy      = totalKeluarFlow - volPengirimanLuarDiy;
-    const pctPengirimanLuarDiy   = Number(((volPengirimanLuarDiy / totalKeluarFlow) * 100).toFixed(1));
-    const pctTujuanDalamDiy      = Number(((volTujuanDalamDiy / totalKeluarFlow) * 100).toFixed(1));
+    const pctPengirimanLuarDiy   = totalKeluarFlow > 0 ? Number(((volPengirimanLuarDiy / totalKeluarFlow) * 100).toFixed(1)) : 0;
+    const pctTujuanDalamDiy      = totalKeluarFlow > 0 ? Number(((volTujuanDalamDiy / totalKeluarFlow) * 100).toFixed(1)) : 0;
 
     // Aliases for backward compatibility
     const pctReekspor        = pctPengirimanLuarDiy;
@@ -238,7 +248,7 @@ export function useCalculations() {
     filteredArusMasuk.forEach(item => {
       const k = item.daerah_asal || 'Lainnya';
       if (!originMap[k]) originMap[k] = { name: k, volume: 0, luar_diy: item.luar_diy };
-      originMap[k].volume += Number(item.volume_ton) || 0;
+      originMap[k].volume += flowVol(item);
     });
     const top5Origins = Object.values(originMap)
       .sort((a, b) => b.volume - a.volume)
@@ -250,7 +260,7 @@ export function useCalculations() {
     filteredArusKeluar.forEach(item => {
       const k = item.daerah_tujuan || 'Lainnya';
       if (!destMap[k]) destMap[k] = { name: k, volume: 0, keluar_diy: item.keluar_diy };
-      destMap[k].volume += Number(item.volume_ton) || 0;
+      destMap[k].volume += flowVol(item);
     });
     const top5Destinations = Object.values(destMap)
       .sort((a, b) => b.volume - a.volume)
@@ -264,7 +274,9 @@ export function useCalculations() {
     // ─────────────────────────────────────────────────────────────────
     const activeRows = rawRingkasan.filter(r => !r.is_deleted);
     // Periode & Wilayah: hanya yang ada di data non-deleted
-    const availablePeriodeIds = new Set(activeRows.map(r => r.id_periode));
+    const availablePeriodeIds = new Set(
+      activeRows.filter(r => Number(r.volume_ton) > 0 || Number(r.volume_liter) > 0).map(r => r.id_periode)
+    );
     const availableKabKota    = new Set(activeRows.map(r => r.kab_kota));
     // Komoditas: semua komoditas yang pernah muncul di dataset (termasuk yang mungkin is_deleted)
     // supaya user tetap bisa pilih komoditas meskipun ada rows yang dihapus

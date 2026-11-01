@@ -21,6 +21,7 @@ import {
   calculateMarginRp,
   calculateMarginPct,
   calculateDeltaPct,
+  calculateTotalSusut,
   getRowVolume,
   matchKomoditasUnified,
   matchWilayahUnified,
@@ -36,7 +37,10 @@ export function calculateHistoricalTrends(
   selectedWilayah = 'Semua Wilayah DIY',
   selectedKlaster = 'semua'
 ) {
-  const sortedKalender = [...REF_KALENDER].sort((a, b) => new Date(a.tgl_mulai) - new Date(b.tgl_mulai));
+  const pidsWithData = new Set(rawRingkasan.filter(r => !r.is_deleted && (r.volume_ton > 0 || r.volume_liter > 0)).map(r => r.id_periode));
+  const sortedKalender = [...REF_KALENDER]
+    .filter(k => pidsWithData.has(k.id_periode))
+    .sort((a, b) => new Date(a.tgl_mulai) - new Date(b.tgl_mulai));
 
   return sortedKalender.map((kal, idx) => {
     const periodRows = rawRingkasan.filter(r =>
@@ -49,11 +53,11 @@ export function calculateHistoricalTrends(
 
     const volMasuk = calculateVolumeMasuk(periodRows);
     const volKeluar = calculateVolumeKeluar(periodRows);
-    const neraca = calculateNeracaBersih(volMasuk, volKeluar);
+    const neraca = calculateNeracaBersih(volMasuk, volKeluar, calculateTotalSusut(periodRows));
     const avgHb = calculateAvgHargaBeli(periodRows);
     const avgHj = calculateAvgHargaJual(periodRows);
     const marRp = calculateMarginRp(avgHj, avgHb);
-    const marPct = calculateMarginPct(marRp, avgHb);
+    const marPct = calculateMarginPct(marRp, avgHj);
 
     return {
       id_periode: kal.id_periode,
@@ -104,8 +108,8 @@ export function calculateTab4RegionalDeltas(
     const prevIn = calculateVolumeMasuk(prevMatches);
     const prevOut = calculateVolumeKeluar(prevMatches);
 
-    const currNet = currIn - currOut;
-    const prevNet = prevIn - prevOut;
+    const currNet = currIn - currOut - calculateTotalSusut(currMatches);
+    const prevNet = prevIn - prevOut - calculateTotalSusut(prevMatches);
     const diffNeraca = currNet - prevNet;
     const selisihPerkembangan = currIn - prevIn;
 
@@ -128,7 +132,10 @@ export function calculateTab4RegionalDeltas(
  * 3. Evolusi Multi-Line Pasokan Komoditas Utama (Tab 4 Panel E)
  */
 export function calculateTab4CommodityEvolution(rawRingkasan = []) {
-  const sortedKalender = [...REF_KALENDER].sort((a, b) => new Date(a.tgl_mulai) - new Date(b.tgl_mulai));
+  const pidsWithData = new Set(rawRingkasan.filter(r => !r.is_deleted && (r.volume_ton > 0 || r.volume_liter > 0)).map(r => r.id_periode));
+  const sortedKalender = [...REF_KALENDER]
+    .filter(k => pidsWithData.has(k.id_periode))
+    .sort((a, b) => new Date(a.tgl_mulai) - new Date(b.tgl_mulai));
 
   return sortedKalender.map(kal => {
     const labelVal = kal.label_singkat || kal.label_periode.split(' ')[0];

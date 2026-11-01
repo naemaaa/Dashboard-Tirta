@@ -32,6 +32,7 @@ import {
 export function Tab5KualitasData() {
   const calculations = useCalculations();
   const {
+    data,
     selectedPeriode,
     setSelectedPeriode,
     selectedKomoditas,
@@ -42,6 +43,15 @@ export function Tab5KualitasData() {
     setSelectedKlaster,
     isRespondentUnlocked
   } = useDashboardStore();
+
+  const kalenderAll = (data?.REF_KALENDER && data.REF_KALENDER.length > 0) ? data.REF_KALENDER : REF_KALENDER;
+  const periodsWithData = new Set(
+    (data?.laporan_ringkasan || [])
+      .filter(r => (r.volume_ton > 0 || r.volume_liter > 0))
+      .map(r => r.id_periode)
+  );
+  const kalenderFiltered = kalenderAll.filter(k => periodsWithData.has(k.id_periode));
+  const kalenderList = kalenderFiltered.length > 0 ? kalenderFiltered : kalenderAll;
 
   const {
     qualityMetrics = {},
@@ -72,13 +82,13 @@ export function Tab5KualitasData() {
           </label>
           <select
             value={Array.isArray(selectedPeriode) ? (selectedPeriode[0] || 'semua') : (selectedPeriode || 'semua')}
-            onChange={(e) => setSelectedPeriode(e.target.value === 'semua' ? (REF_KALENDER[REF_KALENDER.length - 1]?.id_periode) : e.target.value)}
+            onChange={(e) => setSelectedPeriode(e.target.value === 'semua' ? (kalenderList[kalenderList.length - 1]?.id_periode) : e.target.value)}
             className="w-full bg-slate-50 border border-slate-200 text-slate-800 text-xs rounded-lg px-2.5 py-1.5 outline-none focus:border-[#1E74C7] focus:ring-1 focus:ring-[#1E74C7]"
           >
             <option value="semua">Semua Periode</option>
-            {REF_KALENDER.map(kal => (
+            {kalenderList.map(kal => (
               <option key={kal.id_periode} value={kal.id_periode}>
-                {kal.nama_periode} ({kal.tgl_mulai})
+                {kal.label_periode || kal.nama_periode} ({kal.tgl_mulai})
               </option>
             ))}
           </select>

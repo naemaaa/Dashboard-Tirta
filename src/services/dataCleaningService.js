@@ -292,8 +292,16 @@ export function cleanDataset(dataset) {
     return { cleanedDataset: dataset, cleaning_report: { error: 'Dataset kosong atau tidak valid' } };
   }
 
+  // Kunci aliran selalu 'vol_masuk_ton' / 'vol_keluar_ton' (satuan asli dibaca dari satuan_dasar).
+  // Data lama menulis 'vol_*_liter' untuk minyak goreng → tidak terhitung di semua rumus.
+  const normalizedRows = dataset.laporan_ringkasan.map(r =>
+    r.jenis_aliran === 'vol_masuk_liter' ? { ...r, jenis_aliran: 'vol_masuk_ton' }
+    : r.jenis_aliran === 'vol_keluar_liter' ? { ...r, jenis_aliran: 'vol_keluar_ton' }
+    : r
+  );
+
   const { cleanedRows, qualityIssues, report } = cleanLaporanRingkasan(
-    dataset.laporan_ringkasan,
+    normalizedRows,
     dataset.quality_issues || [],
     dataset.REF_KALENDER
   );

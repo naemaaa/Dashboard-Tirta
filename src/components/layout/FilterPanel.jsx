@@ -8,6 +8,7 @@ import { RotateCcw, SlidersHorizontal } from 'lucide-react';
 
 export function FilterPanel() {
   const {
+    data,
     selectedPeriode,
     selectedKomoditas,
     selectedWilayah,
@@ -20,8 +21,17 @@ export function FilterPanel() {
     resetFilters,
   } = useDashboardStore();
 
+  const kalenderAll = (data?.REF_KALENDER && data.REF_KALENDER.length > 0) ? data.REF_KALENDER : REF_KALENDER;
+  const periodsWithData = new Set(
+    (data?.laporan_ringkasan || [])
+      .filter(r => (r.volume_ton > 0 || r.volume_liter > 0))
+      .map(r => r.id_periode)
+  );
+  const kalenderFiltered = kalenderAll.filter(k => periodsWithData.has(k.id_periode));
+  const kalenderList = kalenderFiltered.length > 0 ? kalenderFiltered : kalenderAll;
+
   const isDefault =
-    selectedPeriode === REF_KALENDER[REF_KALENDER.length - 1].id_periode &&
+    selectedPeriode === kalenderList[kalenderList.length - 1]?.id_periode &&
     selectedKomoditas === REF_KOMODITAS[0].nama_komoditas &&
     selectedWilayah === 'Semua Wilayah DIY' &&
     selectedKlaster === 'pedagang_besar';
@@ -45,7 +55,7 @@ export function FilterPanel() {
                 className="w-full bg-white border border-slate-200 text-slate-800 text-xs rounded-lg px-2.5 py-1.5 focus:border-slate-400 focus:ring-1 focus:ring-slate-400 outline-none font-medium cursor-pointer shadow-2xs"
               >
                 <option value="Semua">Semua Periode</option>
-                {REF_KALENDER.map((k) => (
+                {kalenderList.map((k) => (
                   <option key={k.id_periode} value={k.id_periode}>
                     {k.label_periode}
                   </option>

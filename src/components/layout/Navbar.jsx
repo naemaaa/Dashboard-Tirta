@@ -41,9 +41,14 @@ export function Navbar() {
     { id: 'tab8', label: 'Metadata & Metodologi', short: 'Metadata', icon: BookOpen    },
   ];
 
-  const currentPeriod = (data?.REF_KALENDER || []).find(k => k.id_periode === selectedPeriode)
+  const pidsInData = new Set(
+    (data?.laporan_ringkasan || [])
+      .filter(r => !r.is_deleted && (Number(r.volume_ton) > 0 || Number(r.volume_liter) > 0))
+      .map(r => r.id_periode)
+  );
+  const currentPeriod = [...(data?.REF_KALENDER || [])].reverse().find(k => pidsInData.has(k.id_periode))
     || (data?.REF_KALENDER || []).at(-1);
-  const periodBadge = currentPeriod?.label_singkat ?? '2026-W38';
+  const periodBadge = currentPeriod?.label_singkat ?? '2026';
 
   const handleRefresh = async () => {
     setIsRefreshing(true);

@@ -12,10 +12,21 @@ function oneDriveApiPlugin() {
       server.middlewares.use(async (req, res, next) => {
         if (req.url && req.url.startsWith('/api/sync-onedrive')) {
           res.setHeader('Content-Type', 'application/json')
-          res.setHeader('X-Data-Source', 'master_database_dev_proxy')
+          res.setHeader('X-Data-Source', 'onedrive_live_sync')
           res.setHeader('Cache-Control', 'no-cache')
           try {
-            const jsonPath = path.resolve(__dirname, 'public/data/masterDatabase.json')
+            const urlObj = new URL(req.url, 'http://localhost');
+            if (urlObj.searchParams.get('action') === 'sync') {
+              try {
+                const { execSync } = await import('child_process');
+                console.log('[Dev Server] Menarik data terbaru langsung dari OneDrive...');
+                execSync('node scripts/fluent_download.cjs && node scripts/compile_master_database.mjs', { stdio: 'inherit' });
+              } catch (syncErr) {
+                console.warn('[Dev Server] Live pull warning, serving existing master:', syncErr.message);
+              }
+            }
+
+            const jsonPath = path.resolve(import.meta.dirname, 'public/data/masterDatabase.json')
             if (fs.existsSync(jsonPath)) {
               const data = fs.readFileSync(jsonPath, 'utf-8')
               res.statusCode = 200
@@ -43,7 +54,7 @@ function getGroqKeys() {
   ];
 
   try {
-    const envPath = path.resolve(__dirname, '.env');
+    const envPath = path.resolve(import.meta.dirname, '.env');
     if (fs.existsSync(envPath)) {
       const envContent = fs.readFileSync(envPath, 'utf-8');
       envContent.split('\n').forEach(line => {
@@ -196,7 +207,7 @@ export default defineConfig({
   ],
   resolve: {
     alias: {
-      stream: path.resolve(__dirname, 'src/utils/streamShim.js'),
+      stream: path.resolve(import.meta.dirname, 'src/utils/streamShim.js'),
     }
   },
   define: {

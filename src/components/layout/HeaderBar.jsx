@@ -21,7 +21,12 @@ export function HeaderBar() {
 
   const [isRefreshing, setIsRefreshing] = useState(false);
 
-  const currentPeriod = (data?.REF_KALENDER || []).find(k => k.id_periode === selectedPeriode) || (data?.REF_KALENDER || [])[(data?.REF_KALENDER || []).length - 1];
+  const pidsInData = new Set(
+    (data?.laporan_ringkasan || [])
+      .filter(r => !r.is_deleted && (Number(r.volume_ton) > 0 || Number(r.volume_liter) > 0))
+      .map(r => r.id_periode)
+  );
+  const currentPeriod = [...(data?.REF_KALENDER || [])].reverse().find(k => pidsInData.has(k.id_periode)) || (data?.REF_KALENDER || [])[(data?.REF_KALENDER || []).length - 1];
   const periodLabel = currentPeriod ? currentPeriod.label_singkat : '2026';
 
   const handleRefresh = async () => {

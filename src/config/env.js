@@ -48,7 +48,7 @@ export const APP_VERSION = import.meta.env.VITE_APP_VERSION || '1.0.0';
 // ─────────────────────────────────────────────────────────────────────────────
 // RUNTIME CONSTANTS (tidak sensitif — boleh di-commit)
 // ─────────────────────────────────────────────────────────────────────────────
-export const CACHE_KEY          = 'dashboard_komoditas_diy_data_v8';
+export const CACHE_KEY          = 'dashboard_komoditas_diy_data_v9';
 export const FETCH_TIMEOUT_MS   = 15000;       // 15 detik timeout fetch
 export const UNLOCK_SESSION_MS  = 30 * 60 * 1000; // 30 menit session respondent
 

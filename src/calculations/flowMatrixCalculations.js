@@ -16,6 +16,8 @@
 import { REF_KOMODITAS, REF_WILAYAH, GEO_NODES, findGeoNode } from '../data/seedData.js';
 import {
   getRowVolume,
+  calculateStatusNeraca,
+  calculateTotalSusut,
   matchKomoditasUnified,
   matchWilayahUnified,
   matchKlasterUnified
@@ -42,6 +44,7 @@ export function calculateMatrixNeracaTab1(rawRingkasan = [], selectedPeriode, se
 
     let totalMasuk = 0;
     let totalKeluar = 0;
+    let totalSusut = 0;
 
     REF_WILAYAH.forEach(wil => {
       const matches = rawRingkasan.filter(r =>
@@ -60,13 +63,15 @@ export function calculateMatrixNeracaTab1(rawRingkasan = [], selectedPeriode, se
         .filter(r => r.jenis_aliran === 'vol_keluar_ton')
         .reduce((sum, r) => sum + getRowVolume(r), 0);
 
-      const net = vIn - vOut;
+      const susut = calculateTotalSusut(matches);
+      const net = vIn - vOut - susut; // Selisih = Masuk − Keluar − Susut (sama dengan KPI)
+      totalSusut += susut;
       row.wilayah[wil.nama_kab_kota] = Number(net.toFixed(2));
       totalMasuk += vIn;
       totalKeluar += vOut;
     });
 
-    row.total_neraca = Number((totalMasuk - totalKeluar).toFixed(2));
+    row.total_neraca = Number((totalMasuk - totalKeluar - totalSusut).toFixed(2));
     return row;
   });
 }
@@ -92,7 +97,7 @@ export function calculateButterflyData(rawRingkasan = [], selectedPeriode, selec
       .filter(r => r.jenis_aliran === 'vol_keluar_ton')
       .reduce((sum, r) => sum + getRowVolume(r), 0);
 
-    const net = vIn - vOut;
+    const net = vIn - vOut - calculateTotalSusut(matches); // sama dengan KPI
 
     return {
       id_komoditas: kom.id_komoditas,
@@ -101,7 +106,7 @@ export function calculateButterflyData(rawRingkasan = [], selectedPeriode, selec
       volMasuk: Number(vIn.toFixed(2)),
       volKeluar: Number(vOut.toFixed(2)),
       neraca: Number(net.toFixed(2)),
-      status: net > 0.1 ? 'Surplus' : net < -0.1 ? 'Defisit' : 'Seimbang'
+      status: { SURPLUS: 'Surplus', DEFISIT: 'Defisit', SEIMBANG: 'Seimbang' }[calculateStatusNeraca(net, vIn)] // ambang ±5% sama dengan KPI
     };
   }).sort((a, b) => b.volMasuk - a.volMasuk);
 }
@@ -118,7 +123,8 @@ export function calculateTab2GroupedMatrix(rawRingkasan = [], selectedPeriode, t
       wilayahData: {},
       totalMasuk: 0,
       totalKeluar: 0,
-      totalSelisih: 0
+      totalSelisih: 0,
+      totalSusut: 0
     };
 
     REF_WILAYAH.forEach(wil => {
@@ -134,7 +140,9 @@ export function calculateTab2GroupedMatrix(rawRingkasan = [], selectedPeriode, t
 
       const vIn  = matches.filter(r => r.jenis_aliran === 'vol_masuk_ton').reduce((s, r) => s + getRowVolume(r), 0);
       const vOut = matches.filter(r => r.jenis_aliran === 'vol_keluar_ton').reduce((s, r) => s + getRowVolume(r), 0);
-      const selisih = vIn - vOut;
+      const susut = calculateTotalSusut(matches);
+      const selisih = vIn - vOut - susut; // sama dengan KPI
+      row.totalSusut += susut;
 
       row.wilayahData[wil.nama_kab_kota] = {
         masuk: Number(vIn.toFixed(2)),
@@ -146,7 +154,7 @@ export function calculateTab2GroupedMatrix(rawRingkasan = [], selectedPeriode, t
       row.totalKeluar += vOut;
     });
 
-    row.totalSelisih = Number((row.totalMasuk - row.totalKeluar).toFixed(2));
+    row.totalSelisih = Number((row.totalMasuk - row.totalKeluar - row.totalSusut).toFixed(2));
     row.totalMasuk = Number(row.totalMasuk.toFixed(2));
     row.totalKeluar = Number(row.totalKeluar.toFixed(2));
     return row;
@@ -167,7 +175,7 @@ export function calculateTab2Decomposition(rawRingkasan = [], selectedPeriode, t
 
     const vIn  = matches.filter(r => r.jenis_aliran === 'vol_masuk_ton').reduce((s, r) => s + getRowVolume(r), 0);
     const vOut = matches.filter(r => r.jenis_aliran === 'vol_keluar_ton').reduce((s, r) => s + getRowVolume(r), 0);
-    const net = vIn - vOut;
+    const net = vIn - vOut - calculateTotalSusut(matches); // sama dengan KPI
 
     return {
       wilayah: wil.label || wil.nama_kab_kota.replace(/^(kab\.|kota)\s*/i, ''),
