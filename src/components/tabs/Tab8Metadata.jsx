@@ -2,7 +2,8 @@
 // Informasi Metadata, Metodologi Kajian, Spesifikasi Komoditas, & QC System
 // Bank Indonesia KPw DIY · PSEKUIN UPN Veteran Yogyakarta · Dashboard TIRTA 2026
 
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
+import { useDashboardStore } from '../../store/useDashboardStore';
 import {
   BookOpen,
   Users,
@@ -29,36 +30,56 @@ export function Tab8Metadata() {
   const [searchCommodity, setSearchCommodity] = useState('');
   const [selectedKlasterTable, setSelectedKlasterTable] = useState('pedagang_besar');
 
-  // Master Respondent Counts from Kajian Report
-  const produsenData = [
-    { komoditas: 'Beras', bantul: 0, gunungkidul: 1, yogyakarta: 0, kulonprogo: 1, sleman: 3, total: 5 },
-    { komoditas: 'Daging Sapi', bantul: 0, gunungkidul: 0, yogyakarta: 0, kulonprogo: 1, sleman: 2, total: 3 },
-    { komoditas: 'Daging Ayam Ras', bantul: 1, gunungkidul: 1, yogyakarta: 0, kulonprogo: 0, sleman: 2, total: 4 },
-    { komoditas: 'Telur Ayam Ras', bantul: 1, gunungkidul: 3, yogyakarta: 0, kulonprogo: 1, sleman: 0, total: 5 },
-    { komoditas: 'Bawang Merah', bantul: 1, gunungkidul: 1, yogyakarta: 0, kulonprogo: 0, sleman: 1, total: 3 },
-    { komoditas: 'Bawang Putih', bantul: 0, gunungkidul: 0, yogyakarta: 0, kulonprogo: 0, sleman: 0, total: 0 },
-    { komoditas: 'Cabai Merah Besar', bantul: 0, gunungkidul: 0, yogyakarta: 0, kulonprogo: 0, sleman: 0, total: 0 },
-    { komoditas: 'Cabai Merah Keriting', bantul: 1, gunungkidul: 0, yogyakarta: 0, kulonprogo: 0, sleman: 2, total: 3 },
-    { komoditas: 'Cabai Rawit Hijau', bantul: 0, gunungkidul: 0, yogyakarta: 0, kulonprogo: 0, sleman: 0, total: 0 },
-    { komoditas: 'Cabai Rawit Merah', bantul: 1, gunungkidul: 1, yogyakarta: 0, kulonprogo: 0, sleman: 0, total: 2 },
-    { komoditas: 'Minyak Goreng', bantul: 0, gunungkidul: 1, yogyakarta: 0, kulonprogo: 0, sleman: 0, total: 1 },
-    { komoditas: 'Gula Pasir', bantul: 1, gunungkidul: 1, yogyakarta: 0, kulonprogo: 0, sleman: 1, total: 3 },
-  ];
+  const data = useDashboardStore(state => state.data);
 
-  const pedagangBesarData = [
-    { komoditas: 'Beras', bantul: 3, gunungkidul: 3, yogyakarta: 4, kulonprogo: 1, sleman: 3, total: 14 },
-    { komoditas: 'Daging Sapi', bantul: 2, gunungkidul: 3, yogyakarta: 3, kulonprogo: 2, sleman: 3, total: 13 },
-    { komoditas: 'Daging Ayam Ras', bantul: 3, gunungkidul: 3, yogyakarta: 3, kulonprogo: 3, sleman: 3, total: 15 },
-    { komoditas: 'Telur Ayam Ras', bantul: 3, gunungkidul: 3, yogyakarta: 3, kulonprogo: 2, sleman: 3, total: 14 },
-    { komoditas: 'Bawang Merah', bantul: 3, gunungkidul: 3, yogyakarta: 3, kulonprogo: 2, sleman: 3, total: 14 },
-    { komoditas: 'Bawang Putih', bantul: 3, gunungkidul: 3, yogyakarta: 2, kulonprogo: 2, sleman: 3, total: 13 },
-    { komoditas: 'Cabai Merah Besar', bantul: 2, gunungkidul: 3, yogyakarta: 1, kulonprogo: 0, sleman: 3, total: 9 },
-    { komoditas: 'Cabai Merah Keriting', bantul: 3, gunungkidul: 3, yogyakarta: 3, kulonprogo: 3, sleman: 3, total: 15 },
-    { komoditas: 'Cabai Rawit Hijau', bantul: 3, gunungkidul: 3, yogyakarta: 2, kulonprogo: 2, sleman: 3, total: 13 },
-    { komoditas: 'Cabai Rawit Merah', bantul: 3, gunungkidul: 3, yogyakarta: 1, kulonprogo: 1, sleman: 3, total: 11 },
-    { komoditas: 'Minyak Goreng', bantul: 3, gunungkidul: 3, yogyakarta: 1, kulonprogo: 2, sleman: 3, total: 12 },
-    { komoditas: 'Gula Pasir', bantul: 3, gunungkidul: 3, yogyakarta: 3, kulonprogo: 3, sleman: 3, total: 15 },
-  ];
+  // Hitungan sampel diambil langsung dari laporan_ringkasan (bukan angka statis laporan kajian).
+  // Responden unik = id_responden + tipe_responden (id yang sama bisa dipakai PB & Produsen).
+  const sampleStats = useMemo(() => {
+    const rows = data?.laporan_ringkasan || [];
+    const groups = ['Beras', 'Daging Sapi', 'Daging Ayam Ras', 'Telur Ayam Ras', 'Bawang Merah', 'Bawang Putih',
+      'Cabai Merah Besar', 'Cabai Merah Keriting', 'Cabai Rawit Hijau', 'Cabai Rawit Merah', 'Minyak Goreng', 'Gula Pasir'];
+    const kabKey = (kab = '') => {
+      const k = kab.toLowerCase();
+      if (k.includes('bantul')) return 'bantul';
+      if (k.includes('gunung')) return 'gunungkidul';
+      if (k.includes('yogya')) return 'yogyakarta';
+      if (k.includes('kulon')) return 'kulonprogo';
+      if (k.includes('sleman')) return 'sleman';
+      return null;
+    };
+    const kabs = ['bantul', 'gunungkidul', 'yogyakarta', 'kulonprogo', 'sleman'];
+    const respKey = r => `${r.id_responden || r.nama_responden}|${r.tipe_responden}`;
+
+    const buildTable = (tipe) => {
+      const tipeRows = rows.filter(r => r.tipe_responden === tipe);
+      const table = groups.map(g => {
+        const gRows = tipeRows.filter(r => (r.komoditas || '').startsWith(g));
+        const row = { komoditas: g };
+        kabs.forEach(k => { row[k] = new Set(gRows.filter(r => kabKey(r.kab_kota) === k).map(respKey)).size; });
+        row.total = new Set(gRows.map(respKey)).size;
+        return row;
+      });
+      const totals = {};
+      kabs.forEach(k => { totals[k] = new Set(tipeRows.filter(r => kabKey(r.kab_kota) === k).map(respKey)).size; });
+      totals.total = new Set(tipeRows.map(respKey)).size;
+      return { table, totals };
+    };
+
+    const pb = buildTable('pedagang_besar');
+    const prod = buildTable('produsen');
+    const nonDeleted = rows.filter(r => !r.is_deleted).length;
+    return {
+      pb, prod,
+      totalResponden: pb.totals.total + prod.totals.total,
+      jumlahKomoditas: new Set(rows.map(r => r.komoditas).filter(Boolean)).size,
+      jumlahKab: new Set(rows.map(r => kabKey(r.kab_kota)).filter(Boolean)).size,
+      pctLolos: rows.length > 0 ? (nonDeleted / rows.length) * 100 : 0,
+      jumlahDitandai: rows.length - nonDeleted,
+    };
+  }, [data]);
+
+  const fmtPct = (v) => v.toLocaleString('id-ID', { maximumFractionDigits: 1 });
+  const activeSample = selectedKlasterTable === 'pedagang_besar' ? sampleStats.pb : sampleStats.prod;
 
   const komoditasSpecs = [
     {
@@ -167,7 +188,7 @@ export function Tab8Metadata() {
             Metadata, Metodologi Kajian, & QC System
           </h1>
           <p className="text-sm text-[#DCEAFA] leading-relaxed max-w-3xl">
-            Landasan metodologis, struktur kerangka sampel 185 responden panel, spesifikasi operasional 10 komoditas strategis, formulasi EWS, serta protokol pengendalian mutu data sebagai acuan analisis Pengendalian Inflasi Daerah (TPID DIY).
+            Landasan metodologis, struktur kerangka sampel {sampleStats.totalResponden} responden panel, spesifikasi operasional {komoditasSpecs.length} kelompok komoditas strategis ({sampleStats.jumlahKomoditas} varian), formulasi EWS, serta protokol pengendalian mutu data sebagai acuan analisis Pengendalian Inflasi Daerah (TPID DIY).
           </p>
         </div>
       </div>
@@ -180,12 +201,12 @@ export function Tab8Metadata() {
               <Users className="w-5 h-5 text-[#1E74C7]" />
             </div>
             <div>
-              <div className="text-2xl font-black text-[#101828]">185</div>
+              <div className="text-2xl font-black text-[#101828]">{sampleStats.totalResponden}</div>
               <div className="text-xs font-semibold text-[#667085]">Total Responden Panel</div>
             </div>
           </div>
           <div className="text-[11px] text-[#475467] font-medium pt-2 border-t border-[#F2F4F7]">
-            27 Produsen + 158 Pedagang Besar
+            {sampleStats.prod.totals.total} Produsen + {sampleStats.pb.totals.total} Pedagang Besar
           </div>
         </div>
 
@@ -195,12 +216,12 @@ export function Tab8Metadata() {
               <Building2 className="w-5 h-5 text-[#12B76A]" />
             </div>
             <div>
-              <div className="text-2xl font-black text-[#101828]">10</div>
-              <div className="text-xs font-semibold text-[#667085]">Komoditas Pangan</div>
+              <div className="text-2xl font-black text-[#101828]">{komoditasSpecs.length}</div>
+              <div className="text-xs font-semibold text-[#667085]">Kelompok Komoditas</div>
             </div>
           </div>
           <div className="text-[11px] text-[#475467] font-medium pt-2 border-t border-[#F2F4F7]">
-            Volatile & Administered Foods
+            {sampleStats.jumlahKomoditas} varian · Volatile & Administered Foods
           </div>
         </div>
 
@@ -210,7 +231,7 @@ export function Tab8Metadata() {
               <MapPin className="w-5 h-5 text-[#F79009]" />
             </div>
             <div>
-              <div className="text-2xl font-black text-[#101828]">5</div>
+              <div className="text-2xl font-black text-[#101828]">{sampleStats.jumlahKab}</div>
               <div className="text-xs font-semibold text-[#667085]">Kabupaten / Kota</div>
             </div>
           </div>
@@ -225,12 +246,12 @@ export function Tab8Metadata() {
               <ShieldCheck className="w-5 h-5 text-[#7A5AF8]" />
             </div>
             <div>
-              <div className="text-2xl font-black text-[#101828]">100%</div>
-              <div className="text-xs font-semibold text-[#667085]">Quality Control Gate</div>
+              <div className="text-2xl font-black text-[#101828]">{fmtPct(sampleStats.pctLolos)}%</div>
+              <div className="text-xs font-semibold text-[#667085]">Data Lolos Validasi</div>
             </div>
           </div>
           <div className="text-[11px] text-[#475467] font-medium pt-2 border-t border-[#F2F4F7]">
-            Validasi Stok & Witnessing Acak
+            {sampleStats.jumlahDitandai} baris ditandai toko tutup / tidak lapor
           </div>
         </div>
       </div>
@@ -258,7 +279,7 @@ export function Tab8Metadata() {
           }`}
         >
           <FileSpreadsheet className="w-4 h-4" />
-          <span>2. Spesifikasi 10 Komoditas</span>
+          <span>2. Spesifikasi {komoditasSpecs.length} Komoditas</span>
         </button>
 
         <button
@@ -311,7 +332,7 @@ export function Tab8Metadata() {
                       : 'text-[#667085] hover:text-[#101828]'
                   }`}
                 >
-                  Pedagang Besar (158 PB)
+                  Pedagang Besar ({sampleStats.pb.totals.total} PB)
                 </button>
                 <button
                   onClick={() => setSelectedKlasterTable('produsen')}
@@ -321,7 +342,7 @@ export function Tab8Metadata() {
                       : 'text-[#667085] hover:text-[#101828]'
                   }`}
                 >
-                  Produsen (27 Usaha)
+                  Produsen ({sampleStats.prod.totals.total} Usaha)
                 </button>
               </div>
             </div>
@@ -341,7 +362,7 @@ export function Tab8Metadata() {
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-[#F2F4F7] text-[#344054]">
-                  {(selectedKlasterTable === 'pedagang_besar' ? pedagangBesarData : produsenData).map((row, idx) => (
+                  {activeSample.table.map((row, idx) => (
                     <tr key={idx} className="hover:bg-[#F9FAFB] transition-colors">
                       <td className="py-2.5 px-4 font-semibold text-[#101828]">{row.komoditas}</td>
                       <td className="py-2.5 px-3 text-center">{row.bantul}</td>
@@ -355,14 +376,14 @@ export function Tab8Metadata() {
                 </tbody>
                 <tfoot>
                   <tr className="bg-[#0A2E5C] text-white font-bold">
-                    <td className="py-3 px-4">TOTAL RESPONDEN {selectedKlasterTable === 'pedagang_besar' ? 'PB' : 'PRODUSEN'}</td>
-                    <td className="py-3 px-3 text-center">{selectedKlasterTable === 'pedagang_besar' ? 34 : 5}</td>
-                    <td className="py-3 px-3 text-center">{selectedKlasterTable === 'pedagang_besar' ? 30 : 9}</td>
-                    <td className="py-3 px-3 text-center">{selectedKlasterTable === 'pedagang_besar' ? 22 : 0}</td>
-                    <td className="py-3 px-3 text-center">{selectedKlasterTable === 'pedagang_besar' ? 36 : 2}</td>
-                    <td className="py-3 px-3 text-center">{selectedKlasterTable === 'pedagang_besar' ? 36 : 11}</td>
+                    <td className="py-3 px-4">TOTAL RESPONDEN UNIK {selectedKlasterTable === 'pedagang_besar' ? 'PB' : 'PRODUSEN'}</td>
+                    <td className="py-3 px-3 text-center">{activeSample.totals.bantul}</td>
+                    <td className="py-3 px-3 text-center">{activeSample.totals.gunungkidul}</td>
+                    <td className="py-3 px-3 text-center">{activeSample.totals.yogyakarta}</td>
+                    <td className="py-3 px-3 text-center">{activeSample.totals.kulonprogo}</td>
+                    <td className="py-3 px-3 text-center">{activeSample.totals.sleman}</td>
                     <td className="py-3 px-4 text-center bg-[#C89B3C] text-[#0A2E5C]">
-                      {selectedKlasterTable === 'pedagang_besar' ? 158 : 27}
+                      {activeSample.totals.total}
                     </td>
                   </tr>
                 </tfoot>

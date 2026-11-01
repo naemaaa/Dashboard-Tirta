@@ -143,6 +143,8 @@ export function cleanLaporanRingkasan(rows = [], existingQualityIssues = [], ref
   for (const row of rows) {
     const key = [
       row.id_responden || row.nama_responden || '',
+      // id_responden yang sama bisa dipakai PB dan Produsen (mis. GK001) → beda responden
+      row.tipe_responden || '',
       row.id_periode || '',
       row.id_komoditas || row.komoditas || '',
       row.jenis_aliran || ''
@@ -249,7 +251,10 @@ export function cleanLaporanRingkasan(rows = [], existingQualityIssues = [], ref
     // CATATAN: Ambang batas HANYA volume = 0 (atau sangat kecil < 0.001).
     // Volume 0.1-1 Ton (100-1000 kg) adalah transaksi grosir yang VALID
     // untuk komoditas bernilai tinggi seperti cabai, bawang, daging, minyak goreng.
-    if (normalizedVolume <= 0.001) {
+    // Baris yang masih memegang stok (mis. tidak ada barang masuk tapi menjual dari stok) TIDAK dihapus,
+    // supaya stok akhirnya tetap terhitung.
+    const hasStok = (Number(row.stok_akhir_ton) || 0) > 0 || (Number(row.stok_akhir_liter) || 0) > 0;
+    if (normalizedVolume <= 0.001 && !hasStok) {
       report.volume_low_filtered++;
       const cleanedRow = {
         ...row,

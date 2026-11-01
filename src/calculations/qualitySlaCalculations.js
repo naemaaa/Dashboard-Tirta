@@ -42,15 +42,15 @@ export function calculateQualityMetrics(rawRingkasan = [], rawQualityIssues = []
   const anomaliCount = unitAnomalyCount + missingPeriodCount + invalidRegionCount;
 
   const totalRegisteredRespondents = 180;
-  const reportingRespondents = new Set(masukRows.map(r => r.id_responden || r.nama_responden)).size || 165;
+  const reportingRespondents = new Set(masukRows.map(r => `${r.id_responden || r.nama_responden}|${r.tipe_responden || ''}`)).size;
   const responseRatePercent = Number(((reportingRespondents / totalRegisteredRespondents) * 100).toFixed(1));
 
   const kelengkapanPercent = activeRecords > 0
     ? Number((((activeRecords - (emptyCount + anomaliCount)) / activeRecords) * 100).toFixed(1))
-    : 98.5;
+    : 0;
 
-  const emptyPercent = activeRecords > 0 ? Number(((emptyCount / activeRecords) * 100).toFixed(1)) : 1.5;
-  const anomaliPercent = activeRecords > 0 ? Number(((anomaliCount / activeRecords) * 100).toFixed(1)) : 1.0;
+  const emptyPercent = activeRecords > 0 ? Number(((emptyCount / activeRecords) * 100).toFixed(1)) : 0;
+  const anomaliPercent = activeRecords > 0 ? Number(((anomaliCount / activeRecords) * 100).toFixed(1)) : 0;
 
   const labelStatusKualitas = kelengkapanPercent >= 95 ? 'Lengkap' : kelengkapanPercent >= 80 ? 'Perlu Perhatian' : 'Bermasalah';
 

@@ -294,7 +294,7 @@ export function calculateTotalSusut(rows = []) {
 export function calculateJumlahResponden(rows = []) {
   if (!rows || rows.length === 0) return 0;
   const uniqueIds = new Set(
-    rows.filter(r => r.jenis_aliran === 'vol_masuk_ton').map(r => r.id_responden || r.nama_responden)
+    rows.filter(r => r.jenis_aliran === 'vol_masuk_ton').map(r => `${r.id_responden || r.nama_responden}|${r.tipe_responden || ''}`) // id sama bisa dipakai PB & Produsen
   );
   return uniqueIds.size;
 }
@@ -356,7 +356,7 @@ export function calculatePctLuarDiy(arusMasukRows = []) {
  */
 export function calculateDeltaPct(currentVal, prevVal) {
   if (!prevVal || prevVal === 0) return 0;
-  return Number((((currentVal - prevVal) / Math.abs(prevVal)) * 100).toFixed(1));
+  return Number((((currentVal - prevVal) / Math.abs(prevVal)) * 100).toFixed(1)) || 0; // || 0 membuang -0 (tampil "+-0,0%")
 }
 
 /**
