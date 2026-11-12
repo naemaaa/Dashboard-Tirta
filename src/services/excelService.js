@@ -8,7 +8,8 @@
 import * as XLSX from 'xlsx';
 import { generateMasterDataset, REF_WILAYAH, REF_KOMODITAS, REF_KALENDER, REF_SATUAN } from '../data/seedData.js';
 import { cleanDataset } from './dataCleaningService.js';
-import { CACHE_KEY, FETCH_TIMEOUT_MS, API_SYNC_ONEDRIVE } from '../config/env.js';
+import { CACHE_KEY, EWS_ALPS_CACHE_KEY, EWS_CACHE_KEY, FETCH_TIMEOUT_MS, API_SYNC_ONEDRIVE } from '../config/env.js';
+import { parseEwsWorkbook, parseAlpsEwsWorkbook } from './ewsDataParser.js';
 
 export class ExcelService {
 
@@ -97,6 +98,11 @@ export class ExcelService {
    */
   static async fetchMasterDatabase(forceSync = false) {
     const timestamp = Date.now();
+
+    // Bersihkan cache v9 lama (struktur data sebelum CACHE_KEY v10)
+    try {
+      localStorage.removeItem('dashboard_komoditas_diy_data_v9');
+    } catch (e) {}
 
     // 1. Try Live Serverless API Proxy for OneDrive
     try {
@@ -453,29 +459,40 @@ export class ExcelService {
   }
 
   /**
-   * Parse EWS Excel File (Database 2 — Standalone)
-   * File: Dashboard ALPS EWS DIY PIHPS AB29092026.xlsx
-   *
-   * Membaca semua sheet dan mengekstrak data EWS secara fleksibel.
-   * Sheet yang dicari (case-insensitive, trim):
-   *   - heatmap / ews_heatmap / alps / summary → ewsData.heatmap
-   *   - time_series / pelaku / history / perkembangan → ewsData.timeSeries
-   *   - forecast / proyeksi / arima → ewsData.forecast
-   *
-   * Kolom heatmap yang dinormalisasi (case-insensitive):
-   *   komoditas | heatmap_pb / pb | heatmap_pe / pe | heatmap_prod / prod
-   *   alps komoditas / alps / status | current_pressure | forecast_pressure
+   * Parse EWS Excel File (Database 2A & 2B — Standalone)
+   * Mendukung:
+   *   1. Workbook Link 1 "Dashboard ALPS EWS DIY PIHPS AB29092026.xlsx" (Raw_PIHPS, Model_ALPS, Parameter_ALPS)
+   *   2. Workbook Link 2 "Dashboard Hubungan Harga dan Arus Perdagangan.xlsx" (Harga PIHPS, Mingguan, Analisis, Kabupaten, Metode)
+   *   3. Workbook EWS legacy (heatmap / time_series / forecast)
    */
   static async parseEwsExcelBuffer(arrayBuffer) {
     const workbook = XLSX.read(arrayBuffer, { type: 'array' });
+    console.info('[EWS Parser] Sheet ditemukan:', workbook.SheetNames);
+
+    const isAlps2019 = workbook.SheetNames.some(s =>
+      /raw_pihps|dashboard_alps|model_alps/i.test(s.trim())
+    );
+    if (isAlps2019) {
+      const parsed = parseAlpsEwsWorkbook(workbook);
+      this.cacheEwsAlpsData(parsed);
+      return parsed;
+    }
+
+    const hasPihpsOrMingguan = workbook.SheetNames.some(s =>
+      /harga\s*pihps|mingguan|analisis/i.test(s.trim())
+    );
+
+    if (hasPihpsOrMingguan) {
+      const parsed = parseEwsWorkbook(workbook);
+      this.cacheEwsData(parsed);
+      return parsed;
+    }
 
     const ewsData = {
       heatmap: [],
       timeSeries: [],
       forecast: [],
     };
-
-    console.info('[EWS Parser] Sheet ditemukan:', workbook.SheetNames);
 
     workbook.SheetNames.forEach(sheetName => {
       const cn = sheetName.trim().toLowerCase().replace(/\s+/g, '_');
@@ -484,48 +501,183 @@ export class ExcelService {
 
       if (json.length === 0) return;
 
-      // ── Heatmap / ALPS Summary Sheet ──────────────────────────────────────
-      if (
-        /heatmap|ews_heatmap|alps|early.warning.*harga|summary|komoditas.*diy|harga.*komoditas/i.test(cn)
-      ) {
-        console.info(`[EWS Parser] Sheet HEATMAP terdeteksi: "${sheetName}" (${json.length} baris)`);
+      if (/heatmap|ews_heatmap|alps|early.warning.*harga|summary|komoditas.*diy|harga.*komoditas/i.test(cn)) {
         ewsData.heatmap = json;
         return;
       }
-
-      // ── Time Series / Perkembangan Harga Pelaku ───────────────────────────
-      if (
-        /time.series|pelaku|perkembangan|history|ews_history|tingkat.*produsen|produsen.*pedagang/i.test(cn)
-      ) {
-        console.info(`[EWS Parser] Sheet TIME SERIES terdeteksi: "${sheetName}" (${json.length} baris)`);
+      if (/time.series|pelaku|perkembangan|history|ews_history|tingkat.*produsen|produsen.*pedagang/i.test(cn)) {
         ewsData.timeSeries = json;
         return;
       }
-
-      // ── Forecast / Proyeksi ARIMA ─────────────────────────────────────────
-      if (
-        /forecast|proyeksi|arima|prediksi|tren.*harga|harga.*tren/i.test(cn)
-      ) {
-        console.info(`[EWS Parser] Sheet FORECAST terdeteksi: "${sheetName}" (${json.length} baris)`);
+      if (/forecast|proyeksi|arima|prediksi|tren.*harga|harga.*tren/i.test(cn)) {
         ewsData.forecast = json;
         return;
       }
     });
 
-    // ── Fallback: Jika hanya 1 sheet, anggap sebagai heatmap ─────────────────
     if (ewsData.heatmap.length === 0 && workbook.SheetNames.length > 0) {
       const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
       ewsData.heatmap = XLSX.utils.sheet_to_json(firstSheet, { defval: null });
-      console.warn('[EWS Parser] Tidak ada sheet bernama heatmap/alps. Menggunakan sheet pertama sebagai fallback heatmap.');
     }
 
-    console.info('[EWS Parser] Hasil parse:', {
-      heatmap: ewsData.heatmap.length,
-      timeSeries: ewsData.timeSeries.length,
-      forecast: ewsData.forecast.length,
-    });
-
+    this.cacheEwsData(ewsData);
     return ewsData;
+  }
+
+  /**
+   * Cache EWS ALPS (Link 1: 2019-2026) dataset in localStorage
+   */
+  static cacheEwsAlpsData(ewsAlpsData) {
+    try {
+      const serialized = JSON.stringify(ewsAlpsData);
+      if (serialized.length <= 4_000_000) {
+        localStorage.setItem(EWS_ALPS_CACHE_KEY, serialized);
+      }
+    } catch (e) {
+      console.warn('[ExcelService] Gagal menyimpan cache EWS ALPS:', e);
+    }
+  }
+
+  /**
+   * Cache EWS Hubungan Harga & Arus (Link 2: Mingguan 2026) dataset in localStorage
+   */
+  static cacheEwsData(ewsData) {
+    try {
+      const serialized = JSON.stringify(ewsData);
+      if (serialized.length <= 4_000_000) {
+        localStorage.setItem(EWS_CACHE_KEY, serialized);
+      }
+    } catch (e) {
+      console.warn('[ExcelService] Gagal menyimpan cache EWS:', e);
+    }
+  }
+
+  /**
+   * Fetch EWS ALPS Database (Database 2A — Link 1: Dashboard ALPS EWS DIY PIHPS AB29092026.xlsx)
+   */
+  static async fetchEwsAlpsDatabase(forceSync = false) {
+    const timestamp = Date.now();
+
+    // 1. Try API Proxy /api/sync-onedrive?db=ews_alps
+    try {
+      const apiRes = await this._fetchWithTimeout(
+        `${API_SYNC_ONEDRIVE}?db=ews_alps&${forceSync ? 'action=sync&' : ''}t=${timestamp}`,
+        { headers: { 'Cache-Control': 'no-cache', 'Pragma': 'no-cache' } }
+      );
+      if (apiRes.ok) {
+        const contentType = apiRes.headers.get('content-type') || '';
+        if (contentType.includes('spreadsheet') || contentType.includes('octet-stream')) {
+          const buffer = await apiRes.arrayBuffer();
+          const parsed = await this.parseEwsExcelBuffer(buffer);
+          return { data: parsed, source: forceSync ? 'onedrive_alps_live' : 'onedrive_alps_api', timestamp: new Date().toISOString() };
+        } else {
+          const parsed = await apiRes.json();
+          if (parsed && Array.isArray(parsed.heatmap) && parsed.heatmap.length > 0) {
+            this.cacheEwsAlpsData(parsed);
+            return { data: parsed, source: forceSync ? 'onedrive_alps_live' : 'onedrive_alps_api', timestamp: new Date().toISOString() };
+          }
+        }
+      }
+    } catch (apiErr) {
+      console.info('[ExcelService] EWS ALPS API Proxy not available, falling back to static ewsAlpsDatabase.json', apiErr);
+    }
+
+    // 2. Try static ewsAlpsDatabase.json
+    try {
+      const res = await this._fetchWithTimeout(`/data/ewsAlpsDatabase.json?t=${timestamp}`, {
+        headers: { 'Cache-Control': 'no-cache', 'Pragma': 'no-cache' }
+      });
+      if (res.ok) {
+        const parsed = await res.json();
+        if (parsed && Array.isArray(parsed.heatmap) && parsed.heatmap.length > 0) {
+          this.cacheEwsAlpsData(parsed);
+          return { data: parsed, source: 'network_alps_json', timestamp: new Date().toISOString() };
+        }
+      }
+    } catch (err) {
+      console.warn('[ExcelService] Network fetch for ewsAlpsDatabase.json failed, falling back to cache', err);
+    }
+
+    // 3. Fallback to cache if available
+    try {
+      const cached = localStorage.getItem(EWS_ALPS_CACHE_KEY);
+      if (cached) {
+        const parsed = JSON.parse(cached);
+        if (parsed && Array.isArray(parsed.heatmap) && parsed.heatmap.length > 0) {
+          return { data: parsed, source: 'cache_alps', timestamp: new Date().toISOString() };
+        }
+      }
+    } catch (e) {
+      console.warn('[ExcelService] EWS ALPS cache read error', e);
+    }
+
+    return { data: null, source: 'seed_alps', timestamp: new Date().toISOString() };
+  }
+
+  /**
+   * Fetch EWS Database (Database 2: Hubungan Harga PIHPS & Arus Perdagangan + ALPS)
+   * Urutan:
+   *   1. API Proxy /api/sync-onedrive?db=ews (dengan action=sync saat tombol Refresh ditekan)
+   *   2. Static JSON /data/ewsDatabase.json (pre-compiled untuk initial load cepat)
+   *   3. LocalStorage cache
+   */
+  static async fetchEwsDatabase(forceSync = false) {
+    const timestamp = Date.now();
+
+    // 1. Try Live Serverless / Vite Dev API Proxy for OneDrive EWS
+    try {
+      const apiRes = await this._fetchWithTimeout(
+        `${API_SYNC_ONEDRIVE}?db=ews&${forceSync ? 'action=sync&' : ''}t=${timestamp}`,
+        { headers: { 'Cache-Control': 'no-cache', 'Pragma': 'no-cache' } }
+      );
+      if (apiRes.ok) {
+        const contentType = apiRes.headers.get('content-type') || '';
+        if (contentType.includes('spreadsheet') || contentType.includes('octet-stream')) {
+          const buffer = await apiRes.arrayBuffer();
+          const parsed = await this.parseEwsExcelBuffer(buffer);
+          return { data: parsed, source: forceSync ? 'onedrive_ews_live' : 'onedrive_ews_api', timestamp: new Date().toISOString() };
+        } else {
+          const parsed = await apiRes.json();
+          if (parsed && Array.isArray(parsed.heatmap) && parsed.heatmap.length > 0) {
+            this.cacheEwsData(parsed);
+            return { data: parsed, source: forceSync ? 'onedrive_ews_live' : 'onedrive_ews_api', timestamp: new Date().toISOString() };
+          }
+        }
+      }
+    } catch (apiErr) {
+      console.info('[ExcelService] EWS API Proxy not available, falling back to static ewsDatabase.json', apiErr);
+    }
+
+    // 2. Try static ewsDatabase.json
+    try {
+      const res = await this._fetchWithTimeout(`/data/ewsDatabase.json?t=${timestamp}`, {
+        headers: { 'Cache-Control': 'no-cache', 'Pragma': 'no-cache' }
+      });
+      if (res.ok) {
+        const parsed = await res.json();
+        if (parsed && Array.isArray(parsed.heatmap) && parsed.heatmap.length > 0) {
+          this.cacheEwsData(parsed);
+          return { data: parsed, source: 'network_ews_json', timestamp: new Date().toISOString() };
+        }
+      }
+    } catch (err) {
+      console.warn('[ExcelService] Network fetch for ewsDatabase.json failed, falling back to cache', err);
+    }
+
+    // 3. Fallback to cache if available
+    try {
+      const cached = localStorage.getItem(EWS_CACHE_KEY);
+      if (cached) {
+        const parsed = JSON.parse(cached);
+        if (parsed && Array.isArray(parsed.heatmap) && parsed.heatmap.length > 0) {
+          return { data: parsed, source: 'cache_ews', timestamp: new Date().toISOString() };
+        }
+      }
+    } catch (e) {
+      console.warn('[ExcelService] EWS cache read error', e);
+    }
+
+    return { data: null, source: 'seed_ews', timestamp: new Date().toISOString() };
   }
 
   /**

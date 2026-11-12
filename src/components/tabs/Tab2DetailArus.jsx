@@ -1,6 +1,7 @@
 import React, { useState, useMemo } from 'react';
 import { useCalculations } from '../../hooks/useCalculations';
 import { useDashboardStore } from '../../store/useDashboardStore';
+import { UnitToggle } from '../common/UnitToggle';
 import { REF_WILAYAH } from '../../data/seedData';
 import { GlobalFilterBar } from '../common/GlobalFilterBar';
 import { ExecutiveIntelligenceBox } from '../executive/ExecutiveIntelligenceBox';
@@ -53,6 +54,8 @@ export function Tab2DetailArus() {
   const [searchTerm, setSearchTerm] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
   const [showPasswordModal, setShowPasswordModal] = useState(false);
+  // Satuan grafik butterfly & selisih: Ton (komoditas padat) atau Liter (minyak goreng), tidak pernah dicampur
+  const [chartUnit, setChartUnit] = useState('Ton');
 
   const unitLabel = dominantUnit === 'Mixed' ? 'Ton / Liter' : (dominantUnit || 'Ton');
   const komoditasLabel = (selectedKomoditas || 'Beras Medium I').replace(' (Ton)', '').replace(' (Liter)', '');
@@ -92,21 +95,21 @@ export function Tab2DetailArus() {
   const paginatedRespondents = filteredRespondents.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
 
   const butterflyChartData = useMemo(() => {
-    return (butterflyData || []).map(b => ({
+    return (butterflyData || []).filter(b => (b.satuan_dasar || 'Ton') === chartUnit).map(b => ({
       ...b,
       name: (b.komoditas || b.name || '').replace(' (Ton)', '').replace(' (Liter)', ''),
       masukNeg: -Math.abs(b.volMasuk || 0),
       volKeluar: Math.abs(b.volKeluar || 0)
     }));
-  }, [butterflyData]);
+  }, [butterflyData, chartUnit]);
 
   const selisihData = useMemo(() => {
-    return butterflyData.map(b => ({
+    return butterflyData.filter(b => (b.satuan_dasar || 'Ton') === chartUnit).map(b => ({
       name: (b.name || b.komoditas).replace(' (Ton)', '').replace(' (Liter)', ''),
       selisih: b.neraca,
       isPositive: b.neraca >= 0
     })).sort((a, b) => b.selisih - a.selisih);
-  }, [butterflyData]);
+  }, [butterflyData, chartUnit]);
 
   const handleExportRespondents = () => {
     exportToExcel(
@@ -226,13 +229,14 @@ export function Tab2DetailArus() {
               <div className="flex items-center justify-between mb-2">
                 <div>
                   <h3 className="text-xs font-bold text-slate-900 uppercase tracking-wider">
-                    Profil Arus Masuk vs Keluar ({unitLabel})
+                    Profil Arus Masuk vs Keluar ({chartUnit})
                   </h3>
                   <p className="text-[10px] text-slate-500">
-                    Membandingkan pasokan luar DIY (Kiri) vs penjualan re-ekspor (Kanan) per komoditas
+                    Membandingkan pasokan luar DIY (Kiri) vs penjualan re-ekspor (Kanan) per komoditas{chartUnit === 'Liter' ? ' (minyak goreng)' : ''}
                   </p>
                 </div>
                 <div className="flex items-center gap-3 text-[10px] font-semibold">
+                  <UnitToggle value={chartUnit} onChange={setChartUnit} />
                   <span className="flex items-center gap-1 text-[#1E74C7]">
                     <span className="w-2 h-2 rounded-full bg-[#1E74C7]"></span> Arus Masuk
                   </span>
@@ -262,7 +266,7 @@ export function Tab2DetailArus() {
                     <Tooltip
                       contentStyle={{ backgroundColor: '#0F172A', borderRadius: '8px', border: 'none', color: '#fff', fontSize: '11px' }}
                       formatter={(val, name) => [
-                        `${Math.abs(val)} ${unitLabel}`,
+                        `${Math.abs(val)} ${chartUnit}`,
                         name === 'masukNeg' ? 'Arus Masuk (Pasokan)' : 'Arus Keluar (Distribusi)'
                       ]}
                     />
@@ -284,12 +288,13 @@ export function Tab2DetailArus() {
               <div className="flex items-center justify-between mb-2">
                 <div>
                   <h3 className="text-xs font-bold text-slate-900 uppercase tracking-wider">
-                    Selisih Net per Komoditas ({unitLabel})
+                    Selisih Net per Komoditas ({chartUnit})
                   </h3>
                   <p className="text-[10px] text-slate-500">
                     Hijau = Surplus Net (Net Inflow), Merah = Defisit Net (Net Outflow)
                   </p>
                 </div>
+                <UnitToggle value={chartUnit} onChange={setChartUnit} />
               </div>
 
               <div className="h-[360px] w-full">
@@ -310,7 +315,7 @@ export function Tab2DetailArus() {
                     />
                     <Tooltip
                       contentStyle={{ backgroundColor: '#0F172A', borderRadius: '8px', border: 'none', color: '#fff', fontSize: '11px' }}
-                      formatter={(val) => [`${val > 0 ? '+' : ''}${val} ${unitLabel}`, 'Selisih Net']}
+                      formatter={(val) => [`${val > 0 ? '+' : ''}${val} ${chartUnit}`, 'Selisih Net']}
                     />
                     <Bar dataKey="selisih" radius={[0, 4, 4, 0]}>
                       {selisihData.map((entry, index) => (
@@ -338,7 +343,7 @@ export function Tab2DetailArus() {
               <div className="flex items-center justify-between mb-3">
                 <div>
                   <h3 className="text-xs font-bold text-slate-900 uppercase tracking-wider">
-                    Matriks Arus Masuk, Keluar & Selisih per Kab/Kota ({unitLabel})
+                    Matriks Arus Masuk, Keluar & Selisih per Kab/Kota (Ton; minyak goreng dalam Liter)
                   </h3>
                   <p className="text-[10px] text-slate-500">
                     Dekomposisi volume per kabupaten/kota di wilayah D.I. Yogyakarta

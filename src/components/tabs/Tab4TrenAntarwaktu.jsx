@@ -1,11 +1,12 @@
 // Tab 4: Tren Antarwaktu dan Perubahan Periode
 // Bank Indonesia KPw DIY · PSEKUIN UPN Veteran Yogyakarta
 
-import React, { useMemo } from 'react';
+import React, { useMemo, useState } from 'react';
 import { useCalculations } from '../../hooks/useCalculations';
 import { useDashboardStore } from '../../store/useDashboardStore';
 import { REF_KOMODITAS } from '../../data/seedData';
 import { GlobalFilterBar } from '../common/GlobalFilterBar';
+import { UnitToggle } from '../common/UnitToggle';
 import { ExecutiveIntelligenceBox } from '../executive/ExecutiveIntelligenceBox';
 import { formatDecimal, formatPercent, formatRupiah } from '../../utils/formatters';
 import {
@@ -99,9 +100,11 @@ function Tab4TrenAntarwaktuContent() {
     '#F59E0B', '#EF4444', '#06B6D4'
   ];
 
+  // Satuan grafik evolusi: Ton (komoditas padat) atau Liter (minyak goreng), tidak pernah ditumpuk di sumbu yang sama
+  const [evoUnit, setEvoUnit] = useState('Ton');
   const allCommodityNames = useMemo(() => {
-    return REF_KOMODITAS.map(k => k.nama_komoditas.replace(' (Ton)', '').replace(' (Liter)', ''));
-  }, []);
+    return REF_KOMODITAS.filter(k => (k.satuan_dasar || 'Ton') === evoUnit).map(k => k.nama_komoditas.replace(' (Ton)', '').replace(' (Liter)', ''));
+  }, [evoUnit]);
 
   const historicalTrendsWithDeltas = useMemo(() => {
     return (historicalTrends || []).map((curr, idx, arr) => {
@@ -320,9 +323,9 @@ function Tab4TrenAntarwaktuContent() {
               <h3 className="text-xs font-bold text-[#101828] uppercase tracking-wider">
                 Evolusi Arus Masuk per Komoditas Pangan
               </h3>
-              <p className="text-xs text-[#667085]">Dinamika pasokan mingguan komoditas utama DIY</p>
+              <p className="text-xs text-[#667085]">Dinamika pasokan mingguan komoditas utama DIY ({evoUnit === 'Liter' ? 'minyak goreng, Liter' : 'Ton'})</p>
             </div>
-            <span className="text-xs text-[#667085] bg-[#F2F4F7] px-2.5 py-1 rounded-full font-medium">Deret Waktu Mingguan</span>
+            <UnitToggle value={evoUnit} onChange={setEvoUnit} />
           </div>
 
           <div className="h-60">
@@ -336,7 +339,7 @@ function Tab4TrenAntarwaktuContent() {
                   contentStyle={{ backgroundColor: '#071D3D', borderRadius: '10px', border: '1px solid #1E74C7', color: '#ffffff', fontSize: '11px' }}
                   itemStyle={{ color: '#ffffff' }}
                   labelStyle={{ color: '#ffffff', fontWeight: 'bold' }}
-                  formatter={(val, name) => [`${formatDecimal(val, 2)} Ton`, name]}
+                  formatter={(val, name) => [`${formatDecimal(val, 2)} ${evoUnit}`, name]}
                 />
                 {allCommodityNames.map((comm, idx) => (
                   <Area

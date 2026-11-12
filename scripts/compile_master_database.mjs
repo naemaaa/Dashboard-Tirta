@@ -68,7 +68,9 @@ function classifyPlace(raw, kecamatan) {
 
 function unitMultiplier(rawSatuan, isLiquid) {
   const s = squash(rawSatuan).replace(/[^a-z0-9. ]/g, '');
-  if (isLiquid) return 1;                    // minyak goreng disimpan dalam liter
+  // Minyak goreng selalu liter. Beberapa responden (GK015, KT010, KT023) menulis "kg" di kolom satuan:
+  // itu salah ketik untuk liter (dikonfirmasi pemilik data, 12 Nov 2026), jadi tidak dikonversi.
+  if (isLiquid) return 1;
   if (s === '' || s === 'undefined') return { m: 0.001, assumed: true }; // kosong → diasumsikan kg
   if (/^\d/.test(s)) return null;            // isi kolom satuan salah (angka harga) → tidak bisa dipakai
   if (s.includes('ton')) return { m: 1 };

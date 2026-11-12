@@ -103,6 +103,7 @@ export function calculateButterflyData(rawRingkasan = [], selectedPeriode, selec
       id_komoditas: kom.id_komoditas,
       komoditas: kom.nama_singkat || kom.nama_komoditas.replace(' (Ton)', ''),
       full_name: kom.nama_komoditas,
+      satuan_dasar: kom.satuan_dasar || 'Ton',
       volMasuk: Number(vIn.toFixed(2)),
       volKeluar: Number(vOut.toFixed(2)),
       neraca: Number(net.toFixed(2)),

@@ -14,14 +14,24 @@ export default async function handler(req, res) {
     return res.status(200).end();
   }
 
+  const dbParam = req.query?.db;
+  const isEwsAlps = dbParam === 'ews_alps';
+  const isEwsHubungan = dbParam === 'ews' || dbParam === 'harga_arus';
   const oneDriveUrl = req.query?.url || 
-                      process.env.ONEDRIVE_EXCEL_URL || 
-                      'https://1drv.ms/x/c/91bfd97920eb749f/IQCdNxmxmw1dQJNhiEWiOvOPAUMNVvmVa5NbtHLSnE2LAoA?e=awmD8v';
+                      (isEwsAlps
+                        ? (process.env.VITE_ONEDRIVE_EWS_URL || 'https://1drv.ms/x/c/91bfd97920eb749f/IQAMDh9u-137Q7cGzN_Lr-Y6AQXyHpEbl1qAq2ow_4yne_k?e=M3kKsn')
+                        : isEwsHubungan
+                        ? (process.env.VITE_ONEDRIVE_HARGA_ARUS_URL || 'https://1drv.ms/x/c/91bfd97920eb749f/IQCyJrPPrgQnSoxn3iqtZcvYAZu6P0BlyGGmzpyx5rjIlu4?e=QRx7I9')
+                        : (process.env.ONEDRIVE_EXCEL_URL || 'https://1drv.ms/x/c/91bfd97920eb749f/IQCdNxmxmw1dQJNhiEWiOvOPAUMNVvmVa5NbtHLSnE2LAoA?e=awmD8v'));
 
   try {
     // 1. If a direct download URL is configured, attempt fetch
-    if (oneDriveUrl && (oneDriveUrl.includes('download') || oneDriveUrl.includes('export') || oneDriveUrl.includes('sharepoint'))) {
-      const response = await fetch(oneDriveUrl, {
+    if (oneDriveUrl && (oneDriveUrl.includes('download') || oneDriveUrl.includes('export') || oneDriveUrl.includes('sharepoint') || oneDriveUrl.includes('1drv.ms'))) {
+      const dlUrl = oneDriveUrl.includes('1drv.ms')
+        ? (oneDriveUrl.includes('?') ? `${oneDriveUrl}&download=1` : `${oneDriveUrl}?download=1`)
+        : oneDriveUrl;
+      const response = await fetch(dlUrl, {
+        redirect: 'follow',
         headers: {
           'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
           'Accept': '*/*'
@@ -43,12 +53,13 @@ export default async function handler(req, res) {
       }
     }
 
-    // 2. Fallback: Return current master JSON dataset
-    const jsonPath = path.join(process.cwd(), 'public', 'data', 'masterDatabase.json');
+    // 2. Fallback: Return current static JSON dataset (ewsAlpsDatabase.json, ewsDatabase.json, or masterDatabase.json)
+    const targetFile = isEwsAlps ? 'ewsAlpsDatabase.json' : isEwsHubungan ? 'ewsDatabase.json' : 'masterDatabase.json';
+    const jsonPath = path.join(process.cwd(), 'public', 'data', targetFile);
     if (fs.existsSync(jsonPath)) {
       const jsonContent = fs.readFileSync(jsonPath, 'utf-8');
       res.setHeader('Content-Type', 'application/json');
-      res.setHeader('X-Data-Source', 'master_database_json');
+      res.setHeader('X-Data-Source', isEwsAlps ? 'ews_alps_database_json' : isEwsHubungan ? 'ews_database_json' : 'master_database_json');
       res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
       return res.status(200).send(jsonContent);
     }

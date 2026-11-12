@@ -20,10 +20,20 @@
 export const ONEDRIVE_MASTER_URL = import.meta.env.VITE_ONEDRIVE_MASTER_URL || '';
 
 /**
- * Database 2: Early Warning System (EWS) Alert — Tab 7, standalone, no cross-filter
+ * Database 2A: Early Warning System (EWS) Alert — Tab 7 Sub-Tab 1, standalone
  * Set via VITE_ONEDRIVE_EWS_URL di .env
  */
-export const ONEDRIVE_EWS_URL = import.meta.env.VITE_ONEDRIVE_EWS_URL || '';
+export const ONEDRIVE_EWS_URL =
+  import.meta.env.VITE_ONEDRIVE_EWS_URL ||
+  'https://1drv.ms/x/c/91bfd97920eb749f/IQAMDh9u-137Q7cGzN_Lr-Y6AQXyHpEbl1qAq2ow_4yne_k?e=M3kKsn';
+
+/**
+ * Database 2B: Hubungan Harga PIHPS & Arus Perdagangan — Tab 7 Sub-Tab 2
+ * File: Dashboard Hubungan Harga dan Arus Perdagangan.xlsx
+ */
+export const ONEDRIVE_HARGA_ARUS_URL =
+  import.meta.env.VITE_ONEDRIVE_HARGA_ARUS_URL ||
+  'https://1drv.ms/x/c/91bfd97920eb749f/IQCyJrPPrgQnSoxn3iqtZcvYAZu6P0BlyGGmzpyx5rjIlu4?e=QRx7I9';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // SECURITY
@@ -48,7 +58,9 @@ export const APP_VERSION = import.meta.env.VITE_APP_VERSION || '1.0.0';
 // ─────────────────────────────────────────────────────────────────────────────
 // RUNTIME CONSTANTS (tidak sensitif — boleh di-commit)
 // ─────────────────────────────────────────────────────────────────────────────
-export const CACHE_KEY          = 'dashboard_komoditas_diy_data_v9';
+export const CACHE_KEY          = 'dashboard_komoditas_diy_data_v10';
+export const EWS_ALPS_CACHE_KEY = 'dashboard_komoditas_diy_ews_alps_v1';
+export const EWS_CACHE_KEY      = 'dashboard_komoditas_diy_ews_v2';
 export const FETCH_TIMEOUT_MS   = 15000;       // 15 detik timeout fetch
 export const UNLOCK_SESSION_MS  = 30 * 60 * 1000; // 30 menit session respondent
 

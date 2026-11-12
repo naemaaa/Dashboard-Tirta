@@ -211,15 +211,17 @@ function Tab1RingkasanUtamaInner() {
                     labelStyle={{ color: '#ffffff', fontWeight: 'bold' }}
                     formatter={(val, name) => [`${formatDecimal(val, 2)} ${unitLabel}`, name === 'volMasuk' || name === 'Volume Masuk' ? 'Volume Masuk' : 'Volume Keluar']}
                   />
-                  <Line type="monotone" dataKey="volKeluar" name="Volume Keluar" stroke="#17B6A7" strokeWidth={2.5} dot={{ r: 3.5, fill: '#17B6A7' }} activeDot={{ r: 5 }} />
-                  <Line type="monotone" dataKey="volMasuk" name="Volume Masuk" stroke="#1E74C7" strokeWidth={2.5} dot={{ r: 3.5, fill: '#1E74C7' }} activeDot={{ r: 5 }} />
+                  {/* Masuk digambar dulu (tebal), Keluar di atasnya (putus-putus, titik berongga):
+                      saat volume masuk = keluar, kedua garis tetap kelihatan */}
+                  <Line type="monotone" dataKey="volMasuk" name="Volume Masuk" stroke="#1E74C7" strokeWidth={4} strokeOpacity={0.55} dot={{ r: 4.5, fill: '#1E74C7', fillOpacity: 0.55, strokeWidth: 0 }} activeDot={{ r: 6 }} />
+                  <Line type="monotone" dataKey="volKeluar" name="Volume Keluar" stroke="#17B6A7" strokeWidth={2} strokeDasharray="5 3" dot={{ r: 3, fill: '#ffffff', stroke: '#17B6A7', strokeWidth: 2 }} activeDot={{ r: 5 }} />
                 </LineChart>
               </ResponsiveContainer>
             </div>
           </div>
           <div className="flex justify-center gap-4 text-xs font-medium mt-1 text-[#344054] pt-2 border-t border-[#F2F4F7]">
-            <span className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded-full bg-[#17B6A7]"></span> Volume Keluar</span>
-            <span className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded-full bg-[#1E74C7]"></span> Volume Masuk</span>
+            <span className="flex items-center gap-1.5"><span className="w-4 h-0 border-t-2 border-dashed border-[#17B6A7]"></span> Volume Keluar</span>
+            <span className="flex items-center gap-1.5"><span className="w-4 h-1 rounded-full bg-[#1E74C7]/55"></span> Volume Masuk</span>
           </div>
         </div>
 
@@ -230,7 +232,7 @@ function Tab1RingkasanUtamaInner() {
               <h3 className="text-xs font-bold text-[#101828] uppercase tracking-wider">
                 Neraca Arus per Komoditas & Kab/Kota
               </h3>
-              <span className="text-[10px] text-[#667085] bg-[#F2F4F7] px-2 py-0.5 rounded-full font-medium">{unitLabel}</span>
+              <span className="text-[10px] text-[#667085] bg-[#F2F4F7] px-2 py-0.5 rounded-full font-medium">Ton · minyak goreng Liter</span>
             </div>
             {/* Table Container */}
             <div className="overflow-x-auto border border-[#E4E7EC] rounded-xl max-h-56">
@@ -266,7 +268,7 @@ function Tab1RingkasanUtamaInner() {
               </table>
             </div>
           </div>
-          <div className="text-[10px] text-[#667085] text-right mt-1 pt-1 border-t border-[#F2F4F7]">Nilai netto desimal x,xx dalam satuan {unitLabel} (Surplus / Defisit)</div>
+          <div className="text-[10px] text-[#667085] text-right mt-1 pt-1 border-t border-[#F2F4F7]">Nilai netto dalam Ton; minyak goreng dalam Liter (Surplus / Defisit)</div>
         </div>
 
         {/* Right: 2 Donut Charts (Komposisi Pasokan & Penjualan) */}

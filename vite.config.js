@@ -16,7 +16,52 @@ function oneDriveApiPlugin() {
           res.setHeader('Cache-Control', 'no-cache')
           try {
             const urlObj = new URL(req.url, 'http://localhost');
-            if (urlObj.searchParams.get('action') === 'sync') {
+            const dbParam = urlObj.searchParams.get('db');
+            const isEwsAlps = dbParam === 'ews_alps';
+            const isEwsHubungan = dbParam === 'ews' || dbParam === 'harga_arus';
+            const isSync = urlObj.searchParams.get('action') === 'sync';
+
+            if (isEwsAlps) {
+              if (isSync) {
+                try {
+                  const { execSync } = await import('child_process');
+                  console.log('[Dev Server] Menarik data EWS ALPS (2019-2026) terbaru dari OneDrive...');
+                  execSync('node scripts/download_ews_onedrive.cjs alps && node scripts/compile_ews_database.mjs', { stdio: 'inherit' });
+                } catch (syncErr) {
+                  console.warn('[Dev Server] EWS ALPS live pull warning, serving existing ewsAlpsDatabase.json:', syncErr.message);
+                }
+              }
+              const alpsJsonPath = path.resolve(import.meta.dirname, 'public/data/ewsAlpsDatabase.json');
+              if (fs.existsSync(alpsJsonPath)) {
+                const alpsData = fs.readFileSync(alpsJsonPath, 'utf-8');
+                res.statusCode = 200;
+                return res.end(alpsData);
+              }
+              res.statusCode = 404;
+              return res.end(JSON.stringify({ error: 'EWS ALPS database not found' }));
+            }
+
+            if (isEwsHubungan) {
+              if (isSync) {
+                try {
+                  const { execSync } = await import('child_process');
+                  console.log('[Dev Server] Menarik data Hubungan Harga & Arus terbaru langsung dari OneDrive...');
+                  execSync('node scripts/download_ews_onedrive.cjs hubungan && node scripts/compile_ews_database.mjs', { stdio: 'inherit' });
+                } catch (syncErr) {
+                  console.warn('[Dev Server] EWS Hubungan live pull warning, serving existing ewsDatabase.json:', syncErr.message);
+                }
+              }
+              const ewsJsonPath = path.resolve(import.meta.dirname, 'public/data/ewsDatabase.json');
+              if (fs.existsSync(ewsJsonPath)) {
+                const ewsData = fs.readFileSync(ewsJsonPath, 'utf-8');
+                res.statusCode = 200;
+                return res.end(ewsData);
+              }
+              res.statusCode = 404;
+              return res.end(JSON.stringify({ error: 'EWS Hubungan database not found' }));
+            }
+
+            if (isSync) {
               try {
                 const { execSync } = await import('child_process');
                 console.log('[Dev Server] Menarik data terbaru langsung dari OneDrive...');
