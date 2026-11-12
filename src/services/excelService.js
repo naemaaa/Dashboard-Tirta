@@ -6,7 +6,8 @@
 // - P2: cacheData() — quota-safe try/catch dengan estimasi ukuran
 
 import * as XLSX from 'xlsx';
-import { generateMasterDataset, REF_WILAYAH, REF_KOMODITAS, REF_KALENDER, REF_SATUAN } from '../data/seedData.js';
+import { generateMasterDataset, REF_WILAYAH, REF_KOMODITAS, REF_KALENDER, REF_SATUAN, REF_KLASTER_RESPONDEN } from '../data/seedData.js';
+import { compileWorkbook } from './masterCompiler.js';
 import { cleanDataset } from './dataCleaningService.js';
 import { CACHE_KEY, EWS_ALPS_CACHE_KEY, EWS_CACHE_KEY, FETCH_TIMEOUT_MS, API_SYNC_ONEDRIVE } from '../config/env.js';
 import { parseEwsWorkbook, parseAlpsEwsWorkbook } from './ewsDataParser.js';
@@ -353,6 +354,23 @@ export class ExcelService {
    */
   static async parseExcelBuffer(arrayBuffer) {
     const workbook = XLSX.read(arrayBuffer, { type: 'array' });
+
+    // Format Master Database (REF_Kalender + laporan_ringkasan): olah dengan compileWorkbook,
+    // logika yang sama dengan `npm run sync` dan API online, supaya hasil upload = hasil sinkronisasi.
+    const hasSheet = (name) => workbook.SheetNames.some(s => s.trim().toLowerCase() === name);
+    if (hasSheet('ref_kalender') && hasSheet('laporan_ringkasan')) {
+      const { dataset } = compileWorkbook(workbook, {
+        REF_KOMODITAS,
+        REF_WILAYAH,
+        REF_SATUAN,
+        REF_KLASTER_RESPONDEN,
+        respondents: [],
+      });
+      if (dataset.laporan_ringkasan.length > 0) {
+        const { cleanedDataset } = cleanDataset(dataset);
+        return cleanedDataset;
+      }
+    }
     const result = {
       REF_WILAYAH,
       REF_KOMODITAS,

@@ -3,6 +3,29 @@
 
 import fs from 'fs';
 import path from 'path';
+import XLSX from 'xlsx';
+import { compileWorkbook } from '../src/services/masterCompiler.js';
+import { REF_KOMODITAS, REF_WILAYAH, REF_SATUAN, REF_KLASTER_RESPONDEN } from '../src/data/seedData.js';
+
+/**
+ * Master Database: olah Excel di server dengan logika yang SAMA dengan `npm run sync`
+ * (scripts/compile_master_database.mjs), lalu kirim JSON. Browser tidak lagi mem-parse Excel master
+ * dengan parser terpisah, sehingga angka versi online = versi lokal.
+ */
+function compileMasterBuffer(buffer) {
+  const jsonPath = path.join(process.cwd(), 'public', 'data', 'masterDatabase.json');
+  let existing = {};
+  try { existing = JSON.parse(fs.readFileSync(jsonPath, 'utf-8')); } catch { /* tanpa master lama: pakai seed */ }
+  const wb = XLSX.read(Buffer.from(buffer), { type: 'buffer' });
+  const { dataset } = compileWorkbook(wb, {
+    REF_KOMODITAS,
+    REF_WILAYAH,
+    REF_SATUAN: existing.REF_SATUAN || REF_SATUAN,
+    REF_KLASTER_RESPONDEN: existing.REF_KLASTER_RESPONDEN || REF_KLASTER_RESPONDEN,
+    respondents: existing.respondents || [],
+  });
+  return dataset;
+}
 
 export default async function handler(req, res) {
   // Enable CORS
@@ -44,7 +67,15 @@ export default async function handler(req, res) {
         const bytes = new Uint8Array(buffer.slice(0, 4));
         const isZip = bytes[0] === 0x50 && bytes[1] === 0x4B && bytes[2] === 0x03 && bytes[3] === 0x04;
 
-        if (isZip) {
+        if (isZip && !isEwsAlps && !isEwsHubungan) {
+          const dataset = compileMasterBuffer(buffer);
+          if (dataset.laporan_ringkasan.length > 0) {
+            res.setHeader('Content-Type', 'application/json');
+            res.setHeader('X-Data-Source', 'onedrive_live_compiled');
+            res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
+            return res.status(200).send(JSON.stringify(dataset));
+          }
+        } else if (isZip) {
           res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
           res.setHeader('X-Data-Source', 'onedrive_live');
           res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
