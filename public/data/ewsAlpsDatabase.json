@@ -1,348 +1,349 @@
 {
   "meta": {
     "title": "DASHBOARD ALPS – EARLY WARNING SYSTEM INFLASI D.I. YOGYAKARTA",
-    "periodeData": "Jan 2019 – Sept 2026",
-    "totalMonths": 93,
+    "periodeData": "Jan 2019 – Nov 2026",
+    "lastPeriod": "2026-11-01",
+    "totalMonths": 95,
     "totalKomoditas": 21,
     "sourceFile": "Dashboard ALPS EWS DIY PIHPS AB29092026.xlsx",
-    "generatedAt": "2026-11-12T04:31:38.939Z"
+    "generatedAt": "2026-11-12T07:09:20.166Z"
   },
   "heatmap": [
     {
       "id": "EWS_01",
       "komoditas": "Beras Kualitas Bawah I",
       "kelompok": "Beras",
-      "heatmap_pb": 11.13,
-      "heatmap_pe": 6.44,
-      "heatmap_prod": 2.92,
+      "heatmap_pb": 10.85,
+      "heatmap_pe": 7.12,
+      "heatmap_prod": 3.45,
       "alps": "WARNING",
-      "alps_score": 1.72,
-      "harga_aktual": 13650,
-      "harga_expected": 13258,
-      "residual_sd": 228,
-      "lt_growth_pct": 30,
-      "current_pressure": 0.044,
-      "forecast_pressure": 0.038
+      "alps_score": 1.32,
+      "harga_aktual": 13750,
+      "harga_expected": 13423,
+      "residual_sd": 247,
+      "lt_growth_pct": 30.95,
+      "current_pressure": 0.037,
+      "forecast_pressure": 0.022
     },
     {
       "id": "EWS_02",
       "komoditas": "Beras Kualitas Bawah II",
       "kelompok": "Beras",
-      "heatmap_pb": 0.81,
-      "heatmap_pe": 0.15,
-      "heatmap_prod": -1.98,
+      "heatmap_pb": 5.59,
+      "heatmap_pe": 3.48,
+      "heatmap_prod": 0.61,
       "alps": "WATCH",
-      "alps_score": 0.26,
-      "harga_aktual": 12250,
-      "harga_expected": 12191,
-      "residual_sd": 229,
-      "lt_growth_pct": 23.12,
-      "current_pressure": 0.007,
-      "forecast_pressure": 0.007
+      "alps_score": 0.76,
+      "harga_aktual": 12375,
+      "harga_expected": 12214,
+      "residual_sd": 211,
+      "lt_growth_pct": 24.37,
+      "current_pressure": 0.02,
+      "forecast_pressure": 0.012
     },
     {
       "id": "EWS_03",
       "komoditas": "Beras Kualitas Medium I",
       "kelompok": "Beras",
-      "heatmap_pb": 5.8,
-      "heatmap_pe": 3.07,
-      "heatmap_prod": 0.29,
+      "heatmap_pb": 8.11,
+      "heatmap_pe": 4.89,
+      "heatmap_prod": 1.71,
       "alps": "WARNING",
-      "alps_score": 1.02,
-      "harga_aktual": 15250,
-      "harga_expected": 15027,
-      "residual_sd": 218,
-      "lt_growth_pct": 26.03,
-      "current_pressure": 0.022,
-      "forecast_pressure": 0.02
+      "alps_score": 1.17,
+      "harga_aktual": 15375,
+      "harga_expected": 15125,
+      "residual_sd": 215,
+      "lt_growth_pct": 27.07,
+      "current_pressure": 0.025,
+      "forecast_pressure": 0.015
     },
     {
       "id": "EWS_04",
       "komoditas": "Beras Kualitas Medium II",
       "kelompok": "Beras",
-      "heatmap_pb": 5.72,
-      "heatmap_pe": 3.23,
-      "heatmap_prod": 0.42,
-      "alps": "WATCH",
-      "alps_score": 0.92,
-      "harga_aktual": 14500,
-      "harga_expected": 14277,
-      "residual_sd": 243,
-      "lt_growth_pct": 27.19,
-      "current_pressure": 0.023,
-      "forecast_pressure": 0.021
+      "heatmap_pb": 8.22,
+      "heatmap_pe": 5.14,
+      "heatmap_prod": 1.91,
+      "alps": "WARNING",
+      "alps_score": 1.11,
+      "harga_aktual": 14625,
+      "harga_expected": 14375,
+      "residual_sd": 226,
+      "lt_growth_pct": 28.29,
+      "current_pressure": 0.026,
+      "forecast_pressure": 0.016
     },
     {
       "id": "EWS_05",
       "komoditas": "Beras Kualitas Super I",
       "kelompok": "Beras",
-      "heatmap_pb": 14.72,
-      "heatmap_pe": 7.73,
-      "heatmap_prod": 3.93,
-      "alps": "CRITICAL",
-      "alps_score": 2.61,
-      "harga_aktual": 16750,
-      "harga_expected": 16220,
-      "residual_sd": 203,
-      "lt_growth_pct": 26.42,
-      "current_pressure": 0.049,
-      "forecast_pressure": 0.035
+      "heatmap_pb": 12.94,
+      "heatmap_pe": 8.17,
+      "heatmap_prod": 4.27,
+      "alps": "WARNING",
+      "alps_score": 1.71,
+      "harga_aktual": 16875,
+      "harga_expected": 16429,
+      "residual_sd": 261,
+      "lt_growth_pct": 27.36,
+      "current_pressure": 0.041,
+      "forecast_pressure": 0.024
     },
     {
       "id": "EWS_06",
       "komoditas": "Beras Kualitas Super II",
       "kelompok": "Beras",
-      "heatmap_pb": 13.53,
-      "heatmap_pe": 7.53,
-      "heatmap_prod": 3.77,
-      "alps": "CRITICAL",
-      "alps_score": 2.22,
-      "harga_aktual": 15650,
-      "harga_expected": 15149,
-      "residual_sd": 226,
-      "lt_growth_pct": 25.2,
-      "current_pressure": 0.05,
-      "forecast_pressure": 0.036
+      "heatmap_pb": 12.03,
+      "heatmap_pe": 7.86,
+      "heatmap_prod": 4.03,
+      "alps": "WARNING",
+      "alps_score": 1.48,
+      "harga_aktual": 15750,
+      "harga_expected": 15336,
+      "residual_sd": 279,
+      "lt_growth_pct": 26,
+      "current_pressure": 0.04,
+      "forecast_pressure": 0.024
     },
     {
       "id": "EWS_07",
       "komoditas": "Daging Ayam Ras Segar",
       "kelompok": "Daging Ayam",
-      "heatmap_pb": 54.01,
-      "heatmap_pe": 45.74,
-      "heatmap_prod": 33.58,
-      "alps": "CRITICAL",
-      "alps_score": 2.21,
-      "harga_aktual": 41750,
-      "harga_expected": 35529,
-      "residual_sd": 2820,
-      "lt_growth_pct": 25.56,
-      "current_pressure": 0.263,
-      "forecast_pressure": 0.205
+      "heatmap_pb": -15.59,
+      "heatmap_pe": -12.42,
+      "heatmap_prod": -11.79,
+      "alps": "NORMAL",
+      "alps_score": -0.97,
+      "harga_aktual": 35250,
+      "harga_expected": 38059,
+      "residual_sd": 2910,
+      "lt_growth_pct": 6.02,
+      "current_pressure": -0.111,
+      "forecast_pressure": -0.113
     },
     {
       "id": "EWS_08",
       "komoditas": "Daging Sapi Kualitas 1",
       "kelompok": "Daging Sapi",
-      "heatmap_pb": 24.4,
-      "heatmap_pe": 18.56,
-      "heatmap_prod": 12.38,
+      "heatmap_pb": 17.86,
+      "heatmap_pe": 14.44,
+      "heatmap_prod": 9.16,
       "alps": "WARNING",
-      "alps_score": 1.89,
+      "alps_score": 1.02,
       "harga_aktual": 162500,
-      "harga_expected": 154829,
-      "residual_sd": 4064,
+      "harga_expected": 158285,
+      "residual_sd": 4142,
       "lt_growth_pct": 38.3,
-      "current_pressure": 0.074,
-      "forecast_pressure": 0.045
+      "current_pressure": 0.04,
+      "forecast_pressure": 0.024
     },
     {
       "id": "EWS_09",
       "komoditas": "Daging Sapi Kualitas 2",
       "kelompok": "Daging Sapi",
-      "heatmap_pb": 26.3,
-      "heatmap_pe": 20.47,
-      "heatmap_prod": 13.87,
-      "alps": "WARNING",
-      "alps_score": 1.84,
+      "heatmap_pb": 19.38,
+      "heatmap_pe": 15.95,
+      "heatmap_prod": 10.34,
+      "alps": "WATCH",
+      "alps_score": 0.99,
       "harga_aktual": 156250,
-      "harga_expected": 148252,
-      "residual_sd": 4355,
+      "harga_expected": 151864,
+      "residual_sd": 4426,
       "lt_growth_pct": 42.05,
-      "current_pressure": 0.081,
-      "forecast_pressure": 0.049
+      "current_pressure": 0.043,
+      "forecast_pressure": 0.026
     },
     {
       "id": "EWS_10",
       "komoditas": "Telur Ayam Ras Segar",
       "kelompok": "Telur Ayam",
-      "heatmap_pb": -13.11,
-      "heatmap_pe": -11.14,
-      "heatmap_prod": -10.79,
+      "heatmap_pb": -26.24,
+      "heatmap_pe": -22.56,
+      "heatmap_prod": -19.7,
       "alps": "NORMAL",
-      "alps_score": -0.52,
-      "harga_aktual": 25250,
-      "harga_expected": 26263,
-      "residual_sd": 1967,
-      "lt_growth_pct": 10.99,
-      "current_pressure": -0.058,
-      "forecast_pressure": -0.024
+      "alps_score": -0.93,
+      "harga_aktual": 24500,
+      "harga_expected": 26311,
+      "residual_sd": 1944,
+      "lt_growth_pct": 7.69,
+      "current_pressure": -0.103,
+      "forecast_pressure": -0.082
     },
     {
       "id": "EWS_11",
       "komoditas": "Bawang Merah Ukuran Sedang",
       "kelompok": "Bawang Merah",
-      "heatmap_pb": -42.57,
-      "heatmap_pe": -36.74,
-      "heatmap_prod": -30.76,
+      "heatmap_pb": -15.14,
+      "heatmap_pe": -13.25,
+      "heatmap_prod": -12.44,
       "alps": "NORMAL",
-      "alps_score": -1.45,
-      "harga_aktual": 37500,
-      "harga_expected": 45389,
-      "residual_sd": 5423,
-      "lt_growth_pct": 50,
-      "current_pressure": -0.261,
-      "forecast_pressure": -0.181
+      "alps_score": -0.44,
+      "harga_aktual": 39500,
+      "harga_expected": 41744,
+      "residual_sd": 5069,
+      "lt_growth_pct": 58,
+      "current_pressure": -0.081,
+      "forecast_pressure": -0.042
     },
     {
       "id": "EWS_12",
       "komoditas": "Bawang Putih Ukuran Sedang",
       "kelompok": "Bawang Putih",
-      "heatmap_pb": 16.53,
-      "heatmap_pe": 13.78,
-      "heatmap_prod": 8.65,
+      "heatmap_pb": 18.77,
+      "heatmap_pe": 15.51,
+      "heatmap_prod": 10,
       "alps": "WATCH",
-      "alps_score": 0.77,
-      "harga_aktual": 42750,
-      "harga_expected": 40748,
-      "residual_sd": 2608,
-      "lt_growth_pct": 66.02,
-      "current_pressure": 0.074,
-      "forecast_pressure": 0.033
+      "alps_score": 0.93,
+      "harga_aktual": 43250,
+      "harga_expected": 41014,
+      "residual_sd": 2397,
+      "lt_growth_pct": 67.96,
+      "current_pressure": 0.082,
+      "forecast_pressure": 0.054
     },
     {
       "id": "EWS_13",
       "komoditas": "Cabai Merah Besar",
       "kelompok": "Cabai Merah",
-      "heatmap_pb": -37.4,
-      "heatmap_pe": -33.94,
-      "heatmap_prod": -28.57,
-      "alps": "NORMAL",
-      "alps_score": -0.57,
-      "harga_aktual": 37000,
-      "harga_expected": 45989,
-      "residual_sd": 15792,
-      "lt_growth_pct": 28.7,
-      "current_pressure": -0.293,
-      "forecast_pressure": -0.192
+      "heatmap_pb": 35.34,
+      "heatmap_pe": 32.18,
+      "heatmap_prod": 23,
+      "alps": "WATCH",
+      "alps_score": 0.49,
+      "harga_aktual": 50000,
+      "harga_expected": 42989,
+      "residual_sd": 14423,
+      "lt_growth_pct": 73.91,
+      "current_pressure": 0.245,
+      "forecast_pressure": 0.201
     },
     {
       "id": "EWS_14",
       "komoditas": "Cabai Merah Keriting",
       "kelompok": "Cabai Merah",
-      "heatmap_pb": -51.09,
-      "heatmap_pe": -46.85,
-      "heatmap_prod": -38.64,
-      "alps": "NORMAL",
-      "alps_score": -0.57,
-      "harga_aktual": 30500,
-      "harga_expected": 39293,
-      "residual_sd": 15430,
-      "lt_growth_pct": 46.99,
-      "current_pressure": -0.336,
-      "forecast_pressure": -0.244
+      "heatmap_pb": 151.07,
+      "heatmap_pe": 138.34,
+      "heatmap_prod": 105.81,
+      "alps": "WARNING",
+      "alps_score": 1.77,
+      "harga_aktual": 67000,
+      "harga_expected": 40760,
+      "residual_sd": 14856,
+      "lt_growth_pct": 222.89,
+      "current_pressure": 0.45,
+      "forecast_pressure": 0.45
     },
     {
       "id": "EWS_15",
       "komoditas": "Cabai Rawit Hijau",
       "kelompok": "Cabai Rawit",
-      "heatmap_pb": 16.41,
-      "heatmap_pe": 15.88,
-      "heatmap_prod": 10.29,
-      "alps": "NORMAL",
-      "alps_score": -0.17,
-      "harga_aktual": 45000,
-      "harga_expected": 47412,
-      "residual_sd": 14370,
-      "lt_growth_pct": 111.76,
-      "current_pressure": -0.076,
-      "forecast_pressure": -0.05
+      "heatmap_pb": 147.94,
+      "heatmap_pe": 136.85,
+      "heatmap_prod": 104.64,
+      "alps": "WARNING",
+      "alps_score": 1.15,
+      "harga_aktual": 59250,
+      "harga_expected": 43285,
+      "residual_sd": 13847,
+      "lt_growth_pct": 178.82,
+      "current_pressure": 0.45,
+      "forecast_pressure": 0.429
     },
     {
       "id": "EWS_16",
       "komoditas": "Cabai Rawit Merah",
       "kelompok": "Cabai Rawit",
-      "heatmap_pb": 108.72,
-      "heatmap_pe": 101.72,
-      "heatmap_prod": 77.24,
+      "heatmap_pb": 88.23,
+      "heatmap_pe": 82.46,
+      "heatmap_prod": 62.22,
       "alps": "WATCH",
-      "alps_score": 0.36,
-      "harga_aktual": 60000,
-      "harga_expected": 52793,
-      "residual_sd": 20095,
-      "lt_growth_pct": 152.63,
-      "current_pressure": 0.205,
-      "forecast_pressure": 0.221
+      "alps_score": 0.33,
+      "harga_aktual": 63750,
+      "harga_expected": 57081,
+      "residual_sd": 20105,
+      "lt_growth_pct": 168.42,
+      "current_pressure": 0.175,
+      "forecast_pressure": 0.015
     },
     {
       "id": "EWS_17",
       "komoditas": "Minyak Goreng Curah",
       "kelompok": "Minyak Goreng",
-      "heatmap_pb": 14.25,
-      "heatmap_pe": 12.12,
-      "heatmap_prod": 7.35,
-      "alps": "WATCH",
-      "alps_score": 0.56,
-      "harga_aktual": 20650,
-      "harga_expected": 20217,
+      "heatmap_pb": 11.18,
+      "heatmap_pe": 9.98,
+      "heatmap_prod": 5.68,
+      "alps": "NORMAL",
+      "alps_score": 0.24,
+      "harga_aktual": 20500,
+      "harga_expected": 20314,
       "residual_sd": 769,
-      "lt_growth_pct": 106.5,
-      "current_pressure": 0.032,
-      "forecast_pressure": 0.022
+      "lt_growth_pct": 105,
+      "current_pressure": 0.014,
+      "forecast_pressure": 0.004
     },
     {
       "id": "EWS_18",
       "komoditas": "Minyak Goreng Kemasan Bermerk 1",
       "kelompok": "Minyak Goreng",
-      "heatmap_pb": 13.82,
-      "heatmap_pe": 11.29,
-      "heatmap_prod": 6.71,
+      "heatmap_pb": 12.29,
+      "heatmap_pe": 10.2,
+      "heatmap_prod": 5.86,
       "alps": "WATCH",
-      "alps_score": 0.74,
+      "alps_score": 0.59,
       "harga_aktual": 24000,
-      "harga_expected": 23341,
-      "residual_sd": 894,
+      "harga_expected": 23479,
+      "residual_sd": 888,
       "lt_growth_pct": 84.62,
-      "current_pressure": 0.042,
-      "forecast_pressure": 0.025
+      "current_pressure": 0.033,
+      "forecast_pressure": 0.02
     },
     {
       "id": "EWS_19",
       "komoditas": "Minyak Goreng Kemasan Bermerk 2",
       "kelompok": "Minyak Goreng",
-      "heatmap_pb": 15.83,
-      "heatmap_pe": 12.91,
-      "heatmap_prod": 7.97,
-      "alps": "WATCH",
-      "alps_score": 0.86,
-      "harga_aktual": 23750,
-      "harga_expected": 23101,
-      "residual_sd": 752,
-      "lt_growth_pct": 79.25,
-      "current_pressure": 0.042,
-      "forecast_pressure": 0.025
+      "heatmap_pb": 8.26,
+      "heatmap_pe": 7.39,
+      "heatmap_prod": 3.66,
+      "alps": "NORMAL",
+      "alps_score": 0.17,
+      "harga_aktual": 23250,
+      "harga_expected": 23126,
+      "residual_sd": 744,
+      "lt_growth_pct": 75.47,
+      "current_pressure": 0.008,
+      "forecast_pressure": 0.005
     },
     {
       "id": "EWS_20",
       "komoditas": "Gula Pasir Kualitas Premium",
       "kelompok": "Gula Pasir",
-      "heatmap_pb": 3.43,
-      "heatmap_pe": 2.43,
-      "heatmap_prod": -0.2,
+      "heatmap_pb": 6.72,
+      "heatmap_pe": 4.15,
+      "heatmap_prod": 1.14,
       "alps": "WATCH",
-      "alps_score": 0.34,
-      "harga_aktual": 18750,
-      "harga_expected": 18668,
-      "residual_sd": 242,
-      "lt_growth_pct": 38.89,
-      "current_pressure": 0.007,
-      "forecast_pressure": 0.004
+      "alps_score": 0.93,
+      "harga_aktual": 18875,
+      "harga_expected": 18658,
+      "residual_sd": 234,
+      "lt_growth_pct": 39.81,
+      "current_pressure": 0.017,
+      "forecast_pressure": 0.013
     },
     {
       "id": "EWS_21",
       "komoditas": "Gula Pasir Lokal",
       "kelompok": "Gula Pasir",
-      "heatmap_pb": 11.75,
-      "heatmap_pe": 9.08,
-      "heatmap_prod": 4.98,
-      "alps": "WATCH",
-      "alps_score": 0.85,
-      "harga_aktual": 18150,
-      "harga_expected": 17749,
-      "residual_sd": 469,
-      "lt_growth_pct": 66.51,
-      "current_pressure": 0.034,
-      "forecast_pressure": 0.023
+      "heatmap_pb": 26.87,
+      "heatmap_pe": 19.74,
+      "heatmap_prod": 13.3,
+      "alps": "CRITICAL",
+      "alps_score": 2.38,
+      "harga_aktual": 19000,
+      "harga_expected": 17842,
+      "residual_sd": 487,
+      "lt_growth_pct": 74.31,
+      "current_pressure": 0.097,
+      "forecast_pressure": 0.077
     }
   ],
   "timeSeries": [
@@ -351,9 +352,9 @@
       "date": "2019-01-01",
       "label": "Jan 2019",
       "year": 2019,
-      "PB": 11800,
-      "PE": 13250,
-      "PROD": 10050,
+      "PB": 9700,
+      "PE": 10900,
+      "PROD": 8300,
       "expected": null,
       "alps": null
     },
@@ -362,9 +363,9 @@
       "date": "2019-02-01",
       "label": "Feb 2019",
       "year": 2019,
-      "PB": 11900,
-      "PE": 13250,
-      "PROD": 9950,
+      "PB": 9800,
+      "PE": 10900,
+      "PROD": 8200,
       "expected": null,
       "alps": null
     },
@@ -373,9 +374,9 @@
       "date": "2019-03-01",
       "label": "Mar 2019",
       "year": 2019,
-      "PB": 12000,
-      "PE": 13250,
-      "PROD": 9900,
+      "PB": 10100,
+      "PE": 11150,
+      "PROD": 8350,
       "expected": null,
       "alps": null
     },
@@ -384,9 +385,9 @@
       "date": "2019-04-01",
       "label": "Apr 2019",
       "year": 2019,
-      "PB": 11950,
-      "PE": 13250,
-      "PROD": 9950,
+      "PB": 10150,
+      "PE": 11250,
+      "PROD": 8450,
       "expected": null,
       "alps": null
     },
@@ -395,9 +396,9 @@
       "date": "2019-05-01",
       "label": "Mei 2019",
       "year": 2019,
-      "PB": 11850,
-      "PE": 13250,
-      "PROD": 10000,
+      "PB": 10050,
+      "PE": 11250,
+      "PROD": 8500,
       "expected": null,
       "alps": null
     },
@@ -406,9 +407,9 @@
       "date": "2019-06-03",
       "label": "Jun 2019",
       "year": 2019,
-      "PB": 11650,
-      "PE": 13150,
-      "PROD": 10050,
+      "PB": 11300,
+      "PE": 12750,
+      "PROD": 9750,
       "expected": null,
       "alps": null
     },
@@ -417,9 +418,9 @@
       "date": "2019-07-01",
       "label": "Jul 2019",
       "year": 2019,
-      "PB": 11550,
-      "PE": 13150,
-      "PROD": 10150,
+      "PB": 11200,
+      "PE": 12750,
+      "PROD": 9800,
       "expected": null,
       "alps": null
     },
@@ -428,9 +429,9 @@
       "date": "2019-08-01",
       "label": "Agu 2019",
       "year": 2019,
-      "PB": 11500,
-      "PE": 13150,
-      "PROD": 10150,
+      "PB": 10950,
+      "PE": 12500,
+      "PROD": 9650,
       "expected": null,
       "alps": null
     },
@@ -439,9 +440,9 @@
       "date": "2019-09-02",
       "label": "Sep 2019",
       "year": 2019,
-      "PB": 11600,
-      "PE": 13150,
-      "PROD": 10100,
+      "PB": 10550,
+      "PE": 12000,
+      "PROD": 9200,
       "expected": null,
       "alps": null
     },
@@ -450,9 +451,9 @@
       "date": "2019-10-01",
       "label": "Okt 2019",
       "year": 2019,
-      "PB": 11700,
-      "PE": 13150,
-      "PROD": 10000,
+      "PB": 10700,
+      "PE": 12000,
+      "PROD": 9100,
       "expected": null,
       "alps": null
     },
@@ -461,9 +462,9 @@
       "date": "2019-11-01",
       "label": "Nov 2019",
       "year": 2019,
-      "PB": 11850,
-      "PE": 13150,
-      "PROD": 9900,
+      "PB": 10950,
+      "PE": 12150,
+      "PROD": 9150,
       "expected": null,
       "alps": null
     },
@@ -472,9 +473,9 @@
       "date": "2019-12-02",
       "label": "Des 2019",
       "year": 2019,
-      "PB": 11900,
-      "PE": 13150,
-      "PROD": 9850,
+      "PB": 11200,
+      "PE": 12400,
+      "PROD": 9300,
       "expected": null,
       "alps": null
     },
@@ -483,9 +484,9 @@
       "date": "2020-01-01",
       "label": "Jan 2020",
       "year": 2020,
-      "PB": 11850,
-      "PE": 13150,
-      "PROD": 9850,
+      "PB": 11200,
+      "PE": 12400,
+      "PROD": 9300,
       "expected": null,
       "alps": null
     },
@@ -494,9 +495,9 @@
       "date": "2020-02-03",
       "label": "Feb 2020",
       "year": 2020,
-      "PB": 11550,
-      "PE": 12900,
-      "PROD": 9750,
+      "PB": 12200,
+      "PE": 13650,
+      "PROD": 10300,
       "expected": null,
       "alps": null
     },
@@ -505,9 +506,9 @@
       "date": "2020-03-02",
       "label": "Mar 2020",
       "year": 2020,
-      "PB": 11400,
-      "PE": 12900,
-      "PROD": 9850,
+      "PB": 12950,
+      "PE": 14650,
+      "PROD": 11200,
       "expected": null,
       "alps": null
     },
@@ -516,9 +517,9 @@
       "date": "2020-04-01",
       "label": "Apr 2020",
       "year": 2020,
-      "PB": 11300,
-      "PE": 12900,
-      "PROD": 9950,
+      "PB": 15350,
+      "PE": 17500,
+      "PROD": 13500,
       "expected": null,
       "alps": null
     },
@@ -527,9 +528,9 @@
       "date": "2020-05-01",
       "label": "Mei 2020",
       "year": 2020,
-      "PB": 11300,
-      "PE": 12900,
-      "PROD": 9950,
+      "PB": 15300,
+      "PE": 17500,
+      "PROD": 13500,
       "expected": null,
       "alps": null
     },
@@ -538,9 +539,9 @@
       "date": "2020-06-01",
       "label": "Jun 2020",
       "year": 2020,
-      "PB": 11350,
-      "PE": 12900,
-      "PROD": 9900,
+      "PB": 11800,
+      "PE": 13400,
+      "PROD": 10300,
       "expected": null,
       "alps": null
     },
@@ -549,9 +550,9 @@
       "date": "2020-07-01",
       "label": "Jul 2020",
       "year": 2020,
-      "PB": 11500,
-      "PE": 12900,
-      "PROD": 9800,
+      "PB": 11950,
+      "PE": 13400,
+      "PROD": 10200,
       "expected": null,
       "alps": null
     },
@@ -560,9 +561,9 @@
       "date": "2020-08-03",
       "label": "Agu 2020",
       "year": 2020,
-      "PB": 11500,
-      "PE": 12750,
-      "PROD": 9600,
+      "PB": 12050,
+      "PE": 13400,
+      "PROD": 10100,
       "expected": null,
       "alps": null
     },
@@ -571,9 +572,9 @@
       "date": "2020-09-01",
       "label": "Sep 2020",
       "year": 2020,
-      "PB": 11550,
-      "PE": 12750,
-      "PROD": 9550,
+      "PB": 12150,
+      "PE": 13400,
+      "PROD": 10000,
       "expected": null,
       "alps": null
     },
@@ -582,9 +583,9 @@
       "date": "2020-10-01",
       "label": "Okt 2020",
       "year": 2020,
-      "PB": 11500,
-      "PE": 12750,
-      "PROD": 9550,
+      "PB": 11650,
+      "PE": 12900,
+      "PROD": 9650,
       "expected": null,
       "alps": null
     },
@@ -593,9 +594,9 @@
       "date": "2020-11-02",
       "label": "Nov 2020",
       "year": 2020,
-      "PB": 11400,
-      "PE": 12750,
-      "PROD": 9650,
+      "PB": 11550,
+      "PE": 12900,
+      "PROD": 9750,
       "expected": null,
       "alps": null
     },
@@ -618,7 +619,7 @@
       "PB": 11200,
       "PE": 12750,
       "PROD": 9850,
-      "expected": 12776,
+      "expected": 13619,
       "alps": null
     },
     {
@@ -626,10 +627,10 @@
       "date": "2021-02-01",
       "label": "Feb 2021",
       "year": 2021,
-      "PB": 11150,
-      "PE": 12750,
-      "PROD": 9850,
-      "expected": 12721,
+      "PB": 11300,
+      "PE": 12900,
+      "PROD": 9950,
+      "expected": 13647,
       "alps": null
     },
     {
@@ -637,10 +638,10 @@
       "date": "2021-03-01",
       "label": "Mar 2021",
       "year": 2021,
-      "PB": 11250,
-      "PE": 12750,
-      "PROD": 9800,
-      "expected": 12714,
+      "PB": 11350,
+      "PE": 12900,
+      "PROD": 9900,
+      "expected": 13698,
       "alps": null
     },
     {
@@ -651,7 +652,7 @@
       "PB": 11350,
       "PE": 12750,
       "PROD": 9700,
-      "expected": 12711,
+      "expected": 14074,
       "alps": null
     },
     {
@@ -659,10 +660,10 @@
       "date": "2021-05-03",
       "label": "Mei 2021",
       "year": 2021,
-      "PB": 11250,
-      "PE": 12500,
-      "PROD": 9400,
-      "expected": 12711,
+      "PB": 11500,
+      "PE": 12750,
+      "PROD": 9600,
+      "expected": 13894,
       "alps": null
     },
     {
@@ -670,10 +671,10 @@
       "date": "2021-06-01",
       "label": "Jun 2021",
       "year": 2021,
-      "PB": 11300,
-      "PE": 12500,
-      "PROD": 9350,
-      "expected": 12645,
+      "PB": 11550,
+      "PE": 12750,
+      "PROD": 9550,
+      "expected": 13126,
       "alps": null
     },
     {
@@ -681,22 +682,22 @@
       "date": "2021-07-01",
       "label": "Jul 2021",
       "year": 2021,
-      "PB": 11300,
-      "PE": 12500,
-      "PROD": 9350,
-      "expected": 12602,
-      "alps": -0.95
+      "PB": 11400,
+      "PE": 12650,
+      "PROD": 9500,
+      "expected": 13039,
+      "alps": -1.18
     },
     {
       "time": "2021",
       "date": "2021-08-02",
       "label": "Agu 2021",
       "year": 2021,
-      "PB": 11200,
-      "PE": 12500,
-      "PROD": 9450,
-      "expected": 12544,
-      "alps": -0.44
+      "PB": 11300,
+      "PE": 12650,
+      "PROD": 9550,
+      "expected": 12909,
+      "alps": -0.73
     },
     {
       "time": "2021",
@@ -706,8 +707,8 @@
       "PB": 11050,
       "PE": 12500,
       "PROD": 9550,
-      "expected": 12523,
-      "alps": -0.25
+      "expected": 12748,
+      "alps": -0.65
     },
     {
       "time": "2021",
@@ -717,316 +718,316 @@
       "PB": 10950,
       "PE": 12500,
       "PROD": 9650,
-      "expected": 12510,
-      "alps": -0.11
+      "expected": 12483,
+      "alps": 0.04
     },
     {
       "time": "2021",
       "date": "2021-11-01",
       "label": "Nov 2021",
       "year": 2021,
-      "PB": 11050,
-      "PE": 12650,
-      "PROD": 9750,
-      "expected": 12503,
-      "alps": 1.77
+      "PB": 10950,
+      "PE": 12500,
+      "PROD": 9650,
+      "expected": 12330,
+      "alps": 0.39
     },
     {
       "time": "2021",
       "date": "2021-12-01",
       "label": "Des 2021",
       "year": 2021,
-      "PB": 11150,
-      "PE": 12650,
-      "PROD": 9700,
-      "expected": 12537,
-      "alps": 1.15
+      "PB": 11000,
+      "PE": 12500,
+      "PROD": 9600,
+      "expected": 12174,
+      "alps": 0.69
     },
     {
       "time": "2022",
       "date": "2022-01-03",
       "label": "Jan 2022",
       "year": 2022,
-      "PB": 11250,
-      "PE": 12650,
-      "PROD": 9600,
-      "expected": 12568,
-      "alps": 0.81
+      "PB": 11150,
+      "PE": 12500,
+      "PROD": 9500,
+      "expected": 12040,
+      "alps": 0.89
     },
     {
       "time": "2022",
       "date": "2022-02-01",
       "label": "Feb 2022",
       "year": 2022,
-      "PB": 11400,
-      "PE": 12650,
-      "PROD": 9500,
-      "expected": 12572,
-      "alps": 0.77
+      "PB": 11250,
+      "PE": 12500,
+      "PROD": 9400,
+      "expected": 12056,
+      "alps": 0.8
     },
     {
       "time": "2022",
       "date": "2022-03-01",
       "label": "Mar 2022",
       "year": 2022,
-      "PB": 11450,
-      "PE": 12650,
-      "PROD": 9450,
-      "expected": 12584,
-      "alps": 0.66
+      "PB": 13050,
+      "PE": 14400,
+      "PROD": 10750,
+      "expected": 12101,
+      "alps": 3.96
     },
     {
       "time": "2022",
       "date": "2022-04-01",
       "label": "Apr 2022",
       "year": 2022,
-      "PB": 11400,
-      "PE": 12650,
-      "PROD": 9500,
-      "expected": 12596,
-      "alps": 0.55
+      "PB": 13200,
+      "PE": 14650,
+      "PROD": 11000,
+      "expected": 12821,
+      "alps": 2.08
     },
     {
       "time": "2022",
       "date": "2022-05-02",
       "label": "Mei 2022",
       "year": 2022,
-      "PB": 11300,
-      "PE": 12650,
-      "PROD": 9550,
-      "expected": 12564,
-      "alps": 0.9
+      "PB": 13100,
+      "PE": 14650,
+      "PROD": 11100,
+      "expected": 13430,
+      "alps": 1.24
     },
     {
       "time": "2022",
       "date": "2022-06-01",
       "label": "Jun 2022",
       "year": 2022,
-      "PB": 11200,
-      "PE": 12650,
-      "PROD": 9700,
-      "expected": 12577,
-      "alps": 0.77
+      "PB": 12800,
+      "PE": 14500,
+      "PROD": 11100,
+      "expected": 13581,
+      "alps": 0.92
     },
     {
       "time": "2022",
       "date": "2022-07-01",
       "label": "Jul 2022",
       "year": 2022,
-      "PB": 11100,
-      "PE": 12650,
-      "PROD": 9750,
-      "expected": 12591,
-      "alps": 0.64
+      "PB": 12700,
+      "PE": 14500,
+      "PROD": 11200,
+      "expected": 13777,
+      "alps": 0.73
     },
     {
       "time": "2022",
       "date": "2022-08-01",
       "label": "Agu 2022",
       "year": 2022,
-      "PB": 11050,
-      "PE": 12650,
-      "PROD": 9750,
-      "expected": 12591,
-      "alps": 0.65
+      "PB": 12250,
+      "PE": 14000,
+      "PROD": 10800,
+      "expected": 13959,
+      "alps": 0.04
     },
     {
       "time": "2022",
       "date": "2022-09-01",
       "label": "Sep 2022",
       "year": 2022,
-      "PB": 11150,
-      "PE": 12650,
-      "PROD": 9700,
-      "expected": 12598,
-      "alps": 0.58
+      "PB": 12100,
+      "PE": 13750,
+      "PROD": 10550,
+      "expected": 13972,
+      "alps": -0.23
     },
     {
       "time": "2022",
       "date": "2022-10-03",
       "label": "Okt 2022",
       "year": 2022,
-      "PB": 11250,
-      "PE": 12650,
-      "PROD": 9600,
-      "expected": 12605,
-      "alps": 0.51
+      "PB": 12250,
+      "PE": 13750,
+      "PROD": 10450,
+      "expected": 13917,
+      "alps": -0.18
     },
     {
       "time": "2022",
       "date": "2022-11-01",
       "label": "Nov 2022",
       "year": 2022,
-      "PB": 11400,
-      "PE": 12650,
-      "PROD": 9500,
-      "expected": 12640,
-      "alps": 0.12
+      "PB": 11950,
+      "PE": 13250,
+      "PROD": 9950,
+      "expected": 13900,
+      "alps": -0.72
     },
     {
       "time": "2022",
       "date": "2022-12-01",
       "label": "Des 2022",
       "year": 2022,
-      "PB": 11750,
-      "PE": 13000,
-      "PROD": 9700,
-      "expected": 12648,
-      "alps": 4.23
+      "PB": 12000,
+      "PE": 13250,
+      "PROD": 9900,
+      "expected": 13762,
+      "alps": -0.57
     },
     {
       "time": "2023",
       "date": "2023-01-02",
       "label": "Jan 2023",
       "year": 2023,
-      "PB": 12300,
-      "PE": 13650,
-      "PROD": 10250,
-      "expected": 12740,
-      "alps": 8.59
+      "PB": 12100,
+      "PE": 13400,
+      "PROD": 10050,
+      "expected": 13664,
+      "alps": -0.3
     },
     {
       "time": "2023",
       "date": "2023-02-01",
       "label": "Feb 2023",
       "year": 2023,
-      "PB": 12300,
-      "PE": 13750,
-      "PROD": 10400,
-      "expected": 12966,
-      "alps": 3.79
+      "PB": 12050,
+      "PE": 13500,
+      "PROD": 10200,
+      "expected": 13638,
+      "alps": -0.16
     },
     {
       "time": "2023",
       "date": "2023-03-01",
       "label": "Mar 2023",
       "year": 2023,
-      "PB": 12950,
-      "PE": 14650,
-      "PROD": 11200,
-      "expected": 13161,
-      "alps": 5.9
+      "PB": 12050,
+      "PE": 13650,
+      "PROD": 10450,
+      "expected": 13974,
+      "alps": -0.38
     },
     {
       "time": "2023",
       "date": "2023-04-03",
       "label": "Apr 2023",
       "year": 2023,
-      "PB": 12850,
-      "PE": 14650,
-      "PROD": 11300,
-      "expected": 13528,
-      "alps": 2.97
+      "PB": 11850,
+      "PE": 13500,
+      "PROD": 10400,
+      "expected": 14032,
+      "alps": -0.63
     },
     {
       "time": "2023",
       "date": "2023-05-01",
       "label": "Mei 2023",
       "year": 2023,
-      "PB": 12700,
-      "PE": 14500,
-      "PROD": 11200,
-      "expected": 13786,
-      "alps": 1.68
+      "PB": 11800,
+      "PE": 13500,
+      "PROD": 10400,
+      "expected": 14002,
+      "alps": -0.63
     },
     {
       "time": "2023",
       "date": "2023-06-01",
       "label": "Jun 2023",
       "year": 2023,
-      "PB": 12900,
-      "PE": 14650,
-      "PROD": 11250,
-      "expected": 13957,
-      "alps": 1.63
+      "PB": 12050,
+      "PE": 13650,
+      "PROD": 10450,
+      "expected": 13944,
+      "alps": -0.39
     },
     {
       "time": "2023",
       "date": "2023-07-03",
       "label": "Jul 2023",
       "year": 2023,
-      "PB": 13050,
-      "PE": 14650,
-      "PROD": 11100,
-      "expected": 14128,
-      "alps": 1.22
+      "PB": 12150,
+      "PE": 13650,
+      "PROD": 10350,
+      "expected": 13935,
+      "alps": -0.38
     },
     {
       "time": "2023",
       "date": "2023-08-01",
       "label": "Agu 2023",
       "year": 2023,
-      "PB": 13200,
-      "PE": 14650,
-      "PROD": 11000,
-      "expected": 14264,
-      "alps": 0.92
+      "PB": 12300,
+      "PE": 13650,
+      "PROD": 10250,
+      "expected": 13828,
+      "alps": -0.24
     },
     {
       "time": "2023",
       "date": "2023-09-01",
       "label": "Sep 2023",
       "year": 2023,
-      "PB": 14050,
-      "PE": 15500,
-      "PROD": 11600,
-      "expected": 14372,
-      "alps": 2.72
+      "PB": 12350,
+      "PE": 13650,
+      "PROD": 10200,
+      "expected": 13740,
+      "alps": -0.12
     },
     {
       "time": "2023",
       "date": "2023-10-02",
       "label": "Okt 2023",
       "year": 2023,
-      "PB": 14000,
-      "PE": 15500,
-      "PROD": 11650,
-      "expected": 14660,
-      "alps": 1.92
+      "PB": 13000,
+      "PE": 14400,
+      "PROD": 10800,
+      "expected": 13694,
+      "alps": 0.94
     },
     {
       "time": "2023",
       "date": "2023-11-01",
       "label": "Nov 2023",
       "year": 2023,
-      "PB": 13850,
-      "PE": 15500,
-      "PROD": 11750,
-      "expected": 14890,
-      "alps": 1.38
+      "PB": 14050,
+      "PE": 15750,
+      "PROD": 11900,
+      "expected": 13727,
+      "alps": 2.67
     },
     {
       "time": "2023",
       "date": "2023-12-01",
       "label": "Des 2023",
       "year": 2023,
-      "PB": 13700,
-      "PE": 15500,
-      "PROD": 11850,
-      "expected": 15126,
-      "alps": 0.85
+      "PB": 14950,
+      "PE": 16900,
+      "PROD": 12950,
+      "expected": 14116,
+      "alps": 3.3
     },
     {
       "time": "2024",
       "date": "2024-01-01",
       "label": "Jan 2024",
       "year": 2024,
-      "PB": 13600,
-      "PE": 15500,
-      "PROD": 11950,
-      "expected": 15376,
-      "alps": 0.29
+      "PB": 14800,
+      "PE": 16900,
+      "PROD": 13050,
+      "expected": 14685,
+      "alps": 2.25
     },
     {
       "time": "2024",
       "date": "2024-02-01",
       "label": "Feb 2024",
       "year": 2024,
-      "PB": 13550,
-      "PE": 15500,
-      "PROD": 11950,
-      "expected": 15496,
-      "alps": 0.01
+      "PB": 14800,
+      "PE": 16900,
+      "PROD": 13050,
+      "expected": 15088,
+      "alps": 1.72
     },
     {
       "time": "2024",
@@ -1036,338 +1037,360 @@
       "PB": 14900,
       "PE": 16900,
       "PROD": 12950,
-      "expected": 15733,
-      "alps": 2.68
+      "expected": 15572,
+      "alps": 1.22
     },
     {
       "time": "2024",
       "date": "2024-04-01",
       "label": "Apr 2024",
       "year": 2024,
-      "PB": 14850,
-      "PE": 16650,
-      "PROD": 12650,
-      "expected": 16118,
-      "alps": 1.18
+      "PB": 15050,
+      "PE": 16900,
+      "PROD": 12800,
+      "expected": 15883,
+      "alps": 0.98
     },
     {
       "time": "2024",
       "date": "2024-05-01",
       "label": "Mei 2024",
       "year": 2024,
-      "PB": 15000,
-      "PE": 16650,
-      "PROD": 12500,
-      "expected": 16310,
-      "alps": 0.77
+      "PB": 15700,
+      "PE": 17400,
+      "PROD": 13050,
+      "expected": 16162,
+      "alps": 1.23
     },
     {
       "time": "2024",
       "date": "2024-06-03",
       "label": "Jun 2024",
       "year": 2024,
-      "PB": 14600,
-      "PE": 16150,
-      "PROD": 12100,
-      "expected": 16493,
-      "alps": -0.79
+      "PB": 15500,
+      "PE": 17150,
+      "PROD": 12850,
+      "expected": 16535,
+      "alps": 0.61
     },
     {
       "time": "2024",
       "date": "2024-07-01",
       "label": "Jul 2024",
       "year": 2024,
-      "PB": 14550,
-      "PE": 16150,
-      "PROD": 12100,
-      "expected": 16481,
-      "alps": -0.72
+      "PB": 15450,
+      "PE": 17150,
+      "PROD": 12850,
+      "expected": 16769,
+      "alps": 0.38
     },
     {
       "time": "2024",
       "date": "2024-08-01",
       "label": "Agu 2024",
       "year": 2024,
-      "PB": 14450,
-      "PE": 16150,
-      "PROD": 12250,
-      "expected": 16459,
-      "alps": -0.64
+      "PB": 15300,
+      "PE": 17150,
+      "PROD": 13000,
+      "expected": 16924,
+      "alps": 0.23
     },
     {
       "time": "2024",
       "date": "2024-09-02",
       "label": "Sep 2024",
       "year": 2024,
-      "PB": 14250,
-      "PE": 16150,
-      "PROD": 12350,
-      "expected": 16576,
-      "alps": -0.85
+      "PB": 15150,
+      "PE": 17150,
+      "PROD": 13150,
+      "expected": 17047,
+      "alps": 0.1
     },
     {
       "time": "2024",
       "date": "2024-10-01",
       "label": "Okt 2024",
       "year": 2024,
-      "PB": 14150,
-      "PE": 16150,
-      "PROD": 12450,
-      "expected": 16524,
-      "alps": -0.71
+      "PB": 15050,
+      "PE": 17150,
+      "PROD": 13200,
+      "expected": 17287,
+      "alps": -0.14
     },
     {
       "time": "2024",
       "date": "2024-11-01",
       "label": "Nov 2024",
       "year": 2024,
-      "PB": 14150,
-      "PE": 16150,
-      "PROD": 12450,
-      "expected": 16455,
-      "alps": -0.55
+      "PB": 15000,
+      "PE": 17150,
+      "PROD": 13250,
+      "expected": 17563,
+      "alps": -0.42
     },
     {
       "time": "2024",
       "date": "2024-12-01",
       "label": "Des 2024",
       "year": 2024,
-      "PB": 14100,
-      "PE": 16000,
-      "PROD": 12250,
-      "expected": 16400,
-      "alps": -0.71
+      "PB": 15150,
+      "PE": 17150,
+      "PROD": 13150,
+      "expected": 17796,
+      "alps": -0.66
     },
     {
       "time": "2025",
       "date": "2025-01-01",
       "label": "Jan 2025",
       "year": 2025,
-      "PB": 14250,
-      "PE": 16000,
-      "PROD": 12150,
-      "expected": 16341,
-      "alps": -0.58
+      "PB": 15400,
+      "PE": 17250,
+      "PROD": 13100,
+      "expected": 17813,
+      "alps": -0.57
     },
     {
       "time": "2025",
       "date": "2025-02-01",
       "label": "Feb 2025",
       "year": 2025,
-      "PB": 14400,
-      "PE": 16000,
-      "PROD": 12000,
-      "expected": 16261,
-      "alps": -0.44
+      "PB": 16000,
+      "PE": 17750,
+      "PROD": 13350,
+      "expected": 17835,
+      "alps": -0.09
     },
     {
       "time": "2025",
       "date": "2025-03-01",
       "label": "Mar 2025",
       "year": 2025,
-      "PB": 14700,
-      "PE": 16250,
-      "PROD": 12150,
-      "expected": 16507,
-      "alps": -0.43
+      "PB": 16300,
+      "PE": 18000,
+      "PROD": 13450,
+      "expected": 17957,
+      "alps": 0.04
     },
     {
       "time": "2025",
       "date": "2025-04-01",
       "label": "Apr 2025",
       "year": 2025,
-      "PB": 14650,
-      "PE": 16250,
-      "PROD": 12200,
-      "expected": 16478,
-      "alps": -0.41
+      "PB": 16150,
+      "PE": 17900,
+      "PROD": 13450,
+      "expected": 18062,
+      "alps": -0.16
     },
     {
       "time": "2025",
       "date": "2025-05-01",
       "label": "Mei 2025",
       "year": 2025,
-      "PB": 14500,
-      "PE": 16250,
-      "PROD": 12300,
-      "expected": 16458,
-      "alps": -0.4
+      "PB": 16000,
+      "PE": 17900,
+      "PROD": 13550,
+      "expected": 18177,
+      "alps": -0.29
     },
     {
       "time": "2025",
       "date": "2025-06-01",
       "label": "Jun 2025",
       "year": 2025,
-      "PB": 14350,
-      "PE": 16250,
-      "PROD": 12450,
-      "expected": 16351,
-      "alps": -0.2
+      "PB": 15600,
+      "PE": 17650,
+      "PROD": 13500,
+      "expected": 18130,
+      "alps": -0.5
     },
     {
       "time": "2025",
       "date": "2025-07-01",
       "label": "Jul 2025",
       "year": 2025,
-      "PB": 14250,
-      "PE": 16250,
-      "PROD": 12550,
-      "expected": 16314,
-      "alps": -0.13
+      "PB": 15100,
+      "PE": 17250,
+      "PROD": 13300,
+      "expected": 18026,
+      "alps": -0.8
     },
     {
       "time": "2025",
       "date": "2025-08-01",
       "label": "Agu 2025",
       "year": 2025,
-      "PB": 14250,
-      "PE": 16250,
-      "PROD": 12550,
-      "expected": 16264,
-      "alps": -0.03
+      "PB": 15000,
+      "PE": 17150,
+      "PROD": 13250,
+      "expected": 17809,
+      "alps": -0.67
     },
     {
       "time": "2025",
       "date": "2025-09-01",
       "label": "Sep 2025",
       "year": 2025,
-      "PB": 14350,
-      "PE": 16250,
-      "PROD": 12450,
-      "expected": 16284,
-      "alps": -0.07
+      "PB": 14800,
+      "PE": 16750,
+      "PROD": 12850,
+      "expected": 17574,
+      "alps": -0.82
     },
     {
       "time": "2025",
       "date": "2025-10-01",
       "label": "Okt 2025",
       "year": 2025,
-      "PB": 14300,
-      "PE": 16000,
-      "PROD": 12150,
-      "expected": 16265,
-      "alps": -0.62
+      "PB": 14950,
+      "PE": 16750,
+      "PROD": 12700,
+      "expected": 17318,
+      "alps": -0.55
     },
     {
       "time": "2025",
       "date": "2025-11-01",
       "label": "Nov 2025",
       "year": 2025,
-      "PB": 14400,
-      "PE": 16000,
-      "PROD": 12000,
-      "expected": 16182,
-      "alps": -0.46
+      "PB": 15100,
+      "PE": 16750,
+      "PROD": 12600,
+      "expected": 17184,
+      "alps": -0.41
     },
     {
       "time": "2025",
       "date": "2025-12-01",
       "label": "Des 2025",
       "year": 2025,
-      "PB": 14500,
-      "PE": 16000,
-      "PROD": 11950,
-      "expected": 16082,
-      "alps": -0.22
+      "PB": 15400,
+      "PE": 17000,
+      "PROD": 12700,
+      "expected": 17127,
+      "alps": -0.13
     },
     {
       "time": "2026",
       "date": "2026-01-01",
       "label": "Jan 2026",
       "year": 2026,
-      "PB": 14450,
-      "PE": 16000,
-      "PROD": 12000,
-      "expected": 16014,
-      "alps": -0.04
+      "PB": 15350,
+      "PE": 17000,
+      "PROD": 12750,
+      "expected": 17119,
+      "alps": -0.14
     },
     {
       "time": "2026",
       "date": "2026-02-01",
       "label": "Feb 2026",
       "year": 2026,
-      "PB": 14300,
-      "PE": 16000,
-      "PROD": 12100,
-      "expected": 15949,
-      "alps": 0.14
+      "PB": 16050,
+      "PE": 18000,
+      "PROD": 13650,
+      "expected": 17178,
+      "alps": 1.15
     },
     {
       "time": "2026",
       "date": "2026-03-01",
       "label": "Mar 2026",
       "year": 2026,
-      "PB": 14100,
-      "PE": 16000,
-      "PROD": 12250,
-      "expected": 16064,
-      "alps": -0.18
+      "PB": 15900,
+      "PE": 18000,
+      "PROD": 13800,
+      "expected": 17427,
+      "alps": 0.91
     },
     {
       "time": "2026",
       "date": "2026-04-01",
       "label": "Apr 2026",
       "year": 2026,
-      "PB": 14000,
-      "PE": 16000,
-      "PROD": 12350,
-      "expected": 16064,
-      "alps": -0.28
+      "PB": 16100,
+      "PE": 18400,
+      "PROD": 14200,
+      "expected": 17551,
+      "alps": 1.48
     },
     {
       "time": "2026",
       "date": "2026-05-01",
       "label": "Mei 2026",
       "year": 2026,
-      "PB": 14000,
-      "PE": 16000,
-      "PROD": 12350,
-      "expected": 16078,
-      "alps": -0.44
+      "PB": 15750,
+      "PE": 18000,
+      "PROD": 13900,
+      "expected": 17792,
+      "alps": 0.37
     },
     {
       "time": "2026",
       "date": "2026-06-01",
       "label": "Jun 2026",
       "year": 2026,
-      "PB": 14100,
-      "PE": 16000,
-      "PROD": 12250,
-      "expected": 16050,
-      "alps": -0.35
+      "PB": 15900,
+      "PE": 18000,
+      "PROD": 13800,
+      "expected": 17797,
+      "alps": 0.41
     },
     {
       "time": "2026",
       "date": "2026-07-01",
       "label": "Jul 2026",
       "year": 2026,
-      "PB": 14650,
-      "PE": 16400,
-      "PROD": 12450,
-      "expected": 16042,
-      "alps": 2.52
+      "PB": 16050,
+      "PE": 18000,
+      "PROD": 13650,
+      "expected": 17773,
+      "alps": 0.48
     },
     {
       "time": "2026",
       "date": "2026-08-01",
       "label": "Agu 2026",
       "year": 2026,
-      "PB": 14850,
-      "PE": 16500,
-      "PROD": 12400,
-      "expected": 16131,
-      "alps": 2.09
+      "PB": 16250,
+      "PE": 18000,
+      "PROD": 13500,
+      "expected": 17792,
+      "alps": 0.44
     },
     {
       "time": "2026",
       "date": "2026-09-01",
       "label": "Sep 2026",
       "year": 2026,
-      "PB": 15150,
-      "PE": 16750,
-      "PROD": 12550,
-      "expected": 16220,
-      "alps": 2.61
+      "PB": 16450,
+      "PE": 18150,
+      "PROD": 13600,
+      "expected": 17749,
+      "alps": 0.85
+    },
+    {
+      "time": "2026",
+      "date": "2026-10-01",
+      "label": "Okt 2026",
+      "year": 2026,
+      "PB": 16350,
+      "PE": 18125,
+      "PROD": 13600,
+      "expected": 17806,
+      "alps": 0.67
+    },
+    {
+      "time": "2026",
+      "date": "2026-11-01",
+      "label": "Nov 2026",
+      "year": 2026,
+      "PB": 16950,
+      "PE": 19000,
+      "PROD": 14400,
+      "expected": 17842,
+      "alps": 2.38
     }
   ],
   "forecast": [
@@ -1376,7 +1399,7 @@
       "date": "2019-01-01",
       "label": "Jan 2019",
       "year": 2019,
-      "actual": 13250,
+      "actual": 10900,
       "forecast": null,
       "lowerBound": null,
       "upperBound": null
@@ -1386,7 +1409,7 @@
       "date": "2019-02-01",
       "label": "Feb 2019",
       "year": 2019,
-      "actual": 13250,
+      "actual": 10900,
       "forecast": null,
       "lowerBound": null,
       "upperBound": null
@@ -1396,7 +1419,7 @@
       "date": "2019-03-01",
       "label": "Mar 2019",
       "year": 2019,
-      "actual": 13250,
+      "actual": 11150,
       "forecast": null,
       "lowerBound": null,
       "upperBound": null
@@ -1406,7 +1429,7 @@
       "date": "2019-04-01",
       "label": "Apr 2019",
       "year": 2019,
-      "actual": 13250,
+      "actual": 11250,
       "forecast": null,
       "lowerBound": null,
       "upperBound": null
@@ -1416,7 +1439,7 @@
       "date": "2019-05-01",
       "label": "Mei 2019",
       "year": 2019,
-      "actual": 13250,
+      "actual": 11250,
       "forecast": null,
       "lowerBound": null,
       "upperBound": null
@@ -1426,7 +1449,7 @@
       "date": "2019-06-03",
       "label": "Jun 2019",
       "year": 2019,
-      "actual": 13150,
+      "actual": 12750,
       "forecast": null,
       "lowerBound": null,
       "upperBound": null
@@ -1436,7 +1459,7 @@
       "date": "2019-07-01",
       "label": "Jul 2019",
       "year": 2019,
-      "actual": 13150,
+      "actual": 12750,
       "forecast": null,
       "lowerBound": null,
       "upperBound": null
@@ -1446,7 +1469,7 @@
       "date": "2019-08-01",
       "label": "Agu 2019",
       "year": 2019,
-      "actual": 13150,
+      "actual": 12500,
       "forecast": null,
       "lowerBound": null,
       "upperBound": null
@@ -1456,7 +1479,7 @@
       "date": "2019-09-02",
       "label": "Sep 2019",
       "year": 2019,
-      "actual": 13150,
+      "actual": 12000,
       "forecast": null,
       "lowerBound": null,
       "upperBound": null
@@ -1466,7 +1489,7 @@
       "date": "2019-10-01",
       "label": "Okt 2019",
       "year": 2019,
-      "actual": 13150,
+      "actual": 12000,
       "forecast": null,
       "lowerBound": null,
       "upperBound": null
@@ -1476,7 +1499,7 @@
       "date": "2019-11-01",
       "label": "Nov 2019",
       "year": 2019,
-      "actual": 13150,
+      "actual": 12150,
       "forecast": null,
       "lowerBound": null,
       "upperBound": null
@@ -1486,7 +1509,7 @@
       "date": "2019-12-02",
       "label": "Des 2019",
       "year": 2019,
-      "actual": 13150,
+      "actual": 12400,
       "forecast": null,
       "lowerBound": null,
       "upperBound": null
@@ -1496,7 +1519,7 @@
       "date": "2020-01-01",
       "label": "Jan 2020",
       "year": 2020,
-      "actual": 13150,
+      "actual": 12400,
       "forecast": null,
       "lowerBound": null,
       "upperBound": null
@@ -1506,7 +1529,7 @@
       "date": "2020-02-03",
       "label": "Feb 2020",
       "year": 2020,
-      "actual": 12900,
+      "actual": 13650,
       "forecast": null,
       "lowerBound": null,
       "upperBound": null
@@ -1516,7 +1539,7 @@
       "date": "2020-03-02",
       "label": "Mar 2020",
       "year": 2020,
-      "actual": 12900,
+      "actual": 14650,
       "forecast": null,
       "lowerBound": null,
       "upperBound": null
@@ -1526,7 +1549,7 @@
       "date": "2020-04-01",
       "label": "Apr 2020",
       "year": 2020,
-      "actual": 12900,
+      "actual": 17500,
       "forecast": null,
       "lowerBound": null,
       "upperBound": null
@@ -1536,7 +1559,7 @@
       "date": "2020-05-01",
       "label": "Mei 2020",
       "year": 2020,
-      "actual": 12900,
+      "actual": 17500,
       "forecast": null,
       "lowerBound": null,
       "upperBound": null
@@ -1546,7 +1569,7 @@
       "date": "2020-06-01",
       "label": "Jun 2020",
       "year": 2020,
-      "actual": 12900,
+      "actual": 13400,
       "forecast": null,
       "lowerBound": null,
       "upperBound": null
@@ -1556,7 +1579,7 @@
       "date": "2020-07-01",
       "label": "Jul 2020",
       "year": 2020,
-      "actual": 12900,
+      "actual": 13400,
       "forecast": null,
       "lowerBound": null,
       "upperBound": null
@@ -1566,7 +1589,7 @@
       "date": "2020-08-03",
       "label": "Agu 2020",
       "year": 2020,
-      "actual": 12750,
+      "actual": 13400,
       "forecast": null,
       "lowerBound": null,
       "upperBound": null
@@ -1576,7 +1599,7 @@
       "date": "2020-09-01",
       "label": "Sep 2020",
       "year": 2020,
-      "actual": 12750,
+      "actual": 13400,
       "forecast": null,
       "lowerBound": null,
       "upperBound": null
@@ -1586,7 +1609,7 @@
       "date": "2020-10-01",
       "label": "Okt 2020",
       "year": 2020,
-      "actual": 12750,
+      "actual": 12900,
       "forecast": null,
       "lowerBound": null,
       "upperBound": null
@@ -1596,7 +1619,7 @@
       "date": "2020-11-02",
       "label": "Nov 2020",
       "year": 2020,
-      "actual": 12750,
+      "actual": 12900,
       "forecast": null,
       "lowerBound": null,
       "upperBound": null
@@ -1626,7 +1649,7 @@
       "date": "2021-02-01",
       "label": "Feb 2021",
       "year": 2021,
-      "actual": 12750,
+      "actual": 12900,
       "forecast": null,
       "lowerBound": null,
       "upperBound": null
@@ -1636,7 +1659,7 @@
       "date": "2021-03-01",
       "label": "Mar 2021",
       "year": 2021,
-      "actual": 12750,
+      "actual": 12900,
       "forecast": null,
       "lowerBound": null,
       "upperBound": null
@@ -1656,7 +1679,7 @@
       "date": "2021-05-03",
       "label": "Mei 2021",
       "year": 2021,
-      "actual": 12500,
+      "actual": 12750,
       "forecast": null,
       "lowerBound": null,
       "upperBound": null
@@ -1666,7 +1689,7 @@
       "date": "2021-06-01",
       "label": "Jun 2021",
       "year": 2021,
-      "actual": 12500,
+      "actual": 12750,
       "forecast": null,
       "lowerBound": null,
       "upperBound": null
@@ -1676,7 +1699,7 @@
       "date": "2021-07-01",
       "label": "Jul 2021",
       "year": 2021,
-      "actual": 12500,
+      "actual": 12650,
       "forecast": null,
       "lowerBound": null,
       "upperBound": null
@@ -1686,7 +1709,7 @@
       "date": "2021-08-02",
       "label": "Agu 2021",
       "year": 2021,
-      "actual": 12500,
+      "actual": 12650,
       "forecast": null,
       "lowerBound": null,
       "upperBound": null
@@ -1716,7 +1739,7 @@
       "date": "2021-11-01",
       "label": "Nov 2021",
       "year": 2021,
-      "actual": 12650,
+      "actual": 12500,
       "forecast": null,
       "lowerBound": null,
       "upperBound": null
@@ -1726,7 +1749,7 @@
       "date": "2021-12-01",
       "label": "Des 2021",
       "year": 2021,
-      "actual": 12650,
+      "actual": 12500,
       "forecast": null,
       "lowerBound": null,
       "upperBound": null
@@ -1736,7 +1759,7 @@
       "date": "2022-01-03",
       "label": "Jan 2022",
       "year": 2022,
-      "actual": 12650,
+      "actual": 12500,
       "forecast": null,
       "lowerBound": null,
       "upperBound": null
@@ -1746,7 +1769,7 @@
       "date": "2022-02-01",
       "label": "Feb 2022",
       "year": 2022,
-      "actual": 12650,
+      "actual": 12500,
       "forecast": null,
       "lowerBound": null,
       "upperBound": null
@@ -1756,7 +1779,7 @@
       "date": "2022-03-01",
       "label": "Mar 2022",
       "year": 2022,
-      "actual": 12650,
+      "actual": 14400,
       "forecast": null,
       "lowerBound": null,
       "upperBound": null
@@ -1766,7 +1789,7 @@
       "date": "2022-04-01",
       "label": "Apr 2022",
       "year": 2022,
-      "actual": 12650,
+      "actual": 14650,
       "forecast": null,
       "lowerBound": null,
       "upperBound": null
@@ -1776,7 +1799,7 @@
       "date": "2022-05-02",
       "label": "Mei 2022",
       "year": 2022,
-      "actual": 12650,
+      "actual": 14650,
       "forecast": null,
       "lowerBound": null,
       "upperBound": null
@@ -1786,7 +1809,7 @@
       "date": "2022-06-01",
       "label": "Jun 2022",
       "year": 2022,
-      "actual": 12650,
+      "actual": 14500,
       "forecast": null,
       "lowerBound": null,
       "upperBound": null
@@ -1796,7 +1819,7 @@
       "date": "2022-07-01",
       "label": "Jul 2022",
       "year": 2022,
-      "actual": 12650,
+      "actual": 14500,
       "forecast": null,
       "lowerBound": null,
       "upperBound": null
@@ -1806,7 +1829,7 @@
       "date": "2022-08-01",
       "label": "Agu 2022",
       "year": 2022,
-      "actual": 12650,
+      "actual": 14000,
       "forecast": null,
       "lowerBound": null,
       "upperBound": null
@@ -1816,7 +1839,7 @@
       "date": "2022-09-01",
       "label": "Sep 2022",
       "year": 2022,
-      "actual": 12650,
+      "actual": 13750,
       "forecast": null,
       "lowerBound": null,
       "upperBound": null
@@ -1826,7 +1849,7 @@
       "date": "2022-10-03",
       "label": "Okt 2022",
       "year": 2022,
-      "actual": 12650,
+      "actual": 13750,
       "forecast": null,
       "lowerBound": null,
       "upperBound": null
@@ -1836,7 +1859,7 @@
       "date": "2022-11-01",
       "label": "Nov 2022",
       "year": 2022,
-      "actual": 12650,
+      "actual": 13250,
       "forecast": null,
       "lowerBound": null,
       "upperBound": null
@@ -1846,7 +1869,7 @@
       "date": "2022-12-01",
       "label": "Des 2022",
       "year": 2022,
-      "actual": 13000,
+      "actual": 13250,
       "forecast": null,
       "lowerBound": null,
       "upperBound": null
@@ -1856,7 +1879,7 @@
       "date": "2023-01-02",
       "label": "Jan 2023",
       "year": 2023,
-      "actual": 13650,
+      "actual": 13400,
       "forecast": null,
       "lowerBound": null,
       "upperBound": null
@@ -1866,7 +1889,7 @@
       "date": "2023-02-01",
       "label": "Feb 2023",
       "year": 2023,
-      "actual": 13750,
+      "actual": 13500,
       "forecast": null,
       "lowerBound": null,
       "upperBound": null
@@ -1876,7 +1899,7 @@
       "date": "2023-03-01",
       "label": "Mar 2023",
       "year": 2023,
-      "actual": 14650,
+      "actual": 13650,
       "forecast": null,
       "lowerBound": null,
       "upperBound": null
@@ -1886,7 +1909,7 @@
       "date": "2023-04-03",
       "label": "Apr 2023",
       "year": 2023,
-      "actual": 14650,
+      "actual": 13500,
       "forecast": null,
       "lowerBound": null,
       "upperBound": null
@@ -1896,7 +1919,7 @@
       "date": "2023-05-01",
       "label": "Mei 2023",
       "year": 2023,
-      "actual": 14500,
+      "actual": 13500,
       "forecast": null,
       "lowerBound": null,
       "upperBound": null
@@ -1906,7 +1929,7 @@
       "date": "2023-06-01",
       "label": "Jun 2023",
       "year": 2023,
-      "actual": 14650,
+      "actual": 13650,
       "forecast": null,
       "lowerBound": null,
       "upperBound": null
@@ -1916,7 +1939,7 @@
       "date": "2023-07-03",
       "label": "Jul 2023",
       "year": 2023,
-      "actual": 14650,
+      "actual": 13650,
       "forecast": null,
       "lowerBound": null,
       "upperBound": null
@@ -1926,7 +1949,7 @@
       "date": "2023-08-01",
       "label": "Agu 2023",
       "year": 2023,
-      "actual": 14650,
+      "actual": 13650,
       "forecast": null,
       "lowerBound": null,
       "upperBound": null
@@ -1936,7 +1959,7 @@
       "date": "2023-09-01",
       "label": "Sep 2023",
       "year": 2023,
-      "actual": 15500,
+      "actual": 13650,
       "forecast": null,
       "lowerBound": null,
       "upperBound": null
@@ -1946,7 +1969,7 @@
       "date": "2023-10-02",
       "label": "Okt 2023",
       "year": 2023,
-      "actual": 15500,
+      "actual": 14400,
       "forecast": null,
       "lowerBound": null,
       "upperBound": null
@@ -1956,7 +1979,7 @@
       "date": "2023-11-01",
       "label": "Nov 2023",
       "year": 2023,
-      "actual": 15500,
+      "actual": 15750,
       "forecast": null,
       "lowerBound": null,
       "upperBound": null
@@ -1966,7 +1989,7 @@
       "date": "2023-12-01",
       "label": "Des 2023",
       "year": 2023,
-      "actual": 15500,
+      "actual": 16900,
       "forecast": null,
       "lowerBound": null,
       "upperBound": null
@@ -1976,7 +1999,7 @@
       "date": "2024-01-01",
       "label": "Jan 2024",
       "year": 2024,
-      "actual": 15500,
+      "actual": 16900,
       "forecast": null,
       "lowerBound": null,
       "upperBound": null
@@ -1986,7 +2009,7 @@
       "date": "2024-02-01",
       "label": "Feb 2024",
       "year": 2024,
-      "actual": 15500,
+      "actual": 16900,
       "forecast": null,
       "lowerBound": null,
       "upperBound": null
@@ -2006,7 +2029,7 @@
       "date": "2024-04-01",
       "label": "Apr 2024",
       "year": 2024,
-      "actual": 16650,
+      "actual": 16900,
       "forecast": null,
       "lowerBound": null,
       "upperBound": null
@@ -2016,7 +2039,7 @@
       "date": "2024-05-01",
       "label": "Mei 2024",
       "year": 2024,
-      "actual": 16650,
+      "actual": 17400,
       "forecast": null,
       "lowerBound": null,
       "upperBound": null
@@ -2026,7 +2049,7 @@
       "date": "2024-06-03",
       "label": "Jun 2024",
       "year": 2024,
-      "actual": 16150,
+      "actual": 17150,
       "forecast": null,
       "lowerBound": null,
       "upperBound": null
@@ -2036,7 +2059,7 @@
       "date": "2024-07-01",
       "label": "Jul 2024",
       "year": 2024,
-      "actual": 16150,
+      "actual": 17150,
       "forecast": null,
       "lowerBound": null,
       "upperBound": null
@@ -2046,7 +2069,7 @@
       "date": "2024-08-01",
       "label": "Agu 2024",
       "year": 2024,
-      "actual": 16150,
+      "actual": 17150,
       "forecast": null,
       "lowerBound": null,
       "upperBound": null
@@ -2056,7 +2079,7 @@
       "date": "2024-09-02",
       "label": "Sep 2024",
       "year": 2024,
-      "actual": 16150,
+      "actual": 17150,
       "forecast": null,
       "lowerBound": null,
       "upperBound": null
@@ -2066,7 +2089,7 @@
       "date": "2024-10-01",
       "label": "Okt 2024",
       "year": 2024,
-      "actual": 16150,
+      "actual": 17150,
       "forecast": null,
       "lowerBound": null,
       "upperBound": null
@@ -2076,7 +2099,7 @@
       "date": "2024-11-01",
       "label": "Nov 2024",
       "year": 2024,
-      "actual": 16150,
+      "actual": 17150,
       "forecast": null,
       "lowerBound": null,
       "upperBound": null
@@ -2086,7 +2109,7 @@
       "date": "2024-12-01",
       "label": "Des 2024",
       "year": 2024,
-      "actual": 16000,
+      "actual": 17150,
       "forecast": null,
       "lowerBound": null,
       "upperBound": null
@@ -2096,7 +2119,7 @@
       "date": "2025-01-01",
       "label": "Jan 2025",
       "year": 2025,
-      "actual": 16000,
+      "actual": 17250,
       "forecast": null,
       "lowerBound": null,
       "upperBound": null
@@ -2106,7 +2129,7 @@
       "date": "2025-02-01",
       "label": "Feb 2025",
       "year": 2025,
-      "actual": 16000,
+      "actual": 17750,
       "forecast": null,
       "lowerBound": null,
       "upperBound": null
@@ -2116,7 +2139,7 @@
       "date": "2025-03-01",
       "label": "Mar 2025",
       "year": 2025,
-      "actual": 16250,
+      "actual": 18000,
       "forecast": null,
       "lowerBound": null,
       "upperBound": null
@@ -2126,7 +2149,7 @@
       "date": "2025-04-01",
       "label": "Apr 2025",
       "year": 2025,
-      "actual": 16250,
+      "actual": 17900,
       "forecast": null,
       "lowerBound": null,
       "upperBound": null
@@ -2136,7 +2159,7 @@
       "date": "2025-05-01",
       "label": "Mei 2025",
       "year": 2025,
-      "actual": 16250,
+      "actual": 17900,
       "forecast": null,
       "lowerBound": null,
       "upperBound": null
@@ -2146,7 +2169,7 @@
       "date": "2025-06-01",
       "label": "Jun 2025",
       "year": 2025,
-      "actual": 16250,
+      "actual": 17650,
       "forecast": null,
       "lowerBound": null,
       "upperBound": null
@@ -2156,7 +2179,7 @@
       "date": "2025-07-01",
       "label": "Jul 2025",
       "year": 2025,
-      "actual": 16250,
+      "actual": 17250,
       "forecast": null,
       "lowerBound": null,
       "upperBound": null
@@ -2166,7 +2189,7 @@
       "date": "2025-08-01",
       "label": "Agu 2025",
       "year": 2025,
-      "actual": 16250,
+      "actual": 17150,
       "forecast": null,
       "lowerBound": null,
       "upperBound": null
@@ -2176,7 +2199,7 @@
       "date": "2025-09-01",
       "label": "Sep 2025",
       "year": 2025,
-      "actual": 16250,
+      "actual": 16750,
       "forecast": null,
       "lowerBound": null,
       "upperBound": null
@@ -2186,7 +2209,7 @@
       "date": "2025-10-01",
       "label": "Okt 2025",
       "year": 2025,
-      "actual": 16000,
+      "actual": 16750,
       "forecast": null,
       "lowerBound": null,
       "upperBound": null
@@ -2196,7 +2219,7 @@
       "date": "2025-11-01",
       "label": "Nov 2025",
       "year": 2025,
-      "actual": 16000,
+      "actual": 16750,
       "forecast": null,
       "lowerBound": null,
       "upperBound": null
@@ -2206,7 +2229,7 @@
       "date": "2025-12-01",
       "label": "Des 2025",
       "year": 2025,
-      "actual": 16000,
+      "actual": 17000,
       "forecast": null,
       "lowerBound": null,
       "upperBound": null
@@ -2216,7 +2239,7 @@
       "date": "2026-01-01",
       "label": "Jan 2026",
       "year": 2026,
-      "actual": 16000,
+      "actual": 17000,
       "forecast": null,
       "lowerBound": null,
       "upperBound": null
@@ -2226,7 +2249,7 @@
       "date": "2026-02-01",
       "label": "Feb 2026",
       "year": 2026,
-      "actual": 16000,
+      "actual": 18000,
       "forecast": null,
       "lowerBound": null,
       "upperBound": null
@@ -2236,7 +2259,7 @@
       "date": "2026-03-01",
       "label": "Mar 2026",
       "year": 2026,
-      "actual": 16000,
+      "actual": 18000,
       "forecast": null,
       "lowerBound": null,
       "upperBound": null
@@ -2246,7 +2269,7 @@
       "date": "2026-04-01",
       "label": "Apr 2026",
       "year": 2026,
-      "actual": 16000,
+      "actual": 18400,
       "forecast": null,
       "lowerBound": null,
       "upperBound": null
@@ -2256,7 +2279,7 @@
       "date": "2026-05-01",
       "label": "Mei 2026",
       "year": 2026,
-      "actual": 16000,
+      "actual": 18000,
       "forecast": null,
       "lowerBound": null,
       "upperBound": null
@@ -2266,7 +2289,7 @@
       "date": "2026-06-01",
       "label": "Jun 2026",
       "year": 2026,
-      "actual": 16000,
+      "actual": 18000,
       "forecast": null,
       "lowerBound": null,
       "upperBound": null
@@ -2276,7 +2299,7 @@
       "date": "2026-07-01",
       "label": "Jul 2026",
       "year": 2026,
-      "actual": 16400,
+      "actual": 18000,
       "forecast": null,
       "lowerBound": null,
       "upperBound": null
@@ -2286,7 +2309,7 @@
       "date": "2026-08-01",
       "label": "Agu 2026",
       "year": 2026,
-      "actual": 16500,
+      "actual": 18000,
       "forecast": null,
       "lowerBound": null,
       "upperBound": null
@@ -2296,64 +2319,84 @@
       "date": "2026-09-01",
       "label": "Sep 2026",
       "year": 2026,
-      "actual": 16750,
-      "forecast": 16750,
-      "lowerBound": 16648,
-      "upperBound": 16852
+      "actual": 18150,
+      "forecast": null,
+      "lowerBound": null,
+      "upperBound": null
     },
     {
       "time": "2026",
+      "date": "2026-10-01",
       "label": "Okt 2026",
       "year": 2026,
-      "actual": null,
-      "forecast": 16750,
-      "lowerBound": 16429,
-      "upperBound": 17071
+      "actual": 18125,
+      "forecast": null,
+      "lowerBound": null,
+      "upperBound": null
     },
     {
       "time": "2026",
+      "date": "2026-11-01",
       "label": "Nov 2026",
       "year": 2026,
-      "actual": null,
-      "forecast": 16650,
-      "lowerBound": 16196,
-      "upperBound": 17104
+      "actual": 19000,
+      "forecast": 19000,
+      "lowerBound": 18756,
+      "upperBound": 19244
     },
     {
       "time": "2026",
       "label": "Des 2026",
       "year": 2026,
       "actual": null,
-      "forecast": 16550,
-      "lowerBound": 15994,
-      "upperBound": 17106
+      "forecast": 18950,
+      "lowerBound": 18180,
+      "upperBound": 19720
     },
     {
       "time": "2027",
       "label": "Jan 2027",
       "year": 2027,
       "actual": null,
-      "forecast": 16400,
-      "lowerBound": 15758,
-      "upperBound": 17042
+      "forecast": 18800,
+      "lowerBound": 17712,
+      "upperBound": 19888
     },
     {
       "time": "2027",
       "label": "Feb 2027",
       "year": 2027,
       "actual": null,
-      "forecast": 16300,
-      "lowerBound": 15583,
-      "upperBound": 17017
+      "forecast": 18550,
+      "lowerBound": 17217,
+      "upperBound": 19883
     },
     {
       "time": "2027",
       "label": "Mar 2027",
       "year": 2027,
       "actual": null,
-      "forecast": 16300,
-      "lowerBound": 15514,
-      "upperBound": 17086
+      "forecast": 18250,
+      "lowerBound": 16711,
+      "upperBound": 19789
+    },
+    {
+      "time": "2027",
+      "label": "Apr 2027",
+      "year": 2027,
+      "actual": null,
+      "forecast": 17950,
+      "lowerBound": 16229,
+      "upperBound": 19671
+    },
+    {
+      "time": "2027",
+      "label": "Mei 2027",
+      "year": 2027,
+      "actual": null,
+      "forecast": 18000,
+      "lowerBound": 16115,
+      "upperBound": 19885
     }
   ],
   "timeSeriesByKomoditas": {
@@ -3380,6 +3423,28 @@
         "PROD": 10200,
         "expected": 13258,
         "alps": 1.72
+      },
+      {
+        "time": "2026",
+        "date": "2026-10-01",
+        "label": "Okt 2026",
+        "year": 2026,
+        "PB": 12400,
+        "PE": 13750,
+        "PROD": 10300,
+        "expected": 13320,
+        "alps": 1.8
+      },
+      {
+        "time": "2026",
+        "date": "2026-11-01",
+        "label": "Nov 2026",
+        "year": 2026,
+        "PB": 12250,
+        "PE": 13750,
+        "PROD": 10400,
+        "expected": 13423,
+        "alps": 1.32
       }
     ],
     "Beras Kualitas Bawah II": [
@@ -4405,6 +4470,28 @@
         "PROD": 9150,
         "expected": 12191,
         "alps": 0.26
+      },
+      {
+        "time": "2026",
+        "date": "2026-10-01",
+        "label": "Okt 2026",
+        "year": 2026,
+        "PB": 11150,
+        "PE": 12375,
+        "PROD": 9300,
+        "expected": 12168,
+        "alps": 0.96
+      },
+      {
+        "time": "2026",
+        "date": "2026-11-01",
+        "label": "Nov 2026",
+        "year": 2026,
+        "PB": 11050,
+        "PE": 12375,
+        "PROD": 9400,
+        "expected": 12214,
+        "alps": 0.76
       }
     ],
     "Beras Kualitas Medium I": [
@@ -5430,6 +5517,28 @@
         "PROD": 11400,
         "expected": 15027,
         "alps": 1.02
+      },
+      {
+        "time": "2026",
+        "date": "2026-10-01",
+        "label": "Okt 2026",
+        "year": 2026,
+        "PB": 13850,
+        "PE": 15375,
+        "PROD": 11550,
+        "expected": 15048,
+        "alps": 1.53
+      },
+      {
+        "time": "2026",
+        "date": "2026-11-01",
+        "label": "Nov 2026",
+        "year": 2026,
+        "PB": 13700,
+        "PE": 15375,
+        "PROD": 11650,
+        "expected": 15125,
+        "alps": 1.17
       }
     ],
     "Beras Kualitas Medium II": [
@@ -6455,6 +6564,28 @@
         "PROD": 10850,
         "expected": 14277,
         "alps": 0.92
+      },
+      {
+        "time": "2026",
+        "date": "2026-10-01",
+        "label": "Okt 2026",
+        "year": 2026,
+        "PB": 13200,
+        "PE": 14625,
+        "PROD": 11000,
+        "expected": 14298,
+        "alps": 1.41
+      },
+      {
+        "time": "2026",
+        "date": "2026-11-01",
+        "label": "Nov 2026",
+        "year": 2026,
+        "PB": 13050,
+        "PE": 14625,
+        "PROD": 11100,
+        "expected": 14375,
+        "alps": 1.11
       }
     ],
     "Beras Kualitas Super I": [
@@ -7480,6 +7611,28 @@
         "PROD": 12550,
         "expected": 16220,
         "alps": 2.61
+      },
+      {
+        "time": "2026",
+        "date": "2026-10-01",
+        "label": "Okt 2026",
+        "year": 2026,
+        "PB": 15200,
+        "PE": 16875,
+        "PROD": 12650,
+        "expected": 16303,
+        "alps": 2.46
+      },
+      {
+        "time": "2026",
+        "date": "2026-11-01",
+        "label": "Nov 2026",
+        "year": 2026,
+        "PB": 15050,
+        "PE": 16875,
+        "PROD": 12800,
+        "expected": 16429,
+        "alps": 1.71
       }
     ],
     "Beras Kualitas Super II": [
@@ -8505,6 +8658,28 @@
         "PROD": 11700,
         "expected": 15149,
         "alps": 2.22
+      },
+      {
+        "time": "2026",
+        "date": "2026-10-01",
+        "label": "Okt 2026",
+        "year": 2026,
+        "PB": 14200,
+        "PE": 15750,
+        "PROD": 11850,
+        "expected": 15222,
+        "alps": 2.07
+      },
+      {
+        "time": "2026",
+        "date": "2026-11-01",
+        "label": "Nov 2026",
+        "year": 2026,
+        "PB": 14050,
+        "PE": 15750,
+        "PROD": 11950,
+        "expected": 15336,
+        "alps": 1.48
       }
     ],
     "Daging Ayam Ras Segar": [
@@ -9530,6 +9705,28 @@
         "PROD": 31250,
         "expected": 35529,
         "alps": 2.21
+      },
+      {
+        "time": "2026",
+        "date": "2026-10-01",
+        "label": "Okt 2026",
+        "year": 2026,
+        "PB": 36050,
+        "PE": 40000,
+        "PROD": 30050,
+        "expected": 37589,
+        "alps": 0.8
+      },
+      {
+        "time": "2026",
+        "date": "2026-11-01",
+        "label": "Nov 2026",
+        "year": 2026,
+        "PB": 31450,
+        "PE": 35250,
+        "PROD": 26700,
+        "expected": 38059,
+        "alps": -0.97
       }
     ],
     "Daging Sapi Kualitas 1": [
@@ -10555,6 +10752,28 @@
         "PROD": 121550,
         "expected": 154829,
         "alps": 1.89
+      },
+      {
+        "time": "2026",
+        "date": "2026-10-01",
+        "label": "Okt 2026",
+        "year": 2026,
+        "PB": 146500,
+        "PE": 162500,
+        "PROD": 122000,
+        "expected": 156757,
+        "alps": 1.38
+      },
+      {
+        "time": "2026",
+        "date": "2026-11-01",
+        "label": "Nov 2026",
+        "year": 2026,
+        "PB": 145050,
+        "PE": 162500,
+        "PROD": 123150,
+        "expected": 158285,
+        "alps": 1.02
       }
     ],
     "Daging Sapi Kualitas 2": [
@@ -11580,6 +11799,28 @@
         "PROD": 116900,
         "expected": 148252,
         "alps": 1.84
+      },
+      {
+        "time": "2026",
+        "date": "2026-10-01",
+        "label": "Okt 2026",
+        "year": 2026,
+        "PB": 140850,
+        "PE": 156250,
+        "PROD": 117300,
+        "expected": 150266,
+        "alps": 1.35
+      },
+      {
+        "time": "2026",
+        "date": "2026-11-01",
+        "label": "Nov 2026",
+        "year": 2026,
+        "PB": 139450,
+        "PE": 156250,
+        "PROD": 118450,
+        "expected": 151864,
+        "alps": 0.99
       }
     ],
     "Telur Ayam Ras Segar": [
@@ -12605,6 +12846,28 @@
         "PROD": 18900,
         "expected": 26263,
         "alps": -0.52
+      },
+      {
+        "time": "2026",
+        "date": "2026-10-01",
+        "label": "Okt 2026",
+        "year": 2026,
+        "PB": 23350,
+        "PE": 25875,
+        "PROD": 19450,
+        "expected": 26210,
+        "alps": -0.17
+      },
+      {
+        "time": "2026",
+        "date": "2026-11-01",
+        "label": "Nov 2026",
+        "year": 2026,
+        "PB": 21850,
+        "PE": 24500,
+        "PROD": 18550,
+        "expected": 26311,
+        "alps": -0.93
       }
     ],
     "Bawang Merah Ukuran Sedang": [
@@ -13630,6 +13893,28 @@
         "PROD": 28050,
         "expected": 45389,
         "alps": -1.45
+      },
+      {
+        "time": "2026",
+        "date": "2026-10-01",
+        "label": "Okt 2026",
+        "year": 2026,
+        "PB": 34950,
+        "PE": 38750,
+        "PROD": 29100,
+        "expected": 42634,
+        "alps": -0.74
+      },
+      {
+        "time": "2026",
+        "date": "2026-11-01",
+        "label": "Nov 2026",
+        "year": 2026,
+        "PB": 35250,
+        "PE": 39500,
+        "PROD": 29950,
+        "expected": 41744,
+        "alps": -0.44
       }
     ],
     "Bawang Putih Ukuran Sedang": [
@@ -14655,6 +14940,28 @@
         "PROD": 32000,
         "expected": 40748,
         "alps": 0.77
+      },
+      {
+        "time": "2026",
+        "date": "2026-10-01",
+        "label": "Okt 2026",
+        "year": 2026,
+        "PB": 38550,
+        "PE": 42750,
+        "PROD": 32100,
+        "expected": 40842,
+        "alps": 0.77
+      },
+      {
+        "time": "2026",
+        "date": "2026-11-01",
+        "label": "Nov 2026",
+        "year": 2026,
+        "PB": 38600,
+        "PE": 43250,
+        "PROD": 32800,
+        "expected": 41014,
+        "alps": 0.93
       }
     ],
     "Cabai Merah Besar": [
@@ -15680,6 +15987,28 @@
         "PROD": 27700,
         "expected": 45989,
         "alps": -0.57
+      },
+      {
+        "time": "2026",
+        "date": "2026-10-01",
+        "label": "Okt 2026",
+        "year": 2026,
+        "PB": 39450,
+        "PE": 43750,
+        "PROD": 32850,
+        "expected": 43903,
+        "alps": -0.01
+      },
+      {
+        "time": "2026",
+        "date": "2026-11-01",
+        "label": "Nov 2026",
+        "year": 2026,
+        "PB": 44650,
+        "PE": 50000,
+        "PROD": 37900,
+        "expected": 42989,
+        "alps": 0.49
       }
     ],
     "Cabai Merah Keriting": [
@@ -16705,6 +17034,28 @@
         "PROD": 22800,
         "expected": 39293,
         "alps": -0.57
+      },
+      {
+        "time": "2026",
+        "date": "2026-10-01",
+        "label": "Okt 2026",
+        "year": 2026,
+        "PB": 50250,
+        "PE": 55750,
+        "PROD": 41850,
+        "expected": 37025,
+        "alps": 1.24
+      },
+      {
+        "time": "2026",
+        "date": "2026-11-01",
+        "label": "Nov 2026",
+        "year": 2026,
+        "PB": 59800,
+        "PE": 67000,
+        "PROD": 50800,
+        "expected": 40760,
+        "alps": 1.77
       }
     ],
     "Cabai Rawit Hijau": [
@@ -17730,6 +18081,28 @@
         "PROD": 33650,
         "expected": 47412,
         "alps": -0.17
+      },
+      {
+        "time": "2026",
+        "date": "2026-10-01",
+        "label": "Okt 2026",
+        "year": 2026,
+        "PB": 43250,
+        "PE": 48000,
+        "PROD": 36050,
+        "expected": 44719,
+        "alps": 0.23
+      },
+      {
+        "time": "2026",
+        "date": "2026-11-01",
+        "label": "Nov 2026",
+        "year": 2026,
+        "PB": 52900,
+        "PE": 59250,
+        "PROD": 44900,
+        "expected": 43285,
+        "alps": 1.15
       }
     ],
     "Cabai Rawit Merah": [
@@ -18755,6 +19128,28 @@
         "PROD": 44900,
         "expected": 52793,
         "alps": 0.36
+      },
+      {
+        "time": "2026",
+        "date": "2026-10-01",
+        "label": "Okt 2026",
+        "year": 2026,
+        "PB": 69850,
+        "PE": 77500,
+        "PROD": 58200,
+        "expected": 53450,
+        "alps": 1.22
+      },
+      {
+        "time": "2026",
+        "date": "2026-11-01",
+        "label": "Nov 2026",
+        "year": 2026,
+        "PB": 56900,
+        "PE": 63750,
+        "PROD": 48300,
+        "expected": 57081,
+        "alps": 0.33
       }
     ],
     "Minyak Goreng Curah": [
@@ -19780,6 +20175,28 @@
         "PROD": 15450,
         "expected": 20217,
         "alps": 0.56
+      },
+      {
+        "time": "2026",
+        "date": "2026-10-01",
+        "label": "Okt 2026",
+        "year": 2026,
+        "PB": 18700,
+        "PE": 20750,
+        "PROD": 15600,
+        "expected": 20287,
+        "alps": 0.6
+      },
+      {
+        "time": "2026",
+        "date": "2026-11-01",
+        "label": "Nov 2026",
+        "year": 2026,
+        "PB": 18300,
+        "PE": 20500,
+        "PROD": 15550,
+        "expected": 20314,
+        "alps": 0.24
       }
     ],
     "Minyak Goreng Kemasan Bermerk 1": [
@@ -20805,6 +21222,28 @@
         "PROD": 17950,
         "expected": 23341,
         "alps": 0.74
+      },
+      {
+        "time": "2026",
+        "date": "2026-10-01",
+        "label": "Okt 2026",
+        "year": 2026,
+        "PB": 21650,
+        "PE": 24000,
+        "PROD": 18000,
+        "expected": 23437,
+        "alps": 0.63
+      },
+      {
+        "time": "2026",
+        "date": "2026-11-01",
+        "label": "Nov 2026",
+        "year": 2026,
+        "PB": 21400,
+        "PE": 24000,
+        "PROD": 18200,
+        "expected": 23479,
+        "alps": 0.59
       }
     ],
     "Minyak Goreng Kemasan Bermerk 2": [
@@ -21830,6 +22269,28 @@
         "PROD": 17750,
         "expected": 23101,
         "alps": 0.86
+      },
+      {
+        "time": "2026",
+        "date": "2026-10-01",
+        "label": "Okt 2026",
+        "year": 2026,
+        "PB": 20950,
+        "PE": 23250,
+        "PROD": 17450,
+        "expected": 23204,
+        "alps": 0.06
+      },
+      {
+        "time": "2026",
+        "date": "2026-11-01",
+        "label": "Nov 2026",
+        "year": 2026,
+        "PB": 20750,
+        "PE": 23250,
+        "PROD": 17600,
+        "expected": 23126,
+        "alps": 0.17
       }
     ],
     "Gula Pasir Kualitas Premium": [
@@ -22855,6 +23316,28 @@
         "PROD": 14050,
         "expected": 18668,
         "alps": 0.34
+      },
+      {
+        "time": "2026",
+        "date": "2026-10-01",
+        "label": "Okt 2026",
+        "year": 2026,
+        "PB": 16900,
+        "PE": 18750,
+        "PROD": 14100,
+        "expected": 18669,
+        "alps": 0.34
+      },
+      {
+        "time": "2026",
+        "date": "2026-11-01",
+        "label": "Nov 2026",
+        "year": 2026,
+        "PB": 16850,
+        "PE": 18875,
+        "PROD": 14300,
+        "expected": 18658,
+        "alps": 0.93
       }
     ],
     "Gula Pasir Lokal": [
@@ -23880,6 +24363,28 @@
         "PROD": 13600,
         "expected": 17749,
         "alps": 0.85
+      },
+      {
+        "time": "2026",
+        "date": "2026-10-01",
+        "label": "Okt 2026",
+        "year": 2026,
+        "PB": 16350,
+        "PE": 18125,
+        "PROD": 13600,
+        "expected": 17806,
+        "alps": 0.67
+      },
+      {
+        "time": "2026",
+        "date": "2026-11-01",
+        "label": "Nov 2026",
+        "year": 2026,
+        "PB": 16950,
+        "PE": 19000,
+        "PROD": 14400,
+        "expected": 17842,
+        "alps": 2.38
       }
     ]
   },
@@ -24811,63 +25316,83 @@
         "label": "Sep 2026",
         "year": 2026,
         "actual": 13650,
-        "forecast": 13650,
-        "lowerBound": 13536,
-        "upperBound": 13764
+        "forecast": null,
+        "lowerBound": null,
+        "upperBound": null
       },
       {
         "time": "2026",
+        "date": "2026-10-01",
         "label": "Okt 2026",
         "year": 2026,
-        "actual": null,
-        "forecast": 13650,
-        "lowerBound": 13290,
-        "upperBound": 14010
+        "actual": 13750,
+        "forecast": null,
+        "lowerBound": null,
+        "upperBound": null
       },
       {
         "time": "2026",
+        "date": "2026-11-01",
         "label": "Nov 2026",
         "year": 2026,
-        "actual": null,
-        "forecast": 13600,
-        "lowerBound": 13090,
-        "upperBound": 14110
+        "actual": 13750,
+        "forecast": 13750,
+        "lowerBound": 13626,
+        "upperBound": 13874
       },
       {
         "time": "2026",
         "label": "Des 2026",
         "year": 2026,
         "actual": null,
-        "forecast": 13500,
-        "lowerBound": 12876,
-        "upperBound": 14124
+        "forecast": 13750,
+        "lowerBound": 13360,
+        "upperBound": 14140
       },
       {
         "time": "2027",
         "label": "Jan 2027",
         "year": 2027,
         "actual": null,
-        "forecast": 13400,
-        "lowerBound": 12679,
-        "upperBound": 14121
+        "forecast": 13750,
+        "lowerBound": 13198,
+        "upperBound": 14302
       },
       {
         "time": "2027",
         "label": "Feb 2027",
         "year": 2027,
         "actual": null,
-        "forecast": 13300,
-        "lowerBound": 12494,
-        "upperBound": 14106
+        "forecast": 13650,
+        "lowerBound": 12974,
+        "upperBound": 14326
       },
       {
         "time": "2027",
         "label": "Mar 2027",
         "year": 2027,
         "actual": null,
-        "forecast": 13300,
-        "lowerBound": 12417,
-        "upperBound": 14183
+        "forecast": 13500,
+        "lowerBound": 12719,
+        "upperBound": 14281
+      },
+      {
+        "time": "2027",
+        "label": "Apr 2027",
+        "year": 2027,
+        "actual": null,
+        "forecast": 13400,
+        "lowerBound": 12527,
+        "upperBound": 14273
+      },
+      {
+        "time": "2027",
+        "label": "Mei 2027",
+        "year": 2027,
+        "actual": null,
+        "forecast": 13450,
+        "lowerBound": 12494,
+        "upperBound": 14406
       }
     ],
     "Beras Kualitas Bawah II": [
@@ -25797,63 +26322,83 @@
         "label": "Sep 2026",
         "year": 2026,
         "actual": 12250,
-        "forecast": 12250,
-        "lowerBound": 12135,
-        "upperBound": 12365
+        "forecast": null,
+        "lowerBound": null,
+        "upperBound": null
       },
       {
         "time": "2026",
+        "date": "2026-10-01",
         "label": "Okt 2026",
         "year": 2026,
-        "actual": null,
-        "forecast": 12300,
-        "lowerBound": 11938,
-        "upperBound": 12662
+        "actual": 12375,
+        "forecast": null,
+        "lowerBound": null,
+        "upperBound": null
       },
       {
         "time": "2026",
+        "date": "2026-11-01",
         "label": "Nov 2026",
         "year": 2026,
-        "actual": null,
-        "forecast": 12300,
-        "lowerBound": 11788,
-        "upperBound": 12812
+        "actual": 12375,
+        "forecast": 12375,
+        "lowerBound": 12269,
+        "upperBound": 12481
       },
       {
         "time": "2026",
         "label": "Des 2026",
         "year": 2026,
         "actual": null,
-        "forecast": 12250,
-        "lowerBound": 11623,
-        "upperBound": 12877
+        "forecast": 12400,
+        "lowerBound": 12067,
+        "upperBound": 12733
       },
       {
         "time": "2027",
         "label": "Jan 2027",
         "year": 2027,
         "actual": null,
-        "forecast": 12200,
-        "lowerBound": 11476,
-        "upperBound": 12924
+        "forecast": 12400,
+        "lowerBound": 11928,
+        "upperBound": 12872
       },
       {
         "time": "2027",
         "label": "Feb 2027",
         "year": 2027,
         "actual": null,
-        "forecast": 12150,
-        "lowerBound": 11341,
-        "upperBound": 12959
+        "forecast": 12350,
+        "lowerBound": 11772,
+        "upperBound": 12928
       },
       {
         "time": "2027",
         "label": "Mar 2027",
         "year": 2027,
         "actual": null,
-        "forecast": 12150,
-        "lowerBound": 11264,
-        "upperBound": 13036
+        "forecast": 12250,
+        "lowerBound": 11583,
+        "upperBound": 12917
+      },
+      {
+        "time": "2027",
+        "label": "Apr 2027",
+        "year": 2027,
+        "actual": null,
+        "forecast": 12200,
+        "lowerBound": 11454,
+        "upperBound": 12946
+      },
+      {
+        "time": "2027",
+        "label": "Mei 2027",
+        "year": 2027,
+        "actual": null,
+        "forecast": 12200,
+        "lowerBound": 11383,
+        "upperBound": 13017
       }
     ],
     "Beras Kualitas Medium I": [
@@ -26783,63 +27328,83 @@
         "label": "Sep 2026",
         "year": 2026,
         "actual": 15250,
-        "forecast": 15250,
-        "lowerBound": 15141,
-        "upperBound": 15359
+        "forecast": null,
+        "lowerBound": null,
+        "upperBound": null
       },
       {
         "time": "2026",
+        "date": "2026-10-01",
         "label": "Okt 2026",
         "year": 2026,
-        "actual": null,
-        "forecast": 15300,
-        "lowerBound": 14956,
-        "upperBound": 15644
+        "actual": 15375,
+        "forecast": null,
+        "lowerBound": null,
+        "upperBound": null
       },
       {
         "time": "2026",
+        "date": "2026-11-01",
         "label": "Nov 2026",
         "year": 2026,
-        "actual": null,
-        "forecast": 15250,
-        "lowerBound": 14763,
-        "upperBound": 15737
+        "actual": 15375,
+        "forecast": 15375,
+        "lowerBound": 15267,
+        "upperBound": 15483
       },
       {
         "time": "2026",
         "label": "Des 2026",
         "year": 2026,
         "actual": null,
-        "forecast": 15200,
-        "lowerBound": 14603,
-        "upperBound": 15797
+        "forecast": 15400,
+        "lowerBound": 15060,
+        "upperBound": 15740
       },
       {
         "time": "2027",
         "label": "Jan 2027",
         "year": 2027,
         "actual": null,
-        "forecast": 15100,
-        "lowerBound": 14411,
-        "upperBound": 15789
+        "forecast": 15350,
+        "lowerBound": 14870,
+        "upperBound": 15830
       },
       {
         "time": "2027",
         "label": "Feb 2027",
         "year": 2027,
         "actual": null,
-        "forecast": 15000,
-        "lowerBound": 14230,
-        "upperBound": 15770
+        "forecast": 15300,
+        "lowerBound": 14712,
+        "upperBound": 15888
       },
       {
         "time": "2027",
         "label": "Mar 2027",
         "year": 2027,
         "actual": null,
-        "forecast": 15000,
-        "lowerBound": 14156,
-        "upperBound": 15844
+        "forecast": 15200,
+        "lowerBound": 14521,
+        "upperBound": 15879
+      },
+      {
+        "time": "2027",
+        "label": "Apr 2027",
+        "year": 2027,
+        "actual": null,
+        "forecast": 15100,
+        "lowerBound": 14340,
+        "upperBound": 15860
+      },
+      {
+        "time": "2027",
+        "label": "Mei 2027",
+        "year": 2027,
+        "actual": null,
+        "forecast": 15150,
+        "lowerBound": 14318,
+        "upperBound": 15982
       }
     ],
     "Beras Kualitas Medium II": [
@@ -27769,63 +28334,83 @@
         "label": "Sep 2026",
         "year": 2026,
         "actual": 14500,
-        "forecast": 14500,
-        "lowerBound": 14378,
-        "upperBound": 14622
+        "forecast": null,
+        "lowerBound": null,
+        "upperBound": null
       },
       {
         "time": "2026",
+        "date": "2026-10-01",
         "label": "Okt 2026",
         "year": 2026,
-        "actual": null,
-        "forecast": 14550,
-        "lowerBound": 14166,
-        "upperBound": 14934
+        "actual": 14625,
+        "forecast": null,
+        "lowerBound": null,
+        "upperBound": null
       },
       {
         "time": "2026",
+        "date": "2026-11-01",
         "label": "Nov 2026",
         "year": 2026,
-        "actual": null,
-        "forecast": 14500,
-        "lowerBound": 13957,
-        "upperBound": 15043
+        "actual": 14625,
+        "forecast": 14625,
+        "lowerBound": 14512,
+        "upperBound": 14738
       },
       {
         "time": "2026",
         "label": "Des 2026",
         "year": 2026,
         "actual": null,
-        "forecast": 14450,
-        "lowerBound": 13785,
-        "upperBound": 15115
+        "forecast": 14650,
+        "lowerBound": 14293,
+        "upperBound": 15007
       },
       {
         "time": "2027",
         "label": "Jan 2027",
         "year": 2027,
         "actual": null,
-        "forecast": 14350,
-        "lowerBound": 13582,
-        "upperBound": 15118
+        "forecast": 14650,
+        "lowerBound": 14145,
+        "upperBound": 15155
       },
       {
         "time": "2027",
         "label": "Feb 2027",
         "year": 2027,
         "actual": null,
-        "forecast": 14250,
-        "lowerBound": 13391,
-        "upperBound": 15109
+        "forecast": 14550,
+        "lowerBound": 13931,
+        "upperBound": 15169
       },
       {
         "time": "2027",
         "label": "Mar 2027",
         "year": 2027,
         "actual": null,
-        "forecast": 14250,
-        "lowerBound": 13309,
-        "upperBound": 15191
+        "forecast": 14450,
+        "lowerBound": 13736,
+        "upperBound": 15164
+      },
+      {
+        "time": "2027",
+        "label": "Apr 2027",
+        "year": 2027,
+        "actual": null,
+        "forecast": 14350,
+        "lowerBound": 13551,
+        "upperBound": 15149
+      },
+      {
+        "time": "2027",
+        "label": "Mei 2027",
+        "year": 2027,
+        "actual": null,
+        "forecast": 14400,
+        "lowerBound": 13525,
+        "upperBound": 15275
       }
     ],
     "Beras Kualitas Super I": [
@@ -28755,63 +29340,83 @@
         "label": "Sep 2026",
         "year": 2026,
         "actual": 16750,
-        "forecast": 16750,
-        "lowerBound": 16648,
-        "upperBound": 16852
+        "forecast": null,
+        "lowerBound": null,
+        "upperBound": null
       },
       {
         "time": "2026",
+        "date": "2026-10-01",
         "label": "Okt 2026",
         "year": 2026,
-        "actual": null,
-        "forecast": 16750,
-        "lowerBound": 16429,
-        "upperBound": 17071
+        "actual": 16875,
+        "forecast": null,
+        "lowerBound": null,
+        "upperBound": null
       },
       {
         "time": "2026",
+        "date": "2026-11-01",
         "label": "Nov 2026",
         "year": 2026,
-        "actual": null,
-        "forecast": 16650,
-        "lowerBound": 16196,
-        "upperBound": 17104
+        "actual": 16875,
+        "forecast": 16875,
+        "lowerBound": 16744,
+        "upperBound": 17006
       },
       {
         "time": "2026",
         "label": "Des 2026",
         "year": 2026,
         "actual": null,
-        "forecast": 16550,
-        "lowerBound": 15994,
-        "upperBound": 17106
+        "forecast": 16900,
+        "lowerBound": 16488,
+        "upperBound": 17312
       },
       {
         "time": "2027",
         "label": "Jan 2027",
         "year": 2027,
         "actual": null,
-        "forecast": 16400,
-        "lowerBound": 15758,
-        "upperBound": 17042
+        "forecast": 16850,
+        "lowerBound": 16267,
+        "upperBound": 17433
       },
       {
         "time": "2027",
         "label": "Feb 2027",
         "year": 2027,
         "actual": null,
-        "forecast": 16300,
-        "lowerBound": 15583,
-        "upperBound": 17017
+        "forecast": 16700,
+        "lowerBound": 15986,
+        "upperBound": 17414
       },
       {
         "time": "2027",
         "label": "Mar 2027",
         "year": 2027,
         "actual": null,
-        "forecast": 16300,
-        "lowerBound": 15514,
-        "upperBound": 17086
+        "forecast": 16550,
+        "lowerBound": 15725,
+        "upperBound": 17375
+      },
+      {
+        "time": "2027",
+        "label": "Apr 2027",
+        "year": 2027,
+        "actual": null,
+        "forecast": 16450,
+        "lowerBound": 15528,
+        "upperBound": 17372
+      },
+      {
+        "time": "2027",
+        "label": "Mei 2027",
+        "year": 2027,
+        "actual": null,
+        "forecast": 16450,
+        "lowerBound": 15440,
+        "upperBound": 17460
       }
     ],
     "Beras Kualitas Super II": [
@@ -29741,63 +30346,83 @@
         "label": "Sep 2026",
         "year": 2026,
         "actual": 15650,
-        "forecast": 15650,
-        "lowerBound": 15537,
-        "upperBound": 15763
+        "forecast": null,
+        "lowerBound": null,
+        "upperBound": null
       },
       {
         "time": "2026",
+        "date": "2026-10-01",
         "label": "Okt 2026",
         "year": 2026,
-        "actual": null,
-        "forecast": 15650,
-        "lowerBound": 15293,
-        "upperBound": 16007
+        "actual": 15750,
+        "forecast": null,
+        "lowerBound": null,
+        "upperBound": null
       },
       {
         "time": "2026",
+        "date": "2026-11-01",
         "label": "Nov 2026",
         "year": 2026,
-        "actual": null,
-        "forecast": 15600,
-        "lowerBound": 15095,
-        "upperBound": 16105
+        "actual": 15750,
+        "forecast": 15750,
+        "lowerBound": 15610,
+        "upperBound": 15890
       },
       {
         "time": "2026",
         "label": "Des 2026",
         "year": 2026,
         "actual": null,
-        "forecast": 15450,
-        "lowerBound": 14831,
-        "upperBound": 16069
+        "forecast": 15750,
+        "lowerBound": 15309,
+        "upperBound": 16191
       },
       {
         "time": "2027",
         "label": "Jan 2027",
         "year": 2027,
         "actual": null,
-        "forecast": 15300,
-        "lowerBound": 14586,
-        "upperBound": 16014
+        "forecast": 15700,
+        "lowerBound": 15077,
+        "upperBound": 16323
       },
       {
         "time": "2027",
         "label": "Feb 2027",
         "year": 2027,
         "actual": null,
-        "forecast": 15200,
-        "lowerBound": 14401,
-        "upperBound": 15999
+        "forecast": 15600,
+        "lowerBound": 14836,
+        "upperBound": 16364
       },
       {
         "time": "2027",
         "label": "Mar 2027",
         "year": 2027,
         "actual": null,
-        "forecast": 15200,
-        "lowerBound": 14325,
-        "upperBound": 16075
+        "forecast": 15450,
+        "lowerBound": 14568,
+        "upperBound": 16332
+      },
+      {
+        "time": "2027",
+        "label": "Apr 2027",
+        "year": 2027,
+        "actual": null,
+        "forecast": 15350,
+        "lowerBound": 14364,
+        "upperBound": 16336
+      },
+      {
+        "time": "2027",
+        "label": "Mei 2027",
+        "year": 2027,
+        "actual": null,
+        "forecast": 15350,
+        "lowerBound": 14270,
+        "upperBound": 16430
       }
     ],
     "Daging Ayam Ras Segar": [
@@ -30727,63 +31352,83 @@
         "label": "Sep 2026",
         "year": 2026,
         "actual": 41750,
-        "forecast": 41750,
-        "lowerBound": 40340,
-        "upperBound": 43160
+        "forecast": null,
+        "lowerBound": null,
+        "upperBound": null
       },
       {
         "time": "2026",
+        "date": "2026-10-01",
         "label": "Okt 2026",
         "year": 2026,
-        "actual": null,
-        "forecast": 41600,
-        "lowerBound": 37144,
-        "upperBound": 46056
+        "actual": 40000,
+        "forecast": null,
+        "lowerBound": null,
+        "upperBound": null
       },
       {
         "time": "2026",
+        "date": "2026-11-01",
         "label": "Nov 2026",
         "year": 2026,
-        "actual": null,
-        "forecast": 40850,
-        "lowerBound": 34548,
-        "upperBound": 47152
+        "actual": 35250,
+        "forecast": 35250,
+        "lowerBound": 33795,
+        "upperBound": 36705
       },
       {
         "time": "2026",
         "label": "Des 2026",
         "year": 2026,
         "actual": null,
-        "forecast": 39350,
-        "lowerBound": 31632,
-        "upperBound": 47068
+        "forecast": 36450,
+        "lowerBound": 31852,
+        "upperBound": 41048
       },
       {
         "time": "2027",
         "label": "Jan 2027",
         "year": 2027,
         "actual": null,
-        "forecast": 37600,
-        "lowerBound": 28688,
-        "upperBound": 46512
+        "forecast": 37100,
+        "lowerBound": 30597,
+        "upperBound": 43603
       },
       {
         "time": "2027",
         "label": "Feb 2027",
         "year": 2027,
         "actual": null,
-        "forecast": 36100,
-        "lowerBound": 26136,
-        "upperBound": 46064
+        "forecast": 36950,
+        "lowerBound": 28985,
+        "upperBound": 44915
       },
       {
         "time": "2027",
         "label": "Mar 2027",
         "year": 2027,
         "actual": null,
-        "forecast": 36300,
-        "lowerBound": 25385,
-        "upperBound": 47215
+        "forecast": 36500,
+        "lowerBound": 27303,
+        "upperBound": 45697
+      },
+      {
+        "time": "2027",
+        "label": "Apr 2027",
+        "year": 2027,
+        "actual": null,
+        "forecast": 36350,
+        "lowerBound": 26068,
+        "upperBound": 46632
+      },
+      {
+        "time": "2027",
+        "label": "Mei 2027",
+        "year": 2027,
+        "actual": null,
+        "forecast": 36550,
+        "lowerBound": 25286,
+        "upperBound": 47814
       }
     ],
     "Daging Sapi Kualitas 1": [
@@ -31713,63 +32358,83 @@
         "label": "Sep 2026",
         "year": 2026,
         "actual": 162500,
-        "forecast": 162500,
-        "lowerBound": 160468,
-        "upperBound": 164532
+        "forecast": null,
+        "lowerBound": null,
+        "upperBound": null
       },
       {
         "time": "2026",
+        "date": "2026-10-01",
         "label": "Okt 2026",
         "year": 2026,
-        "actual": null,
-        "forecast": 162450,
-        "lowerBound": 156028,
-        "upperBound": 168872
+        "actual": 162500,
+        "forecast": null,
+        "lowerBound": null,
+        "upperBound": null
       },
       {
         "time": "2026",
+        "date": "2026-11-01",
         "label": "Nov 2026",
         "year": 2026,
-        "actual": null,
-        "forecast": 161600,
-        "lowerBound": 152518,
-        "upperBound": 170682
+        "actual": 162500,
+        "forecast": 162500,
+        "lowerBound": 160429,
+        "upperBound": 164571
       },
       {
         "time": "2026",
         "label": "Des 2026",
         "year": 2026,
         "actual": null,
-        "forecast": 159650,
-        "lowerBound": 148527,
-        "upperBound": 170773
+        "forecast": 163000,
+        "lowerBound": 156455,
+        "upperBound": 169545
       },
       {
         "time": "2027",
         "label": "Jan 2027",
         "year": 2027,
         "actual": null,
-        "forecast": 157250,
-        "lowerBound": 144406,
-        "upperBound": 170094
+        "forecast": 162650,
+        "lowerBound": 153394,
+        "upperBound": 171906
       },
       {
         "time": "2027",
         "label": "Feb 2027",
         "year": 2027,
         "actual": null,
-        "forecast": 155350,
-        "lowerBound": 140990,
-        "upperBound": 169710
+        "forecast": 161200,
+        "lowerBound": 149863,
+        "upperBound": 172537
       },
       {
         "time": "2027",
         "label": "Mar 2027",
         "year": 2027,
         "actual": null,
-        "forecast": 155650,
-        "lowerBound": 139920,
-        "upperBound": 171380
+        "forecast": 159350,
+        "lowerBound": 146260,
+        "upperBound": 172440
+      },
+      {
+        "time": "2027",
+        "label": "Apr 2027",
+        "year": 2027,
+        "actual": null,
+        "forecast": 157900,
+        "lowerBound": 143264,
+        "upperBound": 172536
+      },
+      {
+        "time": "2027",
+        "label": "Mei 2027",
+        "year": 2027,
+        "actual": null,
+        "forecast": 158200,
+        "lowerBound": 142168,
+        "upperBound": 174232
       }
     ],
     "Daging Sapi Kualitas 2": [
@@ -32699,63 +33364,83 @@
         "label": "Sep 2026",
         "year": 2026,
         "actual": 156250,
-        "forecast": 156250,
-        "lowerBound": 154072,
-        "upperBound": 158428
+        "forecast": null,
+        "lowerBound": null,
+        "upperBound": null
       },
       {
         "time": "2026",
+        "date": "2026-10-01",
         "label": "Okt 2026",
         "year": 2026,
-        "actual": null,
-        "forecast": 156250,
-        "lowerBound": 149368,
-        "upperBound": 163132
+        "actual": 156250,
+        "forecast": null,
+        "lowerBound": null,
+        "upperBound": null
       },
       {
         "time": "2026",
+        "date": "2026-11-01",
         "label": "Nov 2026",
         "year": 2026,
-        "actual": null,
-        "forecast": 155350,
-        "lowerBound": 145618,
-        "upperBound": 165082
+        "actual": 156250,
+        "forecast": 156250,
+        "lowerBound": 154037,
+        "upperBound": 158463
       },
       {
         "time": "2026",
         "label": "Des 2026",
         "year": 2026,
         "actual": null,
-        "forecast": 153300,
-        "lowerBound": 141380,
-        "upperBound": 165220
+        "forecast": 156800,
+        "lowerBound": 149806,
+        "upperBound": 163794
       },
       {
         "time": "2027",
         "label": "Jan 2027",
         "year": 2027,
         "actual": null,
-        "forecast": 150800,
-        "lowerBound": 137036,
-        "upperBound": 164564
+        "forecast": 156450,
+        "lowerBound": 146559,
+        "upperBound": 166341
       },
       {
         "time": "2027",
         "label": "Feb 2027",
         "year": 2027,
         "actual": null,
-        "forecast": 148750,
-        "lowerBound": 133362,
-        "upperBound": 164138
+        "forecast": 154950,
+        "lowerBound": 142836,
+        "upperBound": 167064
       },
       {
         "time": "2027",
         "label": "Mar 2027",
         "year": 2027,
         "actual": null,
-        "forecast": 149050,
-        "lowerBound": 132193,
-        "upperBound": 165907
+        "forecast": 152950,
+        "lowerBound": 138962,
+        "upperBound": 166938
+      },
+      {
+        "time": "2027",
+        "label": "Apr 2027",
+        "year": 2027,
+        "actual": null,
+        "forecast": 151450,
+        "lowerBound": 135811,
+        "upperBound": 167089
+      },
+      {
+        "time": "2027",
+        "label": "Mei 2027",
+        "year": 2027,
+        "actual": null,
+        "forecast": 151750,
+        "lowerBound": 134618,
+        "upperBound": 168882
       }
     ],
     "Telur Ayam Ras Segar": [
@@ -33685,63 +34370,83 @@
         "label": "Sep 2026",
         "year": 2026,
         "actual": 25250,
-        "forecast": 25250,
-        "lowerBound": 24266,
-        "upperBound": 26234
+        "forecast": null,
+        "lowerBound": null,
+        "upperBound": null
       },
       {
         "time": "2026",
+        "date": "2026-10-01",
         "label": "Okt 2026",
         "year": 2026,
-        "actual": null,
-        "forecast": 25950,
-        "lowerBound": 22842,
-        "upperBound": 29058
+        "actual": 25875,
+        "forecast": null,
+        "lowerBound": null,
+        "upperBound": null
       },
       {
         "time": "2026",
+        "date": "2026-11-01",
         "label": "Nov 2026",
         "year": 2026,
-        "actual": null,
-        "forecast": 26200,
-        "lowerBound": 21804,
-        "upperBound": 30596
+        "actual": 24500,
+        "forecast": 24500,
+        "lowerBound": 23528,
+        "upperBound": 25472
       },
       {
         "time": "2026",
         "label": "Des 2026",
         "year": 2026,
         "actual": null,
-        "forecast": 26000,
-        "lowerBound": 20616,
-        "upperBound": 31384
+        "forecast": 25300,
+        "lowerBound": 22228,
+        "upperBound": 28372
       },
       {
         "time": "2027",
         "label": "Jan 2027",
         "year": 2027,
         "actual": null,
-        "forecast": 25550,
-        "lowerBound": 19333,
-        "upperBound": 31767
+        "forecast": 25700,
+        "lowerBound": 21356,
+        "upperBound": 30044
       },
       {
         "time": "2027",
         "label": "Feb 2027",
         "year": 2027,
         "actual": null,
-        "forecast": 25350,
-        "lowerBound": 18400,
-        "upperBound": 32300
+        "forecast": 25600,
+        "lowerBound": 20279,
+        "upperBound": 30921
       },
       {
         "time": "2027",
         "label": "Mar 2027",
         "year": 2027,
         "actual": null,
-        "forecast": 25500,
-        "lowerBound": 17886,
-        "upperBound": 33114
+        "forecast": 25300,
+        "lowerBound": 19156,
+        "upperBound": 31444
+      },
+      {
+        "time": "2027",
+        "label": "Apr 2027",
+        "year": 2027,
+        "actual": null,
+        "forecast": 25200,
+        "lowerBound": 18331,
+        "upperBound": 32069
+      },
+      {
+        "time": "2027",
+        "label": "Mei 2027",
+        "year": 2027,
+        "actual": null,
+        "forecast": 25350,
+        "lowerBound": 17825,
+        "upperBound": 32875
       }
     ],
     "Bawang Merah Ukuran Sedang": [
@@ -34671,63 +35376,83 @@
         "label": "Sep 2026",
         "year": 2026,
         "actual": 37500,
-        "forecast": 37500,
-        "lowerBound": 34788,
-        "upperBound": 40212
+        "forecast": null,
+        "lowerBound": null,
+        "upperBound": null
       },
       {
         "time": "2026",
+        "date": "2026-10-01",
         "label": "Okt 2026",
         "year": 2026,
-        "actual": null,
-        "forecast": 40150,
-        "lowerBound": 31581,
-        "upperBound": 48719
+        "actual": 38750,
+        "forecast": null,
+        "lowerBound": null,
+        "upperBound": null
       },
       {
         "time": "2026",
+        "date": "2026-11-01",
         "label": "Nov 2026",
         "year": 2026,
-        "actual": null,
-        "forecast": 41700,
-        "lowerBound": 29581,
-        "upperBound": 53819
+        "actual": 39500,
+        "forecast": 39500,
+        "lowerBound": 36965,
+        "upperBound": 42035
       },
       {
         "time": "2026",
         "label": "Des 2026",
         "year": 2026,
         "actual": null,
-        "forecast": 41850,
-        "lowerBound": 27007,
-        "upperBound": 56693
+        "forecast": 41250,
+        "lowerBound": 33240,
+        "upperBound": 49260
       },
       {
         "time": "2027",
         "label": "Jan 2027",
         "year": 2027,
         "actual": null,
-        "forecast": 41400,
-        "lowerBound": 24261,
-        "upperBound": 58539
+        "forecast": 41900,
+        "lowerBound": 30572,
+        "upperBound": 53228
       },
       {
         "time": "2027",
         "label": "Feb 2027",
         "year": 2027,
         "actual": null,
-        "forecast": 41550,
-        "lowerBound": 22388,
-        "upperBound": 60712
+        "forecast": 41250,
+        "lowerBound": 27376,
+        "upperBound": 55124
       },
       {
         "time": "2027",
         "label": "Mar 2027",
         "year": 2027,
         "actual": null,
-        "forecast": 41950,
-        "lowerBound": 20959,
-        "upperBound": 62941
+        "forecast": 40050,
+        "lowerBound": 24030,
+        "upperBound": 56070
+      },
+      {
+        "time": "2027",
+        "label": "Apr 2027",
+        "year": 2027,
+        "actual": null,
+        "forecast": 39450,
+        "lowerBound": 21539,
+        "upperBound": 57361
+      },
+      {
+        "time": "2027",
+        "label": "Mei 2027",
+        "year": 2027,
+        "actual": null,
+        "forecast": 39800,
+        "lowerBound": 20179,
+        "upperBound": 59421
       }
     ],
     "Bawang Putih Ukuran Sedang": [
@@ -35657,63 +36382,83 @@
         "label": "Sep 2026",
         "year": 2026,
         "actual": 42750,
-        "forecast": 42750,
-        "lowerBound": 41446,
-        "upperBound": 44054
+        "forecast": null,
+        "lowerBound": null,
+        "upperBound": null
       },
       {
         "time": "2026",
+        "date": "2026-10-01",
         "label": "Okt 2026",
         "year": 2026,
-        "actual": null,
-        "forecast": 43150,
-        "lowerBound": 39029,
-        "upperBound": 47271
+        "actual": 42750,
+        "forecast": null,
+        "lowerBound": null,
+        "upperBound": null
       },
       {
         "time": "2026",
+        "date": "2026-11-01",
         "label": "Nov 2026",
         "year": 2026,
-        "actual": null,
-        "forecast": 43050,
-        "lowerBound": 37222,
-        "upperBound": 48878
+        "actual": 43250,
+        "forecast": 43250,
+        "lowerBound": 42051,
+        "upperBound": 44449
       },
       {
         "time": "2026",
         "label": "Des 2026",
         "year": 2026,
         "actual": null,
-        "forecast": 42250,
-        "lowerBound": 35112,
-        "upperBound": 49388
+        "forecast": 43550,
+        "lowerBound": 39762,
+        "upperBound": 47338
       },
       {
         "time": "2027",
         "label": "Jan 2027",
         "year": 2027,
         "actual": null,
-        "forecast": 41150,
-        "lowerBound": 32908,
-        "upperBound": 49392
+        "forecast": 43400,
+        "lowerBound": 38043,
+        "upperBound": 48757
       },
       {
         "time": "2027",
         "label": "Feb 2027",
         "year": 2027,
         "actual": null,
-        "forecast": 40350,
-        "lowerBound": 31135,
-        "upperBound": 49565
+        "forecast": 42600,
+        "lowerBound": 36039,
+        "upperBound": 49161
       },
       {
         "time": "2027",
         "label": "Mar 2027",
         "year": 2027,
         "actual": null,
-        "forecast": 40550,
-        "lowerBound": 30455,
-        "upperBound": 50645
+        "forecast": 41550,
+        "lowerBound": 33975,
+        "upperBound": 49125
+      },
+      {
+        "time": "2027",
+        "label": "Apr 2027",
+        "year": 2027,
+        "actual": null,
+        "forecast": 40750,
+        "lowerBound": 32280,
+        "upperBound": 49220
+      },
+      {
+        "time": "2027",
+        "label": "Mei 2027",
+        "year": 2027,
+        "actual": null,
+        "forecast": 40900,
+        "lowerBound": 31622,
+        "upperBound": 50178
       }
     ],
     "Cabai Merah Besar": [
@@ -36643,63 +37388,83 @@
         "label": "Sep 2026",
         "year": 2026,
         "actual": 37000,
-        "forecast": 37000,
-        "lowerBound": 29104,
-        "upperBound": 44896
+        "forecast": null,
+        "lowerBound": null,
+        "upperBound": null
       },
       {
         "time": "2026",
+        "date": "2026-10-01",
         "label": "Okt 2026",
         "year": 2026,
-        "actual": null,
-        "forecast": 42700,
-        "lowerBound": 17745,
-        "upperBound": 67655
+        "actual": 43750,
+        "forecast": null,
+        "lowerBound": null,
+        "upperBound": null
       },
       {
         "time": "2026",
+        "date": "2026-11-01",
         "label": "Nov 2026",
         "year": 2026,
-        "actual": null,
-        "forecast": 45100,
-        "lowerBound": 9809,
-        "upperBound": 80391
+        "actual": 50000,
+        "forecast": 50000,
+        "lowerBound": 42788,
+        "upperBound": 57212
       },
       {
         "time": "2026",
         "label": "Des 2026",
         "year": 2026,
         "actual": null,
-        "forecast": 43400,
-        "lowerBound": 177,
-        "upperBound": 86623
+        "forecast": 52900,
+        "lowerBound": 30109,
+        "upperBound": 75691
       },
       {
         "time": "2027",
         "label": "Jan 2027",
         "year": 2027,
         "actual": null,
-        "forecast": 39950,
-        "lowerBound": 0,
-        "upperBound": 89859
+        "forecast": 52800,
+        "lowerBound": 20568,
+        "upperBound": 85032
       },
       {
         "time": "2027",
         "label": "Feb 2027",
         "year": 2027,
         "actual": null,
-        "forecast": 38350,
-        "lowerBound": 0,
-        "upperBound": 94150
+        "forecast": 49000,
+        "lowerBound": 9524,
+        "upperBound": 88476
       },
       {
         "time": "2027",
         "label": "Mar 2027",
         "year": 2027,
         "actual": null,
-        "forecast": 39450,
+        "forecast": 43550,
         "lowerBound": 0,
-        "upperBound": 100576
+        "upperBound": 89133
+      },
+      {
+        "time": "2027",
+        "label": "Apr 2027",
+        "year": 2027,
+        "actual": null,
+        "forecast": 39800,
+        "lowerBound": 0,
+        "upperBound": 90763
+      },
+      {
+        "time": "2027",
+        "label": "Mei 2027",
+        "year": 2027,
+        "actual": null,
+        "forecast": 40850,
+        "lowerBound": 0,
+        "upperBound": 96677
       }
     ],
     "Cabai Merah Keriting": [
@@ -37629,63 +38394,83 @@
         "label": "Sep 2026",
         "year": 2026,
         "actual": 30500,
-        "forecast": 30500,
-        "lowerBound": 22785,
-        "upperBound": 38215
+        "forecast": null,
+        "lowerBound": null,
+        "upperBound": null
       },
       {
         "time": "2026",
+        "date": "2026-10-01",
         "label": "Okt 2026",
         "year": 2026,
-        "actual": null,
-        "forecast": 36050,
-        "lowerBound": 11667,
-        "upperBound": 60433
+        "actual": 55750,
+        "forecast": null,
+        "lowerBound": null,
+        "upperBound": null
       },
       {
         "time": "2026",
+        "date": "2026-11-01",
         "label": "Nov 2026",
         "year": 2026,
-        "actual": null,
-        "forecast": 38400,
-        "lowerBound": 3918,
-        "upperBound": 72882
+        "actual": 67000,
+        "forecast": 67000,
+        "lowerBound": 59572,
+        "upperBound": 74428
       },
       {
         "time": "2026",
         "label": "Des 2026",
         "year": 2026,
         "actual": null,
-        "forecast": 36750,
-        "lowerBound": 0,
-        "upperBound": 78982
+        "forecast": 67150,
+        "lowerBound": 43675,
+        "upperBound": 90625
       },
       {
         "time": "2027",
         "label": "Jan 2027",
         "year": 2027,
         "actual": null,
-        "forecast": 33400,
-        "lowerBound": 0,
-        "upperBound": 82165
+        "forecast": 64200,
+        "lowerBound": 31001,
+        "upperBound": 97399
       },
       {
         "time": "2027",
         "label": "Feb 2027",
         "year": 2027,
         "actual": null,
-        "forecast": 31800,
-        "lowerBound": 0,
-        "upperBound": 86321
+        "forecast": 57400,
+        "lowerBound": 16739,
+        "upperBound": 98061
       },
       {
         "time": "2027",
         "label": "Mar 2027",
         "year": 2027,
         "actual": null,
-        "forecast": 32900,
+        "forecast": 48950,
+        "lowerBound": 1999,
+        "upperBound": 95901
+      },
+      {
+        "time": "2027",
+        "label": "Apr 2027",
+        "year": 2027,
+        "actual": null,
+        "forecast": 42250,
         "lowerBound": 0,
-        "upperBound": 92625
+        "upperBound": 94743
+      },
+      {
+        "time": "2027",
+        "label": "Mei 2027",
+        "year": 2027,
+        "actual": null,
+        "forecast": 43300,
+        "lowerBound": 0,
+        "upperBound": 100803
       }
     ],
     "Cabai Rawit Hijau": [
@@ -38615,63 +39400,83 @@
         "label": "Sep 2026",
         "year": 2026,
         "actual": 45000,
-        "forecast": 45000,
-        "lowerBound": 37815,
-        "upperBound": 52185
+        "forecast": null,
+        "lowerBound": null,
+        "upperBound": null
       },
       {
         "time": "2026",
+        "date": "2026-10-01",
         "label": "Okt 2026",
         "year": 2026,
-        "actual": null,
-        "forecast": 49300,
-        "lowerBound": 26592,
-        "upperBound": 72008
+        "actual": 48000,
+        "forecast": null,
+        "lowerBound": null,
+        "upperBound": null
       },
       {
         "time": "2026",
+        "date": "2026-11-01",
         "label": "Nov 2026",
         "year": 2026,
-        "actual": null,
-        "forecast": 50600,
-        "lowerBound": 18487,
-        "upperBound": 82713
+        "actual": 59250,
+        "forecast": 59250,
+        "lowerBound": 52326,
+        "upperBound": 66174
       },
       {
         "time": "2026",
         "label": "Des 2026",
         "year": 2026,
         "actual": null,
-        "forecast": 48250,
-        "lowerBound": 8919,
-        "upperBound": 87581
+        "forecast": 60650,
+        "lowerBound": 38769,
+        "upperBound": 82531
       },
       {
         "time": "2027",
         "label": "Jan 2027",
         "year": 2027,
         "actual": null,
-        "forecast": 44200,
-        "lowerBound": 0,
-        "upperBound": 89615
+        "forecast": 59200,
+        "lowerBound": 28256,
+        "upperBound": 90144
       },
       {
         "time": "2027",
         "label": "Feb 2027",
         "year": 2027,
         "actual": null,
-        "forecast": 41900,
-        "lowerBound": 0,
-        "upperBound": 92676
+        "forecast": 54150,
+        "lowerBound": 16251,
+        "upperBound": 92049
       },
       {
         "time": "2027",
         "label": "Mar 2027",
         "year": 2027,
         "actual": null,
-        "forecast": 42900,
+        "forecast": 47550,
+        "lowerBound": 3788,
+        "upperBound": 91312
+      },
+      {
+        "time": "2027",
+        "label": "Apr 2027",
+        "year": 2027,
+        "actual": null,
+        "forecast": 42550,
         "lowerBound": 0,
-        "upperBound": 98522
+        "upperBound": 91478
+      },
+      {
+        "time": "2027",
+        "label": "Mei 2027",
+        "year": 2027,
+        "actual": null,
+        "forecast": 43550,
+        "lowerBound": 0,
+        "upperBound": 97147
       }
     ],
     "Cabai Rawit Merah": [
@@ -39601,63 +40406,83 @@
         "label": "Sep 2026",
         "year": 2026,
         "actual": 60000,
-        "forecast": 60000,
-        "lowerBound": 49952,
-        "upperBound": 70048
+        "forecast": null,
+        "lowerBound": null,
+        "upperBound": null
       },
       {
         "time": "2026",
+        "date": "2026-10-01",
         "label": "Okt 2026",
         "year": 2026,
-        "actual": null,
-        "forecast": 64450,
-        "lowerBound": 32696,
-        "upperBound": 96204
+        "actual": 77500,
+        "forecast": null,
+        "lowerBound": null,
+        "upperBound": null
       },
       {
         "time": "2026",
+        "date": "2026-11-01",
         "label": "Nov 2026",
         "year": 2026,
-        "actual": null,
-        "forecast": 64700,
-        "lowerBound": 19793,
-        "upperBound": 109607
+        "actual": 63750,
+        "forecast": 63750,
+        "lowerBound": 53697,
+        "upperBound": 73803
       },
       {
         "time": "2026",
         "label": "Des 2026",
         "year": 2026,
         "actual": null,
-        "forecast": 59750,
-        "lowerBound": 4750,
-        "upperBound": 114750
+        "forecast": 68250,
+        "lowerBound": 36480,
+        "upperBound": 100020
       },
       {
         "time": "2027",
         "label": "Jan 2027",
         "year": 2027,
         "actual": null,
-        "forecast": 52550,
-        "lowerBound": 0,
-        "upperBound": 116058
+        "forecast": 68600,
+        "lowerBound": 23670,
+        "upperBound": 113530
       },
       {
         "time": "2027",
         "label": "Feb 2027",
         "year": 2027,
         "actual": null,
-        "forecast": 47700,
-        "lowerBound": 0,
-        "upperBound": 118704
+        "forecast": 63750,
+        "lowerBound": 8723,
+        "upperBound": 118777
       },
       {
         "time": "2027",
         "label": "Mar 2027",
         "year": 2027,
         "actual": null,
-        "forecast": 49150,
+        "forecast": 56650,
         "lowerBound": 0,
-        "upperBound": 126932
+        "upperBound": 120190
+      },
+      {
+        "time": "2027",
+        "label": "Apr 2027",
+        "year": 2027,
+        "actual": null,
+        "forecast": 51850,
+        "lowerBound": 0,
+        "upperBound": 122890
+      },
+      {
+        "time": "2027",
+        "label": "Mei 2027",
+        "year": 2027,
+        "actual": null,
+        "forecast": 53300,
+        "lowerBound": 0,
+        "upperBound": 131120
       }
     ],
     "Minyak Goreng Curah": [
@@ -40587,32 +41412,52 @@
         "label": "Sep 2026",
         "year": 2026,
         "actual": 20650,
-        "forecast": 20650,
-        "lowerBound": 20265,
-        "upperBound": 21035
+        "forecast": null,
+        "lowerBound": null,
+        "upperBound": null
       },
       {
         "time": "2026",
+        "date": "2026-10-01",
         "label": "Okt 2026",
         "year": 2026,
-        "actual": null,
-        "forecast": 20800,
-        "lowerBound": 19585,
-        "upperBound": 22015
+        "actual": 20750,
+        "forecast": null,
+        "lowerBound": null,
+        "upperBound": null
       },
       {
         "time": "2026",
+        "date": "2026-11-01",
         "label": "Nov 2026",
         "year": 2026,
-        "actual": null,
-        "forecast": 20800,
-        "lowerBound": 19081,
-        "upperBound": 22519
+        "actual": 20500,
+        "forecast": 20500,
+        "lowerBound": 20115,
+        "upperBound": 20885
       },
       {
         "time": "2026",
         "label": "Des 2026",
         "year": 2026,
+        "actual": null,
+        "forecast": 20700,
+        "lowerBound": 19485,
+        "upperBound": 21915
+      },
+      {
+        "time": "2027",
+        "label": "Jan 2027",
+        "year": 2027,
+        "actual": null,
+        "forecast": 20700,
+        "lowerBound": 18981,
+        "upperBound": 22419
+      },
+      {
+        "time": "2027",
+        "label": "Feb 2027",
+        "year": 2027,
         "actual": null,
         "forecast": 20550,
         "lowerBound": 18445,
@@ -40620,7 +41465,7 @@
       },
       {
         "time": "2027",
-        "label": "Jan 2027",
+        "label": "Mar 2027",
         "year": 2027,
         "actual": null,
         "forecast": 20250,
@@ -40629,21 +41474,21 @@
       },
       {
         "time": "2027",
-        "label": "Feb 2027",
-        "year": 2027,
-        "actual": null,
-        "forecast": 20050,
-        "lowerBound": 17333,
-        "upperBound": 22767
-      },
-      {
-        "time": "2027",
-        "label": "Mar 2027",
+        "label": "Apr 2027",
         "year": 2027,
         "actual": null,
         "forecast": 20100,
-        "lowerBound": 17123,
-        "upperBound": 23077
+        "lowerBound": 17383,
+        "upperBound": 22817
+      },
+      {
+        "time": "2027",
+        "label": "Mei 2027",
+        "year": 2027,
+        "actual": null,
+        "forecast": 20150,
+        "lowerBound": 17173,
+        "upperBound": 23127
       }
     ],
     "Minyak Goreng Kemasan Bermerk 1": [
@@ -41573,63 +42418,83 @@
         "label": "Sep 2026",
         "year": 2026,
         "actual": 24000,
-        "forecast": 24000,
-        "lowerBound": 23553,
-        "upperBound": 24447
+        "forecast": null,
+        "lowerBound": null,
+        "upperBound": null
       },
       {
         "time": "2026",
+        "date": "2026-10-01",
         "label": "Okt 2026",
         "year": 2026,
-        "actual": null,
-        "forecast": 24150,
-        "lowerBound": 22737,
-        "upperBound": 25563
+        "actual": 24000,
+        "forecast": null,
+        "lowerBound": null,
+        "upperBound": null
       },
       {
         "time": "2026",
+        "date": "2026-11-01",
         "label": "Nov 2026",
         "year": 2026,
-        "actual": null,
-        "forecast": 24100,
-        "lowerBound": 22102,
-        "upperBound": 26098
+        "actual": 24000,
+        "forecast": 24000,
+        "lowerBound": 23556,
+        "upperBound": 24444
       },
       {
         "time": "2026",
         "label": "Des 2026",
         "year": 2026,
         "actual": null,
-        "forecast": 23850,
-        "lowerBound": 21403,
-        "upperBound": 26297
+        "forecast": 24150,
+        "lowerBound": 22747,
+        "upperBound": 25553
       },
       {
         "time": "2027",
         "label": "Jan 2027",
         "year": 2027,
         "actual": null,
-        "forecast": 23450,
-        "lowerBound": 20625,
-        "upperBound": 26275
+        "forecast": 24150,
+        "lowerBound": 22166,
+        "upperBound": 26134
       },
       {
         "time": "2027",
         "label": "Feb 2027",
         "year": 2027,
         "actual": null,
-        "forecast": 23200,
-        "lowerBound": 20041,
-        "upperBound": 26359
+        "forecast": 23900,
+        "lowerBound": 21470,
+        "upperBound": 26330
       },
       {
         "time": "2027",
         "label": "Mar 2027",
         "year": 2027,
         "actual": null,
-        "forecast": 23250,
-        "lowerBound": 19790,
-        "upperBound": 26710
+        "forecast": 23550,
+        "lowerBound": 20744,
+        "upperBound": 26356
+      },
+      {
+        "time": "2027",
+        "label": "Apr 2027",
+        "year": 2027,
+        "actual": null,
+        "forecast": 23300,
+        "lowerBound": 20162,
+        "upperBound": 26438
+      },
+      {
+        "time": "2027",
+        "label": "Mei 2027",
+        "year": 2027,
+        "actual": null,
+        "forecast": 23350,
+        "lowerBound": 19913,
+        "upperBound": 26787
       }
     ],
     "Minyak Goreng Kemasan Bermerk 2": [
@@ -42559,54 +43424,56 @@
         "label": "Sep 2026",
         "year": 2026,
         "actual": 23750,
-        "forecast": 23750,
-        "lowerBound": 23374,
-        "upperBound": 24126
+        "forecast": null,
+        "lowerBound": null,
+        "upperBound": null
       },
       {
         "time": "2026",
+        "date": "2026-10-01",
         "label": "Okt 2026",
         "year": 2026,
-        "actual": null,
-        "forecast": 23850,
-        "lowerBound": 22662,
-        "upperBound": 25038
+        "actual": 23250,
+        "forecast": null,
+        "lowerBound": null,
+        "upperBound": null
       },
       {
         "time": "2026",
+        "date": "2026-11-01",
         "label": "Nov 2026",
         "year": 2026,
-        "actual": null,
-        "forecast": 23800,
-        "lowerBound": 22119,
-        "upperBound": 25481
+        "actual": 23250,
+        "forecast": 23250,
+        "lowerBound": 22878,
+        "upperBound": 23622
       },
       {
         "time": "2026",
         "label": "Des 2026",
         "year": 2026,
         "actual": null,
-        "forecast": 23550,
-        "lowerBound": 21492,
-        "upperBound": 25608
+        "forecast": 23450,
+        "lowerBound": 22274,
+        "upperBound": 24626
       },
       {
         "time": "2027",
         "label": "Jan 2027",
         "year": 2027,
         "actual": null,
-        "forecast": 23250,
-        "lowerBound": 20873,
-        "upperBound": 25627
+        "forecast": 23450,
+        "lowerBound": 21787,
+        "upperBound": 25113
       },
       {
         "time": "2027",
         "label": "Feb 2027",
         "year": 2027,
         "actual": null,
-        "forecast": 23000,
-        "lowerBound": 20343,
-        "upperBound": 25657
+        "forecast": 23300,
+        "lowerBound": 21264,
+        "upperBound": 25336
       },
       {
         "time": "2027",
@@ -42614,8 +43481,26 @@
         "year": 2027,
         "actual": null,
         "forecast": 23050,
-        "lowerBound": 20139,
-        "upperBound": 25961
+        "lowerBound": 20699,
+        "upperBound": 25401
+      },
+      {
+        "time": "2027",
+        "label": "Apr 2027",
+        "year": 2027,
+        "actual": null,
+        "forecast": 22900,
+        "lowerBound": 20271,
+        "upperBound": 25529
+      },
+      {
+        "time": "2027",
+        "label": "Mei 2027",
+        "year": 2027,
+        "actual": null,
+        "forecast": 22950,
+        "lowerBound": 20070,
+        "upperBound": 25830
       }
     ],
     "Gula Pasir Kualitas Premium": [
@@ -43545,63 +44430,83 @@
         "label": "Sep 2026",
         "year": 2026,
         "actual": 18750,
-        "forecast": 18750,
-        "lowerBound": 18629,
-        "upperBound": 18871
+        "forecast": null,
+        "lowerBound": null,
+        "upperBound": null
       },
       {
         "time": "2026",
+        "date": "2026-10-01",
         "label": "Okt 2026",
         "year": 2026,
-        "actual": null,
-        "forecast": 18800,
-        "lowerBound": 18418,
-        "upperBound": 19182
+        "actual": 18750,
+        "forecast": null,
+        "lowerBound": null,
+        "upperBound": null
       },
       {
         "time": "2026",
+        "date": "2026-11-01",
         "label": "Nov 2026",
         "year": 2026,
-        "actual": null,
-        "forecast": 18800,
-        "lowerBound": 18259,
-        "upperBound": 19341
+        "actual": 18875,
+        "forecast": 18875,
+        "lowerBound": 18758,
+        "upperBound": 18992
       },
       {
         "time": "2026",
         "label": "Des 2026",
         "year": 2026,
         "actual": null,
-        "forecast": 18750,
-        "lowerBound": 18088,
-        "upperBound": 19412
+        "forecast": 18900,
+        "lowerBound": 18530,
+        "upperBound": 19270
       },
       {
         "time": "2027",
         "label": "Jan 2027",
         "year": 2027,
         "actual": null,
-        "forecast": 18650,
-        "lowerBound": 17885,
-        "upperBound": 19415
+        "forecast": 18900,
+        "lowerBound": 18377,
+        "upperBound": 19423
       },
       {
         "time": "2027",
         "label": "Feb 2027",
         "year": 2027,
         "actual": null,
-        "forecast": 18600,
-        "lowerBound": 17745,
-        "upperBound": 19455
+        "forecast": 18800,
+        "lowerBound": 18160,
+        "upperBound": 19440
       },
       {
         "time": "2027",
         "label": "Mar 2027",
         "year": 2027,
         "actual": null,
-        "forecast": 18600,
-        "lowerBound": 17663,
-        "upperBound": 19537
+        "forecast": 18700,
+        "lowerBound": 17960,
+        "upperBound": 19440
+      },
+      {
+        "time": "2027",
+        "label": "Apr 2027",
+        "year": 2027,
+        "actual": null,
+        "forecast": 18650,
+        "lowerBound": 17823,
+        "upperBound": 19477
+      },
+      {
+        "time": "2027",
+        "label": "Mei 2027",
+        "year": 2027,
+        "actual": null,
+        "forecast": 18650,
+        "lowerBound": 17744,
+        "upperBound": 19556
       }
     ],
     "Gula Pasir Lokal": [
@@ -44531,65 +45436,85 @@
         "label": "Sep 2026",
         "year": 2026,
         "actual": 18150,
-        "forecast": 18150,
-        "lowerBound": 17915,
-        "upperBound": 18385
+        "forecast": null,
+        "lowerBound": null,
+        "upperBound": null
       },
       {
         "time": "2026",
+        "date": "2026-10-01",
         "label": "Okt 2026",
         "year": 2026,
-        "actual": null,
-        "forecast": 18200,
-        "lowerBound": 17459,
-        "upperBound": 18941
+        "actual": 18125,
+        "forecast": null,
+        "lowerBound": null,
+        "upperBound": null
       },
       {
         "time": "2026",
+        "date": "2026-11-01",
         "label": "Nov 2026",
         "year": 2026,
-        "actual": null,
-        "forecast": 18200,
-        "lowerBound": 17152,
-        "upperBound": 19248
+        "actual": 19000,
+        "forecast": 19000,
+        "lowerBound": 18756,
+        "upperBound": 19244
       },
       {
         "time": "2026",
         "label": "Des 2026",
         "year": 2026,
         "actual": null,
-        "forecast": 18050,
-        "lowerBound": 16766,
-        "upperBound": 19334
+        "forecast": 18950,
+        "lowerBound": 18180,
+        "upperBound": 19720
       },
       {
         "time": "2027",
         "label": "Jan 2027",
         "year": 2027,
         "actual": null,
-        "forecast": 17850,
-        "lowerBound": 16368,
-        "upperBound": 19332
+        "forecast": 18800,
+        "lowerBound": 17712,
+        "upperBound": 19888
       },
       {
         "time": "2027",
         "label": "Feb 2027",
         "year": 2027,
         "actual": null,
-        "forecast": 17700,
-        "lowerBound": 16043,
-        "upperBound": 19357
+        "forecast": 18550,
+        "lowerBound": 17217,
+        "upperBound": 19883
       },
       {
         "time": "2027",
         "label": "Mar 2027",
         "year": 2027,
         "actual": null,
-        "forecast": 17700,
-        "lowerBound": 15885,
-        "upperBound": 19515
+        "forecast": 18250,
+        "lowerBound": 16711,
+        "upperBound": 19789
+      },
+      {
+        "time": "2027",
+        "label": "Apr 2027",
+        "year": 2027,
+        "actual": null,
+        "forecast": 17950,
+        "lowerBound": 16229,
+        "upperBound": 19671
+      },
+      {
+        "time": "2027",
+        "label": "Mei 2027",
+        "year": 2027,
+        "actual": null,
+        "forecast": 18000,
+        "lowerBound": 16115,
+        "upperBound": 19885
       }
     ]
   },
-  "defaultKomoditas": "Beras Kualitas Super I"
+  "defaultKomoditas": "Gula Pasir Lokal"
 }

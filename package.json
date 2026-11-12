@@ -8,7 +8,7 @@
     "build": "vite build",
     "lint": "oxlint",
     "preview": "vite preview",
-    "sync": "node scripts/fluent_download.cjs && node scripts/compile_master_database.mjs",
+    "sync": "node scripts/fluent_download.cjs && node scripts/compile_master_database.mjs && node scripts/download_ews_onedrive.cjs && node scripts/compile_ews_database.mjs",
     "sync:ews": "node scripts/download_ews_onedrive.cjs && node scripts/compile_ews_database.mjs"
   },
   "dependencies": {

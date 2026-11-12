@@ -225,13 +225,31 @@ export const useDashboardStore = create((set, get) => ({
         });
       } else {
         ExcelService.clearCache();
-        const { data: fresh, source } = await ExcelService.fetchMasterDatabase(true);
+        const [masterRes, alpsRes, ewsRes] = await Promise.all([
+          ExcelService.fetchMasterDatabase(true),
+          ExcelService.fetchEwsAlpsDatabase(true).catch(() => null),
+          ExcelService.fetchEwsDatabase(true).catch(() => null),
+        ]);
+        const fresh = masterRes.data;
+        const source = masterRes.source;
         const freshKal = pickLatestPeriode(fresh) || fresh.REF_KALENDER?.[fresh.REF_KALENDER.length - 1];
+        const nowLabel = new Date().toLocaleString('id-ID', { dateStyle: 'medium', timeStyle: 'short' }) + ' WIB';
+        const alpsParsed = alpsRes?.data || get().ewsDatabase;
+        const hargaArusParsed = ewsRes?.data || get().hargaArusDatabase;
+        const alpsLatestDate = alpsParsed?.meta?.lastPeriod || '2026-09-29';
+        const ewsLatestWeek = hargaArusParsed?.meta?.lastPeriod || '2026-09-21';
+
         set({
           data: fresh,
           selectedPeriode: freshKal?.id_periode || get().selectedPeriode,
+          ewsDatabase: alpsParsed,
+          ewsSyncTime: nowLabel,
+          ewsSyncSource: `OneDrive ALPS EWS (${alpsLatestDate})`,
+          hargaArusDatabase: hargaArusParsed,
+          hargaArusSyncTime: nowLabel,
+          hargaArusSyncSource: `OneDrive Hubungan Harga & Arus (${ewsLatestWeek})`,
           isLoading: false,
-          lastSyncTime: new Date().toLocaleString('id-ID', { dateStyle: 'medium', timeStyle: 'short' }) + ' WIB',
+          lastSyncTime: nowLabel,
           syncSource: source === 'network_master' ? 'Master JSON Live' : 'Database Terkini',
         });
       }
@@ -264,6 +282,7 @@ export const useDashboardStore = create((set, get) => ({
     try {
       const nowLabel = new Date().toLocaleString('id-ID', { dateStyle: 'medium', timeStyle: 'short' }) + ' WIB';
       const isHubungan = url === 'hubungan' || (typeof url === 'string' && url.includes('IQCyJrPP'));
+      const isAlps = url === 'alps' || (typeof url === 'string' && url.includes('IQAMDh9u')) || !url;
 
       if (isHubungan) {
         const res = await ExcelService.fetchEwsDatabase(true);
@@ -279,6 +298,31 @@ export const useDashboardStore = create((set, get) => ({
         } else {
           set({ isLoading: false });
         }
+        return;
+      }
+
+      if (isAlps) {
+        const [alpsRes, ewsRes] = await Promise.all([
+          ExcelService.fetchEwsAlpsDatabase(true),
+          ExcelService.fetchEwsDatabase(true).catch(() => null),
+        ]);
+        const updates = {
+          isLoading: false,
+          isDataModalOpen: false,
+        };
+        if (alpsRes?.data) {
+          const latestDate = alpsRes.data.meta?.lastPeriod || '2026-09-29';
+          updates.ewsDatabase = alpsRes.data;
+          updates.ewsSyncTime = nowLabel;
+          updates.ewsSyncSource = `OneDrive ALPS EWS (${latestDate})`;
+        }
+        if (ewsRes?.data) {
+          const latestWeek = ewsRes.data.meta?.lastPeriod || '2026-09-21';
+          updates.hargaArusDatabase = ewsRes.data;
+          updates.hargaArusSyncTime = nowLabel;
+          updates.hargaArusSyncSource = `OneDrive Hubungan Harga & Arus (${latestWeek})`;
+        }
+        set(updates);
         return;
       }
 

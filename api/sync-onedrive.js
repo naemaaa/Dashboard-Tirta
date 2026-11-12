@@ -5,6 +5,7 @@ import fs from 'fs';
 import path from 'path';
 import XLSX from 'xlsx';
 import { compileWorkbook } from '../src/services/masterCompiler.js';
+import { parseAlpsEwsWorkbook, parseEwsWorkbook } from '../src/services/ewsDataParser.js';
 import { REF_KOMODITAS, REF_WILAYAH, REF_SATUAN, REF_KLASTER_RESPONDEN } from '../src/data/seedData.js';
 
 /**
@@ -75,6 +76,20 @@ export default async function handler(req, res) {
             res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
             return res.status(200).send(JSON.stringify(dataset));
           }
+        } else if (isZip && isEwsAlps) {
+          const wb = XLSX.read(Buffer.from(buffer), { type: 'buffer' });
+          const dataset = parseAlpsEwsWorkbook(wb);
+          res.setHeader('Content-Type', 'application/json');
+          res.setHeader('X-Data-Source', 'onedrive_ews_alps_live_compiled');
+          res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
+          return res.status(200).send(JSON.stringify(dataset));
+        } else if (isZip && isEwsHubungan) {
+          const wb = XLSX.read(Buffer.from(buffer), { type: 'buffer' });
+          const dataset = parseEwsWorkbook(wb);
+          res.setHeader('Content-Type', 'application/json');
+          res.setHeader('X-Data-Source', 'onedrive_ews_hubungan_live_compiled');
+          res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
+          return res.status(200).send(JSON.stringify(dataset));
         } else if (isZip) {
           res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
           res.setHeader('X-Data-Source', 'onedrive_live');

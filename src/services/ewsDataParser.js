@@ -524,14 +524,20 @@ export function parseAlpsEwsWorkbook(workbook) {
       fc[lastIdx].lowerBound = Math.max(0, lastActual - Math.round(sd * 0.5));
       fc[lastIdx].upperBound = lastActual + Math.round(sd * 0.5);
 
-      const futureHorizons = [
-        { time: '2026', label: 'Okt 2026', year: 2026, step: 1 },
-        { time: '2026', label: 'Nov 2026', year: 2026, step: 2 },
-        { time: '2026', label: 'Des 2026', year: 2026, step: 3 },
-        { time: '2027', label: 'Jan 2027', year: 2027, step: 4 },
-        { time: '2027', label: 'Feb 2027', year: 2027, step: 5 },
-        { time: '2027', label: 'Mar 2027', year: 2027, step: 6 }
-      ];
+      const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'];
+      const baseYear = lastSeriesPt.year || 2026;
+      const baseMonth = lastSeriesPt.month || 9; // 1-12
+      const futureHorizons = [1, 2, 3, 4, 5, 6].map(step => {
+        const totalMonthsFromZero = (baseYear * 12 + (baseMonth - 1)) + step;
+        const fYear = Math.floor(totalMonthsFromZero / 12);
+        const fMonthIdx = totalMonthsFromZero % 12;
+        return {
+          time: String(fYear),
+          label: `${monthNames[fMonthIdx]} ${fYear}`,
+          year: fYear,
+          step
+        };
+      });
 
       futureHorizons.forEach(fh => {
         const weightExp = Math.min(0.75, fh.step * 0.15);
@@ -556,11 +562,14 @@ export function parseAlpsEwsWorkbook(workbook) {
   // Default komoditas (paling kritis) saat filter 'All'
   const sortedByRisk = [...heatmap].sort((a, b) => (b.alps_score ?? 0) - (a.alps_score ?? 0));
   const defaultKom = sortedByRisk[0]?.komoditas || targetRows[0]?.komoditas || 'Daging Ayam Ras Segar';
+  const firstMc = monthCols[0] || { label: 'Jan 2019', date: '2019-01-01' };
+  const lastMc = monthCols[monthCols.length - 1] || { label: 'Sept 2026', date: '2026-09-01' };
 
   return {
     meta: {
       title: 'DASHBOARD ALPS – EARLY WARNING SYSTEM INFLASI D.I. YOGYAKARTA',
-      periodeData: 'Jan 2019 – Sept 2026',
+      periodeData: `${firstMc.label} – ${lastMc.label}`,
+      lastPeriod: lastMc.date,
       totalMonths: monthCols.length,
       totalKomoditas: heatmap.length,
       sourceFile: 'Dashboard ALPS EWS DIY PIHPS AB29092026.xlsx',

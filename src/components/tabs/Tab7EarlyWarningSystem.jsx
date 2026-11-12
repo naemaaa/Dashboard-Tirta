@@ -101,9 +101,10 @@ function RiskTooltip({ active, payload }) {
 
 function LineTooltip({ active, payload, label }) {
   if (!active || !payload?.length) return null;
+  const displayLabel = payload[0]?.payload?.label || label;
   return (
     <div className="bg-[#071D3D] text-white p-3 rounded-xl shadow-2xl text-xs border border-white/20 min-w-[210px]">
-      <p className="font-bold text-[#C89B3C] mb-2 pb-1 border-b border-white/15 text-xs">{label}</p>
+      <p className="font-bold text-[#C89B3C] mb-2 pb-1 border-b border-white/15 text-xs">{displayLabel}</p>
       <div className="space-y-1.5">
         {payload.map(p => {
           const dotColor = p.color === '#0A2E5C' ? '#60A5FA' : p.color;
@@ -497,7 +498,7 @@ export function Tab7EarlyWarningSystem() {
                 <p className="text-[#667085]">
                   {isUsingDefault
                     ? '⚠️ Menggunakan seed data default. Muat file EWS Excel untuk data aktual.'
-                    : `✅ Database aktif: ${heatmapData.length} komoditas (Jan 2019 – Sep 2026).`}
+                    : `✅ Database aktif: ${heatmapData.length} komoditas (${ewsDatabase?.meta?.periodeData || 'Jan 2019 – Nov 2026'}).`}
                 </p>
               </div>
             </div>
@@ -716,6 +717,7 @@ export function Tab7EarlyWarningSystem() {
                       />
                       <Tooltip
                         formatter={(val, name) => val ? [`Rp ${Number(val).toLocaleString('id-ID')}`, name] : ['-', name]}
+                        labelFormatter={(lbl, pl) => pl?.[0]?.payload?.label || lbl}
                         contentStyle={{ backgroundColor: '#071D3D', color: '#fff', borderRadius: '10px', fontSize: '11px' }}
                         itemStyle={{ color: '#ffffff' }}
                         labelStyle={{ color: '#C89B3C', fontWeight: 'bold' }}
